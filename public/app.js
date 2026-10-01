@@ -103,3 +103,27 @@ setInterval(() => {
   lineIndex = (lineIndex + 1) % terminalLines.length;
   terminalText.textContent = terminalLines[lineIndex];
 }, 2800);
+
+const revealItems = document.querySelectorAll(".reveal");
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+revealItems.forEach(item => observer.observe(item));
+
+const heroVisual = document.getElementById("heroVisual");
+if (heroVisual && window.matchMedia("(pointer:fine)").matches) {
+  heroVisual.addEventListener("pointermove", event => {
+    const box = heroVisual.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    const y = (event.clientY - box.top) / box.height - 0.5;
+    heroVisual.style.transform = "perspective(1000px) rotateY(" + (x * 4) + "deg) rotateX(" + (-y * 3) + "deg)";
+  });
+  heroVisual.addEventListener("pointerleave", () => {
+    heroVisual.style.transform = "";
+  });
+}
