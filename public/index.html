@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0a0a0a" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta name="description" content="JOBBY — One job. Always messes it up. A community-first Solana meme project." />
   <meta property="og:title" content="JOBBY — One Job. Always Messes It Up." />
   <meta property="og:description" content="Give JOBBY one simple task. Watch the internet turn the result into a meme." />
@@ -13,7 +15,10 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div class="page-grid" aria-hidden="true"></div>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
   <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
   <header class="site-header">
@@ -33,9 +38,21 @@
         <a href="#official">Official</a>
       </nav>
 
-      <a class="nav-cta" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">
-        Join community <span>↗</span>
-      </a>
+      <div class="nav-actions">
+        <a class="nav-cta" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">
+          Join community <span>↗</span>
+        </a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="#story">Story</a>
+      <a href="#mission">Mission</a>
+      <a href="#game">Give a Job</a>
+      <a href="#official">Official</a>
+      <a class="mobile-menu-cta" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">Join Community ↗</a>
     </div>
   </header>
 
@@ -45,6 +62,8 @@
         <div class="status-row">
           <span class="live-dot"></span>
           <span>PRE-LAUNCH · COMMUNITY LIVE</span>
+          <span class="status-separator"></span>
+          <span class="status-network">SOLANA</span>
         </div>
 
         <h1>
@@ -87,6 +106,11 @@
         <div class="signal signal-c">RESULT: ???</div>
 
         <div class="character-card">
+          <div class="job-ticket" aria-hidden="true">
+            <small>WORK ORDER</small>
+            <strong>#0001</strong>
+            <span>STATUS: IN PROGRESS</span>
+          </div>
           <div class="card-top">
             <span>JOBBY.EXE</span>
             <span class="window-dots"><i></i><i></i><i></i></span>
@@ -130,8 +154,19 @@
       </div>
     </div>
 
+    <section class="trust-strip section-shell" aria-label="Official project links">
+      <div class="trust-label">
+        <span>OFFICIAL ACCESS</span>
+        <strong>Use verified links only.</strong>
+      </div>
+      <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer"><span>X</span><strong>@JOBBYSOL</strong><em>↗</em></a>
+      <a href="https://t.me/JOBBYSOL" target="_blank" rel="noreferrer"><span>TG</span><strong>Channel</strong><em>↗</em></a>
+      <a href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer"><span>CHAT</span><strong>Community</strong><em>↗</em></a>
+      <div class="trust-ca"><span>CA</span><strong>SOON</strong></div>
+    </section>
+
     <section id="story" class="story section-shell reveal">
-      <div class="section-kicker">THE IDEA</div>
+      <div class="section-kicker"><span></span> THE IDEA</div>
       <div class="story-grid">
         <h2>Built around a joke people understand in one second.</h2>
         <div class="story-copy">
@@ -166,7 +201,7 @@
     </section>
 
     <section class="meme-loop section-shell reveal">
-      <div class="section-kicker">THE LOOP</div>
+      <div class="section-kicker"><span></span> THE LOOP</div>
       <div class="loop-head">
         <h2>ONE SIMPLE FORMAT.<br />ENDLESS REMIXES.</h2>
         <p>JOBBY is designed around a repeatable meme loop the community can understand and remix instantly.</p>
@@ -182,7 +217,7 @@
     <section id="mission" class="mission reveal">
       <div class="section-shell mission-inner">
         <div>
-          <div class="section-kicker dark">JOB STATUS</div>
+          <div class="section-kicker dark"><span></span> JOB STATUS</div>
           <h2>THE INTERNET<br />IS THE FOREMAN.</h2>
         </div>
         <div class="mission-stack">
@@ -207,7 +242,7 @@
 
     <section id="game" class="game section-shell reveal">
       <div class="game-copy">
-        <div class="section-kicker">COMMUNITY GAME</div>
+        <div class="section-kicker"><span></span> COMMUNITY GAME</div>
         <h2>GIVE JOBBY<br />HIS NEXT JOB.</h2>
         <p>
           Type any job. JOBBY will confidently produce the kind of result only JOBBY can produce.
@@ -238,7 +273,7 @@
     <section id="official" class="official section-shell reveal">
       <div class="official-head">
         <div>
-          <div class="section-kicker">OFFICIAL ONLY</div>
+          <div class="section-kicker"><span></span> OFFICIAL ONLY</div>
           <h2>CHECK THE SOURCE.<br />NOT THE DM.</h2>
         </div>
         <p>
