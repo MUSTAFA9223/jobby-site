@@ -1,0 +1,322 @@
+import html
+import logging
+import os
+
+from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.constants import ChatType, ParseMode
+from telegram.ext import (
+    Application,
+    CallbackQueryHandler,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
+)
+
+BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+ADMIN_IDS = {
+    int(x.strip())
+    for x in os.getenv("ADMIN_USER_IDS", "").split(",")
+    if x.strip().isdigit()
+}
+
+PROJECT = "JOBBY"
+SYMBOL = "$JOBBY"
+WELCOME_ENABLED = os.getenv("WELCOME_ENABLED", "true").lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
+X_URL = os.getenv("X_URL", "https://x.com/JOBBYSOL").strip()
+CHANNEL_URL = os.getenv("TELEGRAM_CHANNEL_URL", "https://t.me/JOBBYSOL").strip()
+COMMUNITY_URL = os.getenv("TELEGRAM_COMMUNITY_URL", "").strip()
+WEBSITE_URL = os.getenv("WEBSITE_URL", "").strip()
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    level=logging.INFO,
+)
+log = logging.getLogger("jobby-bot")
+
+
+def esc(value: object) -> str:
+    return html.escape(str(value), quote=False)
+
+
+def is_admin(user_id: int | None) -> bool:
+    return bool(user_id and user_id in ADMIN_IDS)
+
+
+def is_private(update: Update) -> bool:
+    return bool(update.effective_chat and update.effective_chat.type == ChatType.PRIVATE)
+
+
+def official_keyboard() -> InlineKeyboardMarkup:
+    rows: list[list[InlineKeyboardButton]] = []
+
+    compact: list[InlineKeyboardButton] = []
+    if X_URL:
+        compact.append(InlineKeyboardButton("𝕏", url=X_URL))
+    if CHANNEL_URL:
+        compact.append(InlineKeyboardButton("Channel", url=CHANNEL_URL))
+    if COMMUNITY_URL:
+        compact.append(InlineKeyboardButton("Group", url=COMMUNITY_URL))
+    if compact:
+        rows.append(compact)
+
+    if WEBSITE_URL:
+        rows.append([InlineKeyboardButton("Website", url=WEBSITE_URL)])
+
+    return InlineKeyboardMarkup(rows)
+
+
+def official_text() -> str:
+    return (
+        "<b>JOBBY</b>\n\n"
+        "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n\n"
+        "<b>Building the community before the coin.</b>\n"
+        "<b>$JOBBY launching soon on Solana.</b>\n\n"
+        "<b>Give JOBBY his next job ↓</b>"
+    )
+
+
+def welcome_text(name: str, *, name_is_html: bool = False) -> str:
+    shown_name = name if name_is_html else esc(name)
+    return (
+        f"👋 <b>Welcome to JOBBY, {shown_name}.</b>\n\n"
+        "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n\n"
+        "<b>Community first. Memes every day.</b>\n"
+        "<b>$JOBBY launching soon on Solana.</b>\n\n"
+        "<b>Use only the official links below.</b>\n"
+        "<b>Admins will never DM you first.</b>"
+    )
+
+
+def member_mention(member) -> str:
+    display_name = esc(member.full_name or member.first_name or "friend")
+    return f'<a href="tg://user?id={member.id}">{display_name}</a>'
+
+
+def admin_text() -> str:
+    return (
+        "🔐 <b>JOBBY ADMIN</b>\n\n"
+        "Bot status: <b>ONLINE</b>\n"
+        f"Welcome messages: <b>{'ON' if WELCOME_ENABLED else 'OFF'}</b>\n"
+        f"Authorized admins: <b>{len(ADMIN_IDS)}</b>\n\n"
+        "Quick text triggers in groups: <code>X</code>, <code>channel</code>, "
+        "<code>telegram</code>, <code>community</code>, <code>links</code>, "
+        "<code>CA</code>, <code>web</code>.\n\n"
+        "For normal-word triggers, Telegram BotFather privacy mode must be disabled."
+    )
+
+
+def admin_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("Preview", callback_data="adm:preview")],
+            [InlineKeyboardButton("Links", callback_data="adm:links")],
+        ]
+    )
+
+
+async def post_init(app: Application) -> None:
+    # Polling bots must not have a webhook attached.
+    await app.bot.delete_webhook(drop_pending_updates=False)
+    await app.bot.set_my_commands(
+        [
+            BotCommand("start", "Open JOBBY bot"),
+            BotCommand("links", "Official JOBBY links"),
+            BotCommand("x", "Official X account"),
+            BotCommand("channel", "Official Telegram channel"),
+            BotCommand("community", "Official community link"),
+            BotCommand("ca", "JOBBY contract address"),
+            BotCommand("web", "JOBBY website"),
+            BotCommand("admin", "Admin panel"),
+        ]
+    )
+    await app.bot.set_my_short_description("Official JOBBY community bot.")
+    await app.bot.set_my_description(
+        "Official JOBBY community bot. Community first. Memes every day. "
+        "$JOBBY launching soon on Solana."
+    )
+
+
+async def send_links(message) -> None:
+    await message.reply_text(
+        official_text(),
+        parse_mode=ParseMode.HTML,
+        reply_markup=official_keyboard(),
+        disable_web_page_preview=True,
+    )
+
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if is_private(update) and is_admin(update.effective_user.id if update.effective_user else None):
+        await update.effective_message.reply_text(
+            admin_text(),
+            parse_mode=ParseMode.HTML,
+            reply_markup=admin_keyboard(),
+        )
+        return
+    await send_links(update.effective_message)
+
+
+async def links_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await send_links(update.effective_message)
+
+
+async def x_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if X_URL:
+        await update.effective_message.reply_text(
+            f"𝕏 <b>Official JOBBY X</b>\n{esc(X_URL)}",
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+        )
+
+
+async def channel_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if CHANNEL_URL:
+        await update.effective_message.reply_text(
+            f"📢 <b>Official JOBBY Channel</b>\n{esc(CHANNEL_URL)}",
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+        )
+
+
+async def community_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if COMMUNITY_URL:
+        await update.effective_message.reply_text(
+            f"💬 <b>Official JOBBY Community</b>\n{esc(COMMUNITY_URL)}",
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+        )
+    else:
+        await update.effective_message.reply_text(
+            "💬 <b>This is the JOBBY community.</b>",
+            parse_mode=ParseMode.HTML,
+        )
+
+
+async def ca_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.effective_message.reply_text(
+        "<b>$JOBBY CA</b>\n<b>SOON</b>",
+        parse_mode=ParseMode.HTML,
+    )
+
+
+async def web_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if WEBSITE_URL:
+        await update.effective_message.reply_text(
+            f"<b>JOBBY WEBSITE</b>\n{esc(WEBSITE_URL)}",
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+        )
+    else:
+        await update.effective_message.reply_text(
+            "<b>JOBBY WEBSITE</b>\n<b>SOON</b>",
+            parse_mode=ParseMode.HTML,
+        )
+
+
+async def admin_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    uid = update.effective_user.id if update.effective_user else None
+    if not (is_private(update) and is_admin(uid)):
+        return
+    await update.effective_message.reply_text(
+        admin_text(),
+        parse_mode=ParseMode.HTML,
+        reply_markup=admin_keyboard(),
+    )
+
+
+async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    q = update.callback_query
+    if not q:
+        return
+    if not (is_private(update) and is_admin(q.from_user.id)):
+        await q.answer("Admin only.", show_alert=True)
+        return
+
+    await q.answer()
+    if q.data == "adm:preview":
+        await context.bot.send_message(
+            chat_id=q.from_user.id,
+            text=welcome_text(q.from_user.first_name or "friend"),
+            parse_mode=ParseMode.HTML,
+            reply_markup=official_keyboard(),
+        )
+    elif q.data == "adm:links":
+        await context.bot.send_message(
+            chat_id=q.from_user.id,
+            text=official_text(),
+            parse_mode=ParseMode.HTML,
+            reply_markup=official_keyboard(),
+            disable_web_page_preview=True,
+        )
+
+
+async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not WELCOME_ENABLED or not update.effective_message:
+        return
+
+    for member in update.effective_message.new_chat_members or []:
+        if member.is_bot:
+            continue
+        await update.effective_message.reply_text(
+            welcome_text(member_mention(member), name_is_html=True),
+            parse_mode=ParseMode.HTML,
+            reply_markup=official_keyboard(),
+            do_quote=True,
+        )
+
+
+async def text_trigger(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    msg = update.effective_message
+    if not msg or not msg.text:
+        return
+
+    text = msg.text.strip().lower()
+
+    if text in {"x", "twitter"}:
+        await x_cmd(update, context)
+    elif text in {"channel", "telegram", "tg"}:
+        await channel_cmd(update, context)
+    elif text in {"community", "group"}:
+        await community_cmd(update, context)
+    elif text in {"links", "link"}:
+        await links_cmd(update, context)
+    elif text == "ca":
+        await ca_cmd(update, context)
+    elif text in {"web", "website", "site"}:
+        await web_cmd(update, context)
+
+
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    log.exception("Unhandled bot error", exc_info=context.error)
+
+
+def main() -> None:
+    app = Application.builder().token(BOT_TOKEN).post_init(post_init).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("links", links_cmd))
+    app.add_handler(CommandHandler("x", x_cmd))
+    app.add_handler(CommandHandler("channel", channel_cmd))
+    app.add_handler(CommandHandler("community", community_cmd))
+    app.add_handler(CommandHandler("ca", ca_cmd))
+    app.add_handler(CommandHandler("web", web_cmd))
+    app.add_handler(CommandHandler("admin", admin_cmd))
+
+    app.add_handler(CallbackQueryHandler(admin_callback, pattern=r"^adm:"))
+    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_trigger))
+
+    app.add_error_handler(error_handler)
+
+    log.info("JOBBY Community Bot running")
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
+if __name__ == "__main__":
+    main()
