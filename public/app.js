@@ -127,3 +127,35 @@ if (heroVisual && window.matchMedia("(pointer:fine)").matches) {
     heroVisual.style.transform = "";
   });
 }
+
+const scrollProgress = document.getElementById("scrollProgress");
+const updateScrollProgress = () => {
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - doc.clientHeight;
+  const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+  scrollProgress.style.width = pct + "%";
+};
+window.addEventListener("scroll", updateScrollProgress, { passive: true });
+updateScrollProgress();
+
+const menuToggle = document.getElementById("menuToggle");
+const mobileMenu = document.getElementById("mobileMenu");
+if (menuToggle && mobileMenu) {
+  const closeMenu = () => {
+    menuToggle.setAttribute("aria-expanded", "false");
+    mobileMenu.classList.remove("is-open");
+    mobileMenu.setAttribute("aria-hidden", "true");
+  };
+
+  menuToggle.addEventListener("click", () => {
+    const open = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!open));
+    mobileMenu.classList.toggle("is-open", !open);
+    mobileMenu.setAttribute("aria-hidden", String(open));
+  });
+
+  mobileMenu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 640) closeMenu();
+  });
+}
