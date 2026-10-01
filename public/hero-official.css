@@ -82,6 +82,10 @@
   width:100%;
   min-height:100svh;
   position:relative;
+  display:block;
+  grid-template-columns:none;
+  gap:0;
+  padding:0;
   overflow:hidden;
   background:
     radial-gradient(circle at 50% 38%,rgba(255,255,255,.96) 0,rgba(246,249,252,.92) 24%,rgba(232,237,243,.9) 55%,rgba(225,231,238,.96) 100%);
@@ -98,10 +102,10 @@
 }
 .hero-stage{
   position:relative;
+  width:100%;
+  max-width:none;
   min-height:100svh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:block;
   padding:92px 0 28px;
   perspective:1400px;
 }
@@ -112,7 +116,7 @@
   top:51%;
   transform:translate(-50%,-50%);
   margin:0;
-  font-size:clamp(180px,26vw,400px);
+  font-size:clamp(210px,31vw,480px);
   line-height:.78;
   letter-spacing:-.098em;
   font-weight:1000;
@@ -123,12 +127,14 @@
   pointer-events:none;
 }
 .jobby-character{
-  position:relative;
+  position:absolute;
   z-index:3;
-  width:min(43vw,640px);
+  left:50%;
+  top:54%;
+  width:min(40vw,610px);
   transform-style:preserve-3d;
   transform:
-    translateY(30px)
+    translate(-50%,-50%)
     rotateX(var(--jobby-rx,0deg))
     rotateY(var(--jobby-ry,0deg));
   transition:transform .16s ease-out;
@@ -166,9 +172,13 @@
 
 @media(max-width:1000px){
   .desktop-nav{display:none}
-  .jobby-character{width:min(67vw,590px)}
+  .jobby-character{
+    left:50%;
+    top:53%;
+    width:min(62vw,560px);
+  }
   .hero-logo-word{
-    font-size:clamp(130px,27vw,250px);
+    font-size:clamp(150px,30vw,290px);
     text-shadow:9px 8px 0 #ffd51f;
   }
 }
@@ -211,13 +221,15 @@
   }
   .hero-logo-word{
     top:48%;
-    font-size:clamp(102px,32vw,165px);
+    font-size:clamp(118px,36vw,190px);
     text-shadow:7px 6px 0 #ffd51f;
   }
   .jobby-character{
-    width:min(96vw,500px);
+    left:50%;
+    top:53%;
+    width:min(82vw,390px);
     transform:
-      translateY(10px)
+      translate(-50%,-50%)
       rotateX(var(--jobby-rx,0deg))
       rotateY(var(--jobby-ry,0deg));
   }
@@ -225,6 +237,6 @@
 @media(prefers-reduced-motion:reduce){
   .jobby-character{
     transition:none!important;
-    transform:translateY(30px)!important;
+    transform:translate(-50%,-50%)!important;
   }
 }
