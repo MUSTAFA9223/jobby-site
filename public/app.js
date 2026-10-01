@@ -338,3 +338,42 @@ if ("IntersectionObserver" in window) {
 }
 
 loadMissions();
+
+
+const themeToggle = $("#themeToggle");
+const heroStage = $("#heroStage");
+const jobbyCharacter = $("#jobbyCharacter");
+
+if (themeToggle) {
+  const savedHeroTheme = localStorage.getItem("jobbyHeroTheme");
+  if (savedHeroTheme === "dark") {
+    document.body.classList.add("hero-night");
+    themeToggle.textContent = "☀";
+  }
+
+  themeToggle.addEventListener("click", () => {
+    const dark = document.body.classList.toggle("hero-night");
+    themeToggle.textContent = dark ? "☀" : "☾";
+    localStorage.setItem("jobbyHeroTheme", dark ? "dark" : "light");
+  });
+}
+
+if (
+  heroStage &&
+  jobbyCharacter &&
+  window.matchMedia("(pointer:fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+) {
+  heroStage.addEventListener("pointermove", event => {
+    const rect = heroStage.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    jobbyCharacter.style.setProperty("--jobby-ry", (px * 7).toFixed(2) + "deg");
+    jobbyCharacter.style.setProperty("--jobby-rx", (-py * 5).toFixed(2) + "deg");
+  });
+
+  heroStage.addEventListener("pointerleave", () => {
+    jobbyCharacter.style.setProperty("--jobby-ry", "0deg");
+    jobbyCharacter.style.setProperty("--jobby-rx", "0deg");
+  });
+}
