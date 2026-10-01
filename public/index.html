@@ -10,20 +10,24 @@
   <link rel="canonical" href="https://jobby.lol/" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preload" as="image" href="/jobby-official.jpg" />
 
   <meta property="og:title" content="JOBBY — One Job. Always Messes It Up." />
   <meta property="og:description" content="Give JOBBY one simple task. Watch it become a meme." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="JOBBY" />
   <meta property="og:url" content="https://jobby.lol/" />
+  <meta property="og:image" content="https://jobby.lol/jobby-official.jpg" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="JOBBY — One Job. Always Messes It Up." />
   <meta name="twitter:description" content="Jobs. Fails. Community remixes. $JOBBY on Solana." />
+  <meta name="twitter:image" content="https://jobby.lol/jobby-official.jpg" />
 
   <title>JOBBY — Jobs. Fails. Memes.</title>
 
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/hero-official.css" />
 
   <script type="application/ld+json">
   {
@@ -88,67 +92,51 @@
   </header>
 
   <main id="top">
-    <section class="hero shell">
-      <div class="hero-copy">
-        <div class="eyebrow"><span>THE JOBBY SHIFT</span><b>#PASSTHEHELMET</b></div>
+    <section class="hero hero-official" aria-label="Official JOBBY character">
+      <div class="shell hero-stage">
+        <div class="hero-kicker"><i></i><span>OFFICIAL JOBBY CHARACTER · PRE-LAUNCH</span></div>
 
-        <h1>
-          <span class="line">CATCH IT.</span>
-          <span class="line yellow">PASS IT ON.</span>
-        </h1>
+        <h1 class="hero-logo-word" aria-label="JOBBY">JOBBY</h1>
 
-        <p class="hero-lead">
-          Catch the yellow helmet. Give JOBBY one impossible-to-ignore job. Make the clip, throw the helmet to the next person, and keep the internet shift alive.
-        </p>
-
-        <div class="hero-actions">
-          <a class="primary-cta" href="#challenge">JOIN THE CHAIN <span>↓</span></a>
-          <a class="secondary-cta" href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">FOLLOW ON X ↗</a>
+        <div class="official-character-wrap">
+          <img
+            class="official-character"
+            src="/jobby-official.jpg"
+            alt="Official JOBBY construction worker character wearing a yellow hard hat and orange safety vest"
+            width="520"
+            height="520"
+            loading="eager"
+            fetchpriority="high"
+          />
         </div>
 
-        <div class="token-rail">
-          <div><span>CHALLENGE</span><strong>#PassTheHelmet</strong></div>
-          <div><span>HELMET PASSES</span><strong id="helmetPasses">0</strong></div>
-          <div><span>JOBS IN QUEUE</span><strong id="jobCount">0</strong></div>
-          <div><span>SHIFT STATUS</span><strong class="yellow-text">WAITING</strong></div>
-        </div>
-      </div>
-
-      <div class="hero-panel" aria-label="Current JOBBY job">
-        <div class="panel-meta">
-          <span>CURRENT SHIFT ORDER</span>
-          <span class="online"><i></i> LIVE QUEUE</span>
+        <div class="hero-side-note left">
+          <small>THE MEME</small>
+          <strong>ONE JOB.<br />ALWAYS MESSES IT UP.</strong>
         </div>
 
-        <div class="work-order">
-          <div class="wo-number">#001</div>
-          <div class="wo-title">
-            <small>ASSIGNMENT</small>
-            <strong>HOLD THE CHART</strong>
-          </div>
-          <div class="wo-status">
-            <small>OUTCOME</small>
-            <strong>PENDING</strong>
+        <div class="hero-side-note right">
+          <small>NETWORK</small>
+          <strong>SOLANA</strong>
+          <small style="margin-top:14px">CONTRACT</small>
+          <strong>SOON</strong>
+        </div>
+
+        <div class="hero-badge">
+          <div>
+            <small>COMMUNITY</small>
+            <strong>FIRST<br />SHIFT</strong>
           </div>
         </div>
 
-        <div class="hero-media">
-          <div class="hazard hazard-top"></div>
-          <div class="media-grid"></div>
-          <div class="play-stamp">
-            <span>FIRST JOB</span>
-            <strong>CLIP<br />COMING<br />SOON</strong>
+        <div class="hero-bottom">
+          <div class="hero-bottom-copy">
+            <p><b>Meet JOBBY.</b> Give him one simple job, watch the result become the meme, then pass the yellow helmet to the next creator.</p>
           </div>
-          <div class="job-note">
-            <span>JOBBY NOTE</span>
-            <p>“How hard can one job be?”</p>
+          <div class="hero-official-actions">
+            <a href="#challenge">PASS THE HELMET ↓</a>
+            <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">FOLLOW ON X ↗</a>
           </div>
-          <div class="hazard hazard-bottom"></div>
-        </div>
-
-        <div class="panel-footer">
-          <span>THE HELMET MUST KEEP MOVING</span>
-          <a href="#challenge">HOW TO JOIN ↗</a>
         </div>
       </div>
     </section>
