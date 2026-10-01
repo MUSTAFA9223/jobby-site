@@ -1,10 +1,14 @@
 name = "jobby"
 compatibility_date = "2026-10-01"
+workers_dev = true
 
-routes = [
-  { pattern = "jobby.lol", custom_domain = true },
-  { pattern = "www.jobby.lol", custom_domain = true }
-]
+[[routes]]
+pattern = "jobby.lol/*"
+zone_name = "jobby.lol"
+
+[[routes]]
+pattern = "www.jobby.lol/*"
+zone_name = "jobby.lol"
 
 [assets]
 directory = "./public"
