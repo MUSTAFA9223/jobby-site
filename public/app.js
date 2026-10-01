@@ -14,6 +14,8 @@ const result = $("#result");
 const doJob = $("#doJob");
 const randomJob = $("#randomJob");
 const shareJob = $("#shareJob");
+const jobCount = $("#jobCount");
+const helmetPasses = $("#helmetPasses");
 
 const fallbackMissions = [
   {
@@ -243,6 +245,8 @@ async function loadMissions() {
     missions = fallbackMissions;
   }
   renderMissions();
+  if (jobCount) jobCount.textContent = String(missions.length);
+  if (helmetPasses) helmetPasses.textContent = localStorage.getItem("jobbyHelmetPasses") || "0";
 }
 
 $$(".filter").forEach(button => {
@@ -308,7 +312,8 @@ if (shareJob) {
       "",
       lastOutcome,
       "",
-      "$JOBBY @JOBBYSOL",
+      "Catch the helmet. Give him a job. Pass it on.",
+      "#PassTheHelmet #JOBBY @JOBBYSOL",
       "jobby.lol"
     ].join("\n");
 
