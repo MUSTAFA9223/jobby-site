@@ -61,10 +61,10 @@
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
-        <a href="#story">About</a>
-        <a href="#challenge">Pass the Helmet</a>
+        <a href="#story">About us</a>
+        <a href="#challenge">The Origins</a>
         <a href="#missions">Jobs</a>
-        <a href="#official">Official</a>
+        <a href="#missions">Gallery</a>
       </nav>
 
       <div class="nav-actions">
@@ -84,103 +84,86 @@
   </header>
 
   <main id="top">
-    <section class="hero hero-official" aria-label="Official JOBBY character">
-      <div class="shell hero-stage" id="heroStage">
-        <div class="hero-kicker"><i></i><span>OFFICIAL JOBBY · SOLANA · PRE-LAUNCH</span></div>
-
+    <section class="hero hero-official" aria-label="Official JOBBY hero">
+      <div class="hero-stage" id="heroStage">
         <h1 class="hero-logo-word" aria-label="JOBBY">JOBBY</h1>
 
         <div class="jobby-character" id="jobbyCharacter" aria-label="Official JOBBY construction worker character">
           <svg class="jobby-svg" viewBox="0 0 620 720" role="img" aria-labelledby="jobbyTitle jobbyDesc">
             <title id="jobbyTitle">JOBBY</title>
-            <desc id="jobbyDesc">A cartoon construction worker with a yellow hard hat, white face, orange safety vest, crossed arms and brown work boots.</desc>
+            <desc id="jobbyDesc">Official JOBBY construction worker character wearing a yellow hard hat, orange safety vest and brown work boots.</desc>
             <defs>
               <linearGradient id="helmetGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ffe46b"/>
-                <stop offset=".48" stop-color="#ffd21f"/>
-                <stop offset="1" stop-color="#e8a900"/>
+                <stop offset="0" stop-color="#fff27c"/>
+                <stop offset=".34" stop-color="#ffd82f"/>
+                <stop offset=".72" stop-color="#ffc400"/>
+                <stop offset="1" stop-color="#d99300"/>
               </linearGradient>
               <linearGradient id="vestGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#ff9a1f"/>
-                <stop offset=".52" stop-color="#ff6b00"/>
-                <stop offset="1" stop-color="#d94b00"/>
+                <stop offset="0" stop-color="#ffad32"/>
+                <stop offset=".48" stop-color="#ff7410"/>
+                <stop offset="1" stop-color="#d84900"/>
               </linearGradient>
               <linearGradient id="bootGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#d99145"/>
-                <stop offset=".58" stop-color="#a85d24"/>
-                <stop offset="1" stop-color="#734018"/>
+                <stop offset="0" stop-color="#e7a45c"/>
+                <stop offset=".52" stop-color="#b96b31"/>
+                <stop offset="1" stop-color="#764018"/>
               </linearGradient>
-              <linearGradient id="faceGrad" x1="0" y1="0" x2="1" y2="1">
+              <linearGradient id="faceGrad" x1=".15" y1=".05" x2=".8" y2=".95">
                 <stop offset="0" stop-color="#ffffff"/>
-                <stop offset=".7" stop-color="#f5f5f5"/>
-                <stop offset="1" stop-color="#dcdcdc"/>
+                <stop offset=".5" stop-color="#fafafa"/>
+                <stop offset="1" stop-color="#d7d9dc"/>
               </linearGradient>
-              <filter id="softShadow" x="-40%" y="-40%" width="180%" height="200%">
-                <feDropShadow dx="0" dy="20" stdDeviation="16" flood-color="#000" flood-opacity=".28"/>
-              </filter>
-              <filter id="helmetGlow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#ffd51f" flood-opacity=".28"/>
+              <linearGradient id="blackGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#35363b"/>
+                <stop offset=".55" stop-color="#1d1e22"/>
+                <stop offset="1" stop-color="#0e0f12"/>
+              </linearGradient>
+              <radialGradient id="helmetShine" cx=".35" cy=".2" r=".8">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".65"/>
+                <stop offset=".28" stop-color="#ffffff" stop-opacity=".08"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="softShadow" x="-45%" y="-45%" width="190%" height="210%">
+                <feDropShadow dx="0" dy="26" stdDeviation="18" flood-color="#4d5360" flood-opacity=".28"/>
               </filter>
             </defs>
 
-            <ellipse cx="310" cy="678" rx="205" ry="24" fill="#000" opacity=".18"/>
+            <ellipse cx="310" cy="683" rx="205" ry="24" fill="#7f8792" opacity=".23"/>
 
-            <g filter="url(#softShadow)" stroke="#111" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-              <!-- legs -->
-              <path d="M236 528 C237 574 230 608 224 635" fill="none" stroke="#202020" stroke-width="35"/>
-              <path d="M384 528 C383 574 390 608 396 635" fill="none" stroke="#202020" stroke-width="35"/>
+            <g filter="url(#softShadow)" stroke="#121318" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M236 528 C237 574 230 608 224 635" fill="none" stroke="#202126" stroke-width="35"/>
+              <path d="M384 528 C383 574 390 608 396 635" fill="none" stroke="#202126" stroke-width="35"/>
 
-              <!-- boots -->
               <path d="M142 626 C159 596 199 587 245 598 C268 604 279 632 270 656 C263 675 243 681 207 681 L139 681 C126 681 118 669 122 655 C126 642 132 634 142 626Z" fill="url(#bootGrad)"/>
               <path d="M478 626 C461 596 421 587 375 598 C352 604 341 632 350 656 C357 675 377 681 413 681 L481 681 C494 681 502 669 498 655 C494 642 488 634 478 626Z" fill="url(#bootGrad)"/>
-              <path d="M126 665 H270" stroke="#202020" stroke-width="16"/>
-              <path d="M350 665 H494" stroke="#202020" stroke-width="16"/>
-              <path d="M163 626 l48 10 M153 642 l54 9 M457 626 l-48 10 M467 642 l-54 9" fill="none" stroke="#242424" stroke-width="6"/>
+              <path d="M126 665 H270" stroke="#25262b" stroke-width="16"/>
+              <path d="M350 665 H494" stroke="#25262b" stroke-width="16"/>
+              <path d="M163 626 l48 10 M153 642 l54 9 M457 626 l-48 10 M467 642 l-54 9" fill="none" stroke="#2d2d31" stroke-width="6"/>
 
-              <!-- body -->
-              <path d="M218 374 C248 349 372 349 402 374 C426 394 438 469 423 531 C414 566 363 581 310 581 C257 581 206 566 197 531 C182 469 194 394 218 374Z" fill="#1c1c1c"/>
+              <path d="M218 374 C248 349 372 349 402 374 C426 394 438 469 423 531 C414 566 363 581 310 581 C257 581 206 566 197 531 C182 469 194 394 218 374Z" fill="url(#blackGrad)"/>
 
-              <!-- vest -->
               <path d="M220 374 C242 360 265 354 282 353 L284 547 C247 543 217 535 199 520 C187 466 194 400 220 374Z" fill="url(#vestGrad)"/>
               <path d="M400 374 C378 360 355 354 338 353 L336 547 C373 543 403 535 421 520 C433 466 426 400 400 374Z" fill="url(#vestGrad)"/>
-              <path d="M248 368 L263 542 M372 368 L357 542" stroke="#e5e5e5" stroke-width="14"/>
-              <path d="M247 438 H279 M341 438 H373" stroke="#d9d9d9" stroke-width="12"/>
+              <path d="M248 368 L263 542 M372 368 L357 542" stroke="#e5e7e9" stroke-width="14"/>
+              <path d="M247 438 H279 M341 438 H373" stroke="#dfe1e3" stroke-width="12"/>
 
-              <!-- arms crossed -->
-              <path d="M201 409 C164 424 154 470 184 494 C226 527 306 518 356 473" fill="none" stroke="#1c1c1c" stroke-width="38"/>
-              <path d="M419 411 C455 425 463 467 437 491 C400 524 325 520 270 475" fill="none" stroke="#1c1c1c" stroke-width="38"/>
-              <path d="M274 478 C293 485 318 486 339 479" fill="none" stroke="#343434" stroke-width="26"/>
+              <path d="M201 409 C164 424 154 470 184 494 C226 527 306 518 356 473" fill="none" stroke="url(#blackGrad)" stroke-width="38"/>
+              <path d="M419 411 C455 425 463 467 437 491 C400 524 325 520 270 475" fill="none" stroke="url(#blackGrad)" stroke-width="38"/>
+              <path d="M274 478 C293 485 318 486 339 479" fill="none" stroke="#3c3d43" stroke-width="26"/>
 
-              <!-- head -->
               <path d="M169 194 C194 150 245 127 310 127 C375 127 426 150 451 194 C475 236 472 312 446 342 C418 375 371 391 310 391 C249 391 202 375 174 342 C148 312 145 236 169 194Z" fill="url(#faceGrad)"/>
 
-              <!-- helmet crown -->
-              <path d="M152 207 C155 127 215 66 310 63 C405 66 465 127 468 207 L431 205 C424 153 383 116 310 114 C237 116 196 153 189 205Z" fill="url(#helmetGrad)" filter="url(#helmetGlow)"/>
+              <path d="M152 207 C155 127 215 66 310 63 C405 66 465 127 468 207 L431 205 C424 153 383 116 310 114 C237 116 196 153 189 205Z" fill="url(#helmetGrad)"/>
               <path d="M130 206 C146 189 177 182 215 181 H411 C449 182 480 189 496 206 C509 219 499 238 481 246 C446 262 393 268 310 268 C227 268 174 262 139 246 C121 238 117 219 130 206Z" fill="url(#helmetGrad)"/>
-              <path d="M310 66 V181 M235 84 C263 111 270 147 270 181 M385 84 C357 111 350 147 350 181" fill="none" stroke="#171717" stroke-width="9"/>
+              <path d="M310 66 V181 M235 84 C263 111 270 147 270 181 M385 84 C357 111 350 147 350 181" fill="none" stroke="#17171a" stroke-width="9"/>
+              <path d="M164 177 C188 118 242 83 306 79 C256 98 225 135 215 185Z" fill="url(#helmetShine)" stroke="none"/>
 
-              <!-- face -->
-              <ellipse cx="247" cy="294" rx="18" ry="28" fill="#111" stroke="none"/>
-              <ellipse cx="373" cy="294" rx="18" ry="28" fill="#111" stroke="none"/>
-              <path d="M288 329 H332" fill="none" stroke="#111" stroke-width="10"/>
+              <ellipse cx="247" cy="294" rx="18" ry="28" fill="#0f1014" stroke="none"/>
+              <ellipse cx="373" cy="294" rx="18" ry="28" fill="#0f1014" stroke="none"/>
+              <path d="M288 329 H332" fill="none" stroke="#111217" stroke-width="10"/>
             </g>
           </svg>
-        </div>
-
-        <div class="hero-badge">
-          <span>ONE JOB</span>
-          <strong>ALWAYS<br />MESSES IT UP.</strong>
-        </div>
-
-        <div class="hero-bottom">
-          <div class="hero-bottom-copy">
-            <span class="hero-mini-label">THE MEME THAT CLOCKS IN</span>
-            <p>Meet <b>JOBBY</b>. Give him one simple job, watch it go wrong, then pass the yellow helmet to the next creator.</p>
-          </div>
-          <div class="hero-official-actions">
-            <a href="#challenge">PASS THE HELMET ↓</a>
-            <a href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">JOIN COMMUNITY ↗</a>
-          </div>
         </div>
       </div>
     </section>
