@@ -64,6 +64,7 @@
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#challenge">Pass the Helmet</a>
         <a href="#missions">Jobs</a>
         <a href="#story">The Meme</a>
         <a href="#lab">Job Lab</a>
@@ -77,6 +78,7 @@
     </div>
 
     <div class="mobile-menu shell" id="mobileMenu" aria-hidden="true">
+      <a href="#challenge">Pass the Helmet</a>
       <a href="#missions">Jobs</a>
       <a href="#story">The Meme</a>
       <a href="#lab">Job Lab</a>
@@ -88,34 +90,33 @@
   <main id="top">
     <section class="hero shell">
       <div class="hero-copy">
-        <div class="eyebrow"><span>WORKSITE MEME UNIT</span><b>#0001</b></div>
+        <div class="eyebrow"><span>THE JOBBY SHIFT</span><b>#PASSTHEHELMET</b></div>
 
         <h1>
-          <span class="line">ONE JOB.</span>
-          <span class="line yellow">ZERO CHANCE.</span>
+          <span class="line">CATCH IT.</span>
+          <span class="line yellow">PASS IT ON.</span>
         </h1>
 
         <p class="hero-lead">
-          JOBBY gets one simple task. He shows up confident. The result becomes the meme.
-          The community decides what job comes next.
+          Catch the yellow helmet. Give JOBBY one impossible-to-ignore job. Make the clip, throw the helmet to the next person, and keep the internet shift alive.
         </p>
 
         <div class="hero-actions">
-          <a class="primary-cta" href="#missions">WATCH THE JOBS <span>↓</span></a>
+          <a class="primary-cta" href="#challenge">JOIN THE CHAIN <span>↓</span></a>
           <a class="secondary-cta" href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">FOLLOW ON X ↗</a>
         </div>
 
         <div class="token-rail">
-          <div><span>SYMBOL</span><strong>$JOBBY</strong></div>
-          <div><span>NETWORK</span><strong>SOLANA</strong></div>
-          <div><span>STATUS</span><strong>PRE-LAUNCH</strong></div>
-          <div><span>CA</span><strong class="yellow-text">SOON</strong></div>
+          <div><span>CHALLENGE</span><strong>#PassTheHelmet</strong></div>
+          <div><span>HELMET PASSES</span><strong id="helmetPasses">0</strong></div>
+          <div><span>JOBS IN QUEUE</span><strong id="jobCount">0</strong></div>
+          <div><span>SHIFT STATUS</span><strong class="yellow-text">WAITING</strong></div>
         </div>
       </div>
 
       <div class="hero-panel" aria-label="Current JOBBY job">
         <div class="panel-meta">
-          <span>CURRENT WORK ORDER</span>
+          <span>CURRENT SHIFT ORDER</span>
           <span class="online"><i></i> LIVE QUEUE</span>
         </div>
 
@@ -146,8 +147,8 @@
         </div>
 
         <div class="panel-footer">
-          <span>SUBMIT THE NEXT JOB</span>
-          <a href="#lab">OPEN JOB LAB ↗</a>
+          <span>THE HELMET MUST KEEP MOVING</span>
+          <a href="#challenge">HOW TO JOIN ↗</a>
         </div>
       </div>
     </section>
@@ -164,6 +165,42 @@
         <span>COMMUNITY REMIX</span><b>✦</b>
       </div>
     </div>
+
+    <section id="challenge" class="helmet-section shell reveal">
+      <div class="helmet-head">
+        <div>
+          <span class="section-label">THE VIRAL MECHANIC</span>
+          <h2>PASS<br />THE HELMET.</h2>
+        </div>
+        <div class="helmet-intro">
+          <p>One yellow helmet connects every JOBBY clip. Catch it from the left. Give JOBBY a job. Let him mess it up. Throw the helmet out to the right so the next person can continue the chain.</p>
+          <a class="challenge-share" id="shareChallenge" href="https://x.com/intent/post?text=I%27m%20joining%20%23PassTheHelmet%20with%20%40JOBBYSOL%20%F0%9F%AA%96%0A%0ACatch%20it.%20Give%20JOBBY%20one%20job.%20Pass%20it%20on.%0A%0Ajobby.lol" target="_blank" rel="noreferrer">START ON X ↗</a>
+        </div>
+      </div>
+
+      <div class="helmet-rules">
+        <article><span>01</span><strong>CATCH</strong><p>Start your video by catching the yellow helmet from the left side.</p></article>
+        <article><span>02</span><strong>ASSIGN</strong><p>Give JOBBY one clear job. The simpler it sounds, the better the fail.</p></article>
+        <article><span>03</span><strong>FAIL</strong><p>Show the result. Keep it short, obvious and remixable.</p></article>
+        <article><span>04</span><strong>PASS</strong><p>Throw the helmet out to the right and tag the next creator.</p></article>
+      </div>
+
+      <div class="helmet-law">
+        <div class="helmet-icon">⛑</div>
+        <div>
+          <small>THE ONLY RULE</small>
+          <strong>THE HELMET MUST NEVER TOUCH THE FLOOR.</strong>
+          <p>If it drops, the chain stops. The community must post <b>#RehireJOBBY</b> to bring him back to work.</p>
+        </div>
+      </div>
+
+      <div class="shift-board">
+        <div><span>CHAIN</span><strong>#PassTheHelmet</strong></div>
+        <div><span>FIRST JOB</span><strong>HOLD THE CHART</strong></div>
+        <div><span>COMMUNITY ROLE</span><strong>THE FOREMAN</strong></div>
+        <div><span>JOBBY ROLE</span><strong>UNSUPERVISED</strong></div>
+      </div>
+    </section>
 
     <section class="official-rail shell reveal" aria-label="Official JOBBY links">
       <div class="rail-label">
@@ -240,20 +277,20 @@
 
     <section id="lab" class="lab shell reveal">
       <div class="lab-copy">
-        <span class="section-label">COMMUNITY ENGINE</span>
-        <h2>GIVE JOBBY<br />HIS NEXT JOB.</h2>
-        <p>Type a task. JOBBY will produce the kind of outcome only JOBBY can produce. Share it and turn the best ideas into future episodes.</p>
+        <span class="section-label">YOUR SHIFT CARD</span>
+        <h2>HIRE JOBBY.<br />REGRET IT.</h2>
+        <p>Give JOBBY a job and generate a shareable shift result. The best community jobs can become official episodes in the helmet chain.</p>
 
         <div class="lab-points">
           <span>NO WALLET REQUIRED</span>
-          <span>NO SIGN-UP</span>
-          <span>JUST MEMES</span>
+          <span>TAG @JOBBYSOL</span>
+          <span>#PASSTHEHELMET</span>
         </div>
       </div>
 
       <div class="job-terminal">
         <div class="terminal-top">
-          <span>JOBBY://JOB-LAB</span>
+          <span>JOBBY://SHIFT-GENERATOR</span>
           <span class="terminal-online"><i></i> ONLINE</span>
         </div>
 
@@ -270,7 +307,7 @@
 
         <div class="terminal-actions">
           <button id="randomJob" type="button">RANDOM JOB</button>
-          <button id="shareJob" type="button" disabled>SHARE ON X ↗</button>
+          <button id="shareJob" type="button" disabled>SHARE SHIFT CARD ↗</button>
         </div>
       </div>
     </section>
@@ -337,8 +374,8 @@
 
     <section class="final-cta">
       <div class="shell final-inner reveal">
-        <span class="tiny">CLOCKED IN. NOT LAUNCHED.</span>
-        <h2>ONE JOB.<br /><span>LET’S SEE WHAT HAPPENS.</span></h2>
+        <span class="tiny">THE SHIFT STARTS WITH ONE VIDEO.</span>
+        <h2>CATCH IT.<br /><span>PASS IT ON.</span></h2>
         <div class="final-actions">
           <a href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">ENTER COMMUNITY ↗</a>
           <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">FOLLOW @JOBBYSOL ↗</a>
@@ -351,11 +388,12 @@
     <div class="shell footer-grid">
       <div class="footer-brand">
         <span class="brand-mark">J</span>
-        <div><strong>JOBBY</strong><small>ONE JOB. ALWAYS MESSES IT UP.</small></div>
+        <div><strong>JOBBY</strong><small>CATCH IT. GIVE HIM A JOB. PASS IT ON.</small></div>
       </div>
       <div class="footer-links">
+        <a href="#challenge">Pass the Helmet</a>
         <a href="#missions">Jobs</a>
-        <a href="#lab">Job Lab</a>
+        <a href="#lab">Shift Card</a>
         <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">X</a>
         <a href="https://t.me/JOBBYSOL" target="_blank" rel="noreferrer">Telegram</a>
       </div>
