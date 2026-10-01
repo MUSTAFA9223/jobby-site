@@ -1,0 +1,10 @@
+{
+  "name": "JOBBY",
+  "short_name": "JOBBY",
+  "description": "Official JOBBY website and job archive.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "icons": []
+}
