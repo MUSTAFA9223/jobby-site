@@ -3,139 +3,283 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#ffd51f" />
-  <meta name="description" content="JOBBY — One job. Always messes it up. Community-first Solana meme project." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="JOBBY — One job. Always messes it up. A community-first Solana meme project." />
   <meta property="og:title" content="JOBBY — One Job. Always Messes It Up." />
-  <meta property="og:description" content="Community first. Memes every day. $JOBBY launching soon on Solana." />
+  <meta property="og:description" content="Give JOBBY one simple task. Watch the internet turn the result into a meme." />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="JOBBY" />
   <title>JOBBY — One Job. Always Messes It Up.</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="noise"></div>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
-  <header class="nav">
-    <a class="brand" href="#top" aria-label="JOBBY home">
-      <span class="brand-mark">J</span>
-      <span>JOBBY</span>
-    </a>
-    <nav>
-      <a href="#story">Story</a>
-      <a href="#job">Give a Job</a>
-      <a href="#official">Official</a>
-    </nav>
-    <a class="pill small" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">Join Crew</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="JOBBY home">
+        <span class="brand-badge">J</span>
+        <span class="brand-copy">
+          <strong>JOBBY</strong>
+          <small>ON SOLANA</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#story">Story</a>
+        <a href="#mission">Mission</a>
+        <a href="#game">Give a Job</a>
+        <a href="#official">Official</a>
+      </nav>
+
+      <a class="nav-cta" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">
+        Join community <span>↗</span>
+      </a>
+    </div>
   </header>
 
   <main id="top">
-    <section class="hero wrap">
+    <section class="hero section-shell">
       <div class="hero-copy">
-        <div class="eyebrow">SOLANA MEME PROJECT · PRE-LAUNCH</div>
-        <h1>ONE JOB.<br><span>ALWAYS MESSES IT UP.</span></h1>
-        <p class="lead">Meet JOBBY — the worker who gets one simple task and somehow turns it into a meme.</p>
-
-        <div class="hero-actions">
-          <a class="pill" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">Join the Crew</a>
-          <a class="pill ghost" href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">Follow on X</a>
+        <div class="status-row">
+          <span class="live-dot"></span>
+          <span>PRE-LAUNCH · COMMUNITY LIVE</span>
         </div>
 
-        <div class="launch-card">
+        <h1>
+          ONE JOB.
+          <span>ALWAYS MESSES IT UP.</span>
+        </h1>
+
+        <p class="hero-lead">
+          Meet JOBBY — the worker with unstoppable confidence, questionable execution,
+          and one simple mission: turn every task into internet lore.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">Join the crew</a>
+          <a class="btn btn-secondary" href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">Follow on X</a>
+        </div>
+
+        <div class="token-strip" aria-label="Project status">
           <div>
-            <span class="mini">TOKEN</span>
+            <span>SYMBOL</span>
             <strong>$JOBBY</strong>
           </div>
           <div>
-            <span class="mini">NETWORK</span>
+            <span>NETWORK</span>
             <strong>Solana</strong>
           </div>
           <div>
-            <span class="mini">CA</span>
-            <strong class="soon">SOON</strong>
+            <span>CONTRACT</span>
+            <strong class="accent">SOON</strong>
           </div>
         </div>
       </div>
 
-      <div class="hero-art" aria-label="JOBBY construction character">
-        <div class="burst"></div>
-        <svg class="jobby" viewBox="0 0 520 560" role="img" aria-label="JOBBY">
-          <g class="floaty">
-            <ellipse cx="260" cy="520" rx="142" ry="20" fill="#111" opacity=".16"/>
-            <g class="character">
-              <path d="M146 188Q164 79 262 68Q363 74 386 190" fill="#ffd51f" stroke="#171717" stroke-width="16"/>
-              <path d="M139 175Q258 132 392 178L382 214Q260 176 142 219Z" fill="#ffcf13" stroke="#171717" stroke-width="15" stroke-linejoin="round"/>
-              <rect x="143" y="196" width="246" height="186" rx="76" fill="#fff" stroke="#171717" stroke-width="16"/>
-              <path d="M172 342L206 386H314L352 342" fill="#ff8d17" stroke="#171717" stroke-width="15"/>
-              <path d="M216 349V414M304 349V414" stroke="#fff" stroke-width="18"/>
-              <path d="M197 399L165 469M323 399L350 469" stroke="#171717" stroke-width="20" stroke-linecap="round"/>
-              <path d="M158 470H214M314 470H372" stroke="#171717" stroke-width="28" stroke-linecap="round"/>
-              <path d="M148 320L95 370M375 318L430 256" stroke="#171717" stroke-width="22" stroke-linecap="round"/>
-              <circle cx="91" cy="377" r="22" fill="#222" stroke="#171717" stroke-width="8"/>
-              <path d="M429 255c16-38 22-48 33-43 11 5 0 25 2 38 12-29 22-38 32-32 11 7-5 28-12 41 19-23 31-27 39-17 8 11-11 25-27 37-23 17-48 9-67-24Z" fill="#262626" stroke="#171717" stroke-width="10" stroke-linejoin="round"/>
-              <path d="M212 276q16 28 32 0" fill="none" stroke="#171717" stroke-width="12" stroke-linecap="round"/>
-              <path d="M280 276q16 28 32 0" fill="none" stroke="#171717" stroke-width="12" stroke-linecap="round"/>
-              <path d="M238 320q22 17 45 0" fill="none" stroke="#171717" stroke-width="9" stroke-linecap="round"/>
-              <path d="M216 88Q255 47 302 80" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" opacity=".9"/>
-            </g>
-          </g>
-        </svg>
-        <div class="tag tag-one">TASK: EASY</div>
-        <div class="tag tag-two">RESULT: ???</div>
+      <div class="hero-visual" aria-label="JOBBY character">
+        <div class="signal signal-a">TASK RECEIVED</div>
+        <div class="signal signal-b">CONFIDENCE 100%</div>
+        <div class="signal signal-c">RESULT: ???</div>
+
+        <div class="character-card">
+          <div class="card-top">
+            <span>JOBBY.EXE</span>
+            <span class="window-dots"><i></i><i></i><i></i></span>
+          </div>
+
+          <div class="mascot-stage">
+            <div class="hazard-ring"></div>
+            <svg class="jobby" viewBox="0 0 520 560" role="img" aria-label="JOBBY construction worker">
+              <g class="floaty">
+                <ellipse cx="260" cy="520" rx="142" ry="20" fill="#000" opacity=".28"/>
+                <path d="M146 188Q164 79 262 68Q363 74 386 190" fill="#ffd51f" stroke="#111" stroke-width="16"/>
+                <path d="M139 175Q258 132 392 178L382 214Q260 176 142 219Z" fill="#ffca18" stroke="#111" stroke-width="15" stroke-linejoin="round"/>
+                <rect x="143" y="196" width="246" height="186" rx="76" fill="#f8f6ed" stroke="#111" stroke-width="16"/>
+                <path d="M172 342L206 386H314L352 342" fill="#f68b1f" stroke="#111" stroke-width="15"/>
+                <path d="M216 349V414M304 349V414" stroke="#f8f6ed" stroke-width="18"/>
+                <path d="M197 399L165 469M323 399L350 469" stroke="#111" stroke-width="20" stroke-linecap="round"/>
+                <path d="M158 470H214M314 470H372" stroke="#111" stroke-width="28" stroke-linecap="round"/>
+                <path d="M148 320L95 370M375 318L430 256" stroke="#111" stroke-width="22" stroke-linecap="round"/>
+                <circle cx="91" cy="377" r="22" fill="#252525" stroke="#111" stroke-width="8"/>
+                <path d="M429 255c16-38 22-48 33-43 11 5 0 25 2 38 12-29 22-38 32-32 11 7-5 28-12 41 19-23 31-27 39-17 8 11-11 25-27 37-23 17-48 9-67-24Z" fill="#252525" stroke="#111" stroke-width="10" stroke-linejoin="round"/>
+                <path d="M212 276q16 28 32 0" fill="none" stroke="#111" stroke-width="12" stroke-linecap="round"/>
+                <path d="M280 276q16 28 32 0" fill="none" stroke="#111" stroke-width="12" stroke-linecap="round"/>
+                <path d="M238 320q22 17 45 0" fill="none" stroke="#111" stroke-width="9" stroke-linecap="round"/>
+                <path d="M216 88Q255 47 302 80" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" opacity=".9"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="terminal">
+            <span class="prompt">&gt;</span>
+            <span id="terminalText">waiting for next job...</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="story" class="story wrap">
-      <div class="section-title">
-        <span>THE MEME</span>
-        <h2>Give him one job.<br>Watch what happens.</h2>
+    <div class="ticker" aria-hidden="true">
+      <div>
+        <span>ONE JOB</span><b>✦</b><span>ONE FAIL</span><b>✦</b><span>ONE MEME</span><b>✦</b>
+        <span>ONE JOB</span><b>✦</b><span>ONE FAIL</span><b>✦</b><span>ONE MEME</span><b>✦</b>
       </div>
-      <div class="steps">
-        <article><b>01</b><h3>Give JOBBY a task</h3><p>Keep it simple. The simpler the task, the funnier the disaster.</p></article>
-        <article><b>02</b><h3>JOBBY tries</h3><p>Confidence: 100%. Execution: we’ll see.</p></article>
-        <article><b>03</b><h3>The internet decides</h3><p>Turn the fail into memes, replies, clips and community lore.</p></article>
+    </div>
+
+    <section id="story" class="story section-shell">
+      <div class="section-kicker">THE IDEA</div>
+      <div class="story-grid">
+        <h2>Built around a joke people understand in one second.</h2>
+        <div class="story-copy">
+          <p>
+            JOBBY gets one simple task. He approaches it like a professional.
+            The outcome says otherwise.
+          </p>
+          <p>
+            That loop is the meme: <strong>task → confidence → disaster → remix.</strong>
+            The community decides what JOBBY tries next and turns every result into content.
+          </p>
+        </div>
+      </div>
+
+      <div class="principles">
+        <article>
+          <span>01</span>
+          <h3>Instant premise</h3>
+          <p>No lore manual required. One look and the joke is clear.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Community fuel</h3>
+          <p>Every new task can become a reply, image, clip or running joke.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Built to evolve</h3>
+          <p>The character stays recognizable while the jobs keep changing.</p>
+        </article>
       </div>
     </section>
 
-    <section id="job" class="job-zone">
-      <div class="wrap job-grid">
+    <section id="mission" class="mission">
+      <div class="section-shell mission-inner">
         <div>
-          <span class="eyebrow dark">COMMUNITY GAME</span>
-          <h2>GIVE JOBBY<br>HIS NEXT JOB.</h2>
-          <p>Try a task and get a JOBBY-style result. Screenshot it. Post it. Pass the job on.</p>
+          <div class="section-kicker dark">JOB STATUS</div>
+          <h2>THE INTERNET<br />IS THE FOREMAN.</h2>
         </div>
-        <div class="job-box">
-          <label for="task">JOB DESCRIPTION</label>
-          <div class="input-row">
-            <input id="task" maxlength="70" placeholder="Example: Hold the chart..." />
-            <button id="doJob" class="black-btn">DO IT</button>
+        <div class="mission-stack">
+          <div class="mission-card">
+            <small>PHASE 01</small>
+            <strong>Build the crew</strong>
+            <span>Community, memes and official channels.</span>
           </div>
-          <div id="result" class="result">
-            <span class="result-label">JOBBY STATUS</span>
-            <strong>Waiting for a job.</strong>
+          <div class="mission-card">
+            <small>PHASE 02</small>
+            <strong>Give JOBBY jobs</strong>
+            <span>Turn community prompts into shareable meme loops.</span>
           </div>
-          <button id="randomJob" class="text-btn">Need an idea? Give me a random job →</button>
+          <div class="mission-card">
+            <small>PHASE 03</small>
+            <strong>Launch</strong>
+            <span>Official contract address published across verified channels.</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="official" class="official wrap">
-      <div class="section-title">
-        <span>OFFICIAL ONLY</span>
-        <h2>Don’t get hired by a fake JOBBY.</h2>
+    <section id="game" class="game section-shell">
+      <div class="game-copy">
+        <div class="section-kicker">COMMUNITY GAME</div>
+        <h2>GIVE JOBBY<br />HIS NEXT JOB.</h2>
+        <p>
+          Type any job. JOBBY will confidently produce the kind of result only JOBBY can produce.
+        </p>
       </div>
-      <div class="official-grid">
-        <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer"><small>X / TWITTER</small><strong>@JOBBYSOL</strong><em>↗</em></a>
-        <a href="https://t.me/JOBBYSOL" target="_blank" rel="noreferrer"><small>TELEGRAM CHANNEL</small><strong>JOBBYSOL</strong><em>↗</em></a>
-        <a href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer"><small>COMMUNITY</small><strong>JOBBYChat</strong><em>↗</em></a>
-        <div class="ca-card"><small>CONTRACT ADDRESS</small><strong>SOON</strong><em>CA</em></div>
+
+      <div class="job-console">
+        <div class="console-bar">
+          <span>JOB TERMINAL</span>
+          <span>ONLINE</span>
+        </div>
+        <label for="task">ASSIGNMENT</label>
+        <div class="input-row">
+          <input id="task" maxlength="70" autocomplete="off" placeholder="Example: Hold the chart..." />
+          <button id="doJob" class="console-btn">RUN JOB</button>
+        </div>
+        <div id="result" class="result">
+          <span class="result-label">JOBBY STATUS</span>
+          <strong>Waiting for a job.</strong>
+        </div>
+        <div class="console-actions">
+          <button id="randomJob" class="link-btn">Random job</button>
+          <button id="shareJob" class="link-btn" disabled>Share result on X</button>
+        </div>
       </div>
-      <p class="safety">The contract address will be posted here and on the official accounts after launch. Ignore unofficial DMs and fake contract addresses.</p>
+    </section>
+
+    <section id="official" class="official section-shell">
+      <div class="official-head">
+        <div>
+          <div class="section-kicker">OFFICIAL ONLY</div>
+          <h2>CHECK THE SOURCE.<br />NOT THE DM.</h2>
+        </div>
+        <p>
+          The contract address will appear here and on the official JOBBY accounts after launch.
+          Ignore unofficial DMs and copied contract addresses.
+        </p>
+      </div>
+
+      <div class="link-grid">
+        <a href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">
+          <span class="link-number">01</span>
+          <small>X / TWITTER</small>
+          <strong>@JOBBYSOL</strong>
+          <em>↗</em>
+        </a>
+        <a href="https://t.me/JOBBYSOL" target="_blank" rel="noreferrer">
+          <span class="link-number">02</span>
+          <small>TELEGRAM CHANNEL</small>
+          <strong>JOBBYSOL</strong>
+          <em>↗</em>
+        </a>
+        <a href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">
+          <span class="link-number">03</span>
+          <small>COMMUNITY</small>
+          <strong>JOBBYChat</strong>
+          <em>↗</em>
+        </a>
+        <div class="contract-card">
+          <span class="link-number">04</span>
+          <small>CONTRACT ADDRESS</small>
+          <strong>SOON</strong>
+          <em>CA</em>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="section-shell">
+        <span class="mini-label">CLOCKED IN. NOT LAUNCHED.</span>
+        <h2>READY TO GIVE<br />JOBBY A JOB?</h2>
+        <div class="hero-actions centered">
+          <a class="btn btn-primary invert" href="https://t.me/JOBBYChat" target="_blank" rel="noreferrer">Enter community</a>
+          <a class="btn btn-secondary dark-btn" href="https://x.com/JOBBYSOL" target="_blank" rel="noreferrer">Follow @JOBBYSOL</a>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer>
-    <div class="wrap footer-inner">
-      <strong>JOBBY</strong>
-      <span>ONE JOB. ALWAYS MESSES IT UP.</span>
+    <div class="section-shell footer-inner">
+      <div class="brand footer-brand">
+        <span class="brand-badge">J</span>
+        <span class="brand-copy">
+          <strong>JOBBY</strong>
+          <small>ONE JOB. ALWAYS MESSES IT UP.</small>
+        </span>
+      </div>
+      <span>Solana · Pre-launch</span>
       <span>© 2026 JOBBY</span>
     </div>
   </footer>
