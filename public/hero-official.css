@@ -110,7 +110,7 @@
   perspective:1400px;
   isolation:isolate;
 }
-.hero-logo-word{
+.hero.hero-official .hero-logo-word{
   position:absolute;
   z-index:1;
   left:50%;
@@ -178,7 +178,7 @@
     top:53%;
     width:min(62vw,560px);
   }
-  .hero-logo-word{
+  .hero.hero-official .hero-logo-word{
     top:48%;
     transform:translate(-50%,-50%) scaleX(1.14);
     font-size:clamp(420px,92vw,820px);
@@ -222,7 +222,7 @@
     min-height:760px;
     padding:76px 0 18px;
   }
-  .hero-logo-word{
+  .hero.hero-official .hero-logo-word{
     top:47%;
     transform:translate(-50%,-50%) scaleX(1.15);
     font-size:clamp(300px,105vw,470px);
