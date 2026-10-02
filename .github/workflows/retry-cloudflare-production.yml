@@ -1,0 +1,28 @@
+name: Retry Cloudflare Production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  contents: read
+
+jobs:
+  rerequest-cloudflare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Re-request the Cloudflare check suite
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          suite_id="$(gh api "repos/$REPOSITORY/commits/$SHA/check-suites" \
+            --jq '[.check_suites[] | select(.app.slug == "cloudflare-workers-and-pages")][0].id')"
+          if [[ -z "$suite_id" || "$suite_id" == "null" ]]; then
+            echo "Cloudflare check suite not found for $SHA" >&2
+            exit 1
+          fi
+          gh api --method POST "repos/$REPOSITORY/check-suites/$suite_id/rerequest"
