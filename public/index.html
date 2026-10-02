@@ -1,17 +1,311 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JOBBY</title>
-  <meta name="description" content="JOBBY">
+  <title>JOBBY — Give Him One Job</title>
+  <meta name="description" content="JOBBY is the internet's worst employee. Give him one job, watch it go wrong, and pass the helmet.">
+  <meta name="theme-color" content="#f5c400">
+  <link rel="canonical" href="https://jobby.lol/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="/manifest.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="JOBBY — Give Him One Job">
+  <meta property="og:description" content="One job. Zero supervision. Infinite ways to mess it up.">
+  <meta property="og:url" content="https://jobby.lol/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="JOBBY — Give Him One Job">
+  <meta name="twitter:description" content="One job. Zero supervision. Infinite ways to mess it up.">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main id="app" aria-label="JOBBY">
-    <h1>JOBBY</h1>
-    <p>الموقع الجديد قيد البناء.</p>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#top" aria-label="JOBBY home">
+      <span class="brand-mark">J</span>
+      <span>JOBBY</span>
+    </a>
+
+    <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span>
+      <span class="sr-only">Toggle menu</span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
+      <a href="#about">ABOUT</a>
+      <a href="#job-lab">JOB LAB</a>
+      <a href="#challenge">CHALLENGE</a>
+      <a href="#official">OFFICIAL</a>
+    </nav>
+
+    <a class="header-cta" href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">
+      FOLLOW <span aria-hidden="true">↗</span>
+    </a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="heroTitle">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-kicker">SOLANA · PRE-LAUNCH · COMMUNITY FIRST</div>
+      <h1 class="sr-only" id="heroTitle">JOBBY — Give him one job and watch it go wrong</h1>
+      <div class="hero-word" aria-hidden="true">JOBBY</div>
+
+      <div class="character-wrap" id="characterWrap">
+        <div class="character-glow" aria-hidden="true"></div>
+        <svg class="jobby-svg" viewBox="0 0 620 720" role="img" aria-labelledby="jobbyTitle jobbyDesc">
+            <title id="jobbyTitle">JOBBY</title>
+            <desc id="jobbyDesc">Official JOBBY construction worker character wearing a yellow hard hat, orange safety vest and brown work boots.</desc>
+            <defs>
+              <linearGradient id="helmetGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff27c"/>
+                <stop offset=".34" stop-color="#ffd82f"/>
+                <stop offset=".72" stop-color="#ffc400"/>
+                <stop offset="1" stop-color="#d99300"/>
+              </linearGradient>
+              <linearGradient id="vestGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ffad32"/>
+                <stop offset=".48" stop-color="#ff7410"/>
+                <stop offset="1" stop-color="#d84900"/>
+              </linearGradient>
+              <linearGradient id="bootGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e7a45c"/>
+                <stop offset=".52" stop-color="#b96b31"/>
+                <stop offset="1" stop-color="#764018"/>
+              </linearGradient>
+              <linearGradient id="faceGrad" x1=".15" y1=".05" x2=".8" y2=".95">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset=".5" stop-color="#fafafa"/>
+                <stop offset="1" stop-color="#d7d9dc"/>
+              </linearGradient>
+              <linearGradient id="blackGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#35363b"/>
+                <stop offset=".55" stop-color="#1d1e22"/>
+                <stop offset="1" stop-color="#0e0f12"/>
+              </linearGradient>
+              <radialGradient id="helmetShine" cx=".35" cy=".2" r=".8">
+                <stop offset="0" stop-color="#ffffff" stop-opacity=".65"/>
+                <stop offset=".28" stop-color="#ffffff" stop-opacity=".08"/>
+                <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="softShadow" x="-45%" y="-45%" width="190%" height="210%">
+                <feDropShadow dx="0" dy="26" stdDeviation="18" flood-color="#4d5360" flood-opacity=".28"/>
+              </filter>
+            </defs>
+
+            <ellipse cx="310" cy="683" rx="205" ry="24" fill="#7f8792" opacity=".23"/>
+
+            <g filter="url(#softShadow)" stroke="#121318" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M236 528 C237 574 230 608 224 635" fill="none" stroke="#202126" stroke-width="35"/>
+              <path d="M384 528 C383 574 390 608 396 635" fill="none" stroke="#202126" stroke-width="35"/>
+
+              <path d="M142 626 C159 596 199 587 245 598 C268 604 279 632 270 656 C263 675 243 681 207 681 L139 681 C126 681 118 669 122 655 C126 642 132 634 142 626Z" fill="url(#bootGrad)"/>
+              <path d="M478 626 C461 596 421 587 375 598 C352 604 341 632 350 656 C357 675 377 681 413 681 L481 681 C494 681 502 669 498 655 C494 642 488 634 478 626Z" fill="url(#bootGrad)"/>
+              <path d="M126 665 H270" stroke="#25262b" stroke-width="16"/>
+              <path d="M350 665 H494" stroke="#25262b" stroke-width="16"/>
+              <path d="M163 626 l48 10 M153 642 l54 9 M457 626 l-48 10 M467 642 l-54 9" fill="none" stroke="#2d2d31" stroke-width="6"/>
+
+              <path d="M218 374 C248 349 372 349 402 374 C426 394 438 469 423 531 C414 566 363 581 310 581 C257 581 206 566 197 531 C182 469 194 394 218 374Z" fill="url(#blackGrad)"/>
+
+              <path d="M220 374 C242 360 265 354 282 353 L284 547 C247 543 217 535 199 520 C187 466 194 400 220 374Z" fill="url(#vestGrad)"/>
+              <path d="M400 374 C378 360 355 354 338 353 L336 547 C373 543 403 535 421 520 C433 466 426 400 400 374Z" fill="url(#vestGrad)"/>
+              <path d="M248 368 L263 542 M372 368 L357 542" stroke="#e5e7e9" stroke-width="14"/>
+              <path d="M247 438 H279 M341 438 H373" stroke="#dfe1e3" stroke-width="12"/>
+
+              <path d="M201 409 C164 424 154 470 184 494 C226 527 306 518 356 473" fill="none" stroke="url(#blackGrad)" stroke-width="38"/>
+              <path d="M419 411 C455 425 463 467 437 491 C400 524 325 520 270 475" fill="none" stroke="url(#blackGrad)" stroke-width="38"/>
+              <path d="M274 478 C293 485 318 486 339 479" fill="none" stroke="#3c3d43" stroke-width="26"/>
+
+              <path d="M169 194 C194 150 245 127 310 127 C375 127 426 150 451 194 C475 236 472 312 446 342 C418 375 371 391 310 391 C249 391 202 375 174 342 C148 312 145 236 169 194Z" fill="url(#faceGrad)"/>
+
+              <path d="M152 207 C155 127 215 66 310 63 C405 66 465 127 468 207 L431 205 C424 153 383 116 310 114 C237 116 196 153 189 205Z" fill="url(#helmetGrad)"/>
+              <path d="M130 206 C146 189 177 182 215 181 H411 C449 182 480 189 496 206 C509 219 499 238 481 246 C446 262 393 268 310 268 C227 268 174 262 139 246 C121 238 117 219 130 206Z" fill="url(#helmetGrad)"/>
+              <path d="M310 66 V181 M235 84 C263 111 270 147 270 181 M385 84 C357 111 350 147 350 181" fill="none" stroke="#17171a" stroke-width="9"/>
+              <path d="M164 177 C188 118 242 83 306 79 C256 98 225 135 215 185Z" fill="url(#helmetShine)" stroke="none"/>
+
+              <ellipse cx="247" cy="294" rx="18" ry="28" fill="#0f1014" stroke="none"/>
+              <ellipse cx="373" cy="294" rx="18" ry="28" fill="#0f1014" stroke="none"/>
+              <path d="M288 329 H332" fill="none" stroke="#111217" stroke-width="10"/>
+            </g>
+          </svg>
+      </div>
+
+      <div class="hero-note hero-note-left">
+        <span class="note-label">EMPLOYEE TYPE</span>
+        <strong>CONFIDENTLY<br>UNQUALIFIED.</strong>
+      </div>
+
+      <div class="hero-note hero-note-right">
+        <span class="status-dot"></span>
+        <span>
+          <small>CURRENT STATUS</small>
+          <strong>AVAILABLE FOR WORK</strong>
+        </span>
+      </div>
+
+      <a class="scroll-cue" href="#about">
+        <span>MEET JOBBY</span>
+        <span aria-hidden="true">↓</span>
+      </a>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>GET THE JOB</span><b>✦</b><span>ACT CONFIDENT</span><b>✦</b><span>MAKE IT WORSE</span><b>✦</b><span>PASS THE HELMET</span><b>✦</b>
+        <span>GET THE JOB</span><b>✦</b><span>ACT CONFIDENT</span><b>✦</b><span>MAKE IT WORSE</span><b>✦</b><span>PASS THE HELMET</span><b>✦</b>
+      </div>
+    </div>
+
+    <section class="intro section" id="about">
+      <div class="section-shell intro-grid">
+        <div class="section-index">01 / ABOUT</div>
+        <div class="intro-copy reveal">
+          <p class="eyebrow">THE INTERNET'S WORST EMPLOYEE</p>
+          <h2>ONE JOB.<br><span>ZERO</span> SUPERVISION.</h2>
+          <p class="lead">JOBBY takes simple assignments and turns them into public disasters. Every job becomes a short, remixable episode built by the community.</p>
+        </div>
+      </div>
+
+      <div class="section-shell steps-grid">
+        <article class="step-card reveal">
+          <span>01</span>
+          <div class="step-icon">↳</div>
+          <h3>GETS HIRED</h3>
+          <p>Give JOBBY one clear task. The easier it sounds, the better.</p>
+        </article>
+        <article class="step-card reveal">
+          <span>02</span>
+          <div class="step-icon">↑</div>
+          <h3>GETS CONFIDENT</h3>
+          <p>He has no plan, no experience, and absolutely no doubt.</p>
+        </article>
+        <article class="step-card accent reveal">
+          <span>03</span>
+          <div class="step-icon">↯</div>
+          <h3>GETS FIRED</h3>
+          <p>The result becomes the next meme. The community decides his fate.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="job-lab section" id="job-lab">
+      <div class="section-shell lab-grid">
+        <div class="lab-copy reveal">
+          <div class="section-index light">02 / JOB LAB</div>
+          <p class="eyebrow dark">YOUR SHIFT STARTS HERE</p>
+          <h2>GIVE HIM<br>ONE JOB.</h2>
+          <p>Type any assignment. JOBBY will report back with the kind of result only JOBBY could produce.</p>
+          <div class="lab-tags"><span>NO WALLET</span><span>NO LOGIN</span><span>BAD RESULTS</span></div>
+        </div>
+
+        <div class="terminal reveal">
+          <div class="terminal-bar">
+            <span>JOBBY://SHIFT_TERMINAL</span>
+            <span class="terminal-live"><i></i> ONLINE</span>
+          </div>
+          <label for="jobInput">ENTER ASSIGNMENT</label>
+          <div class="input-row">
+            <input id="jobInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Hold the chart">
+            <button id="runJob" type="button">RUN JOB</button>
+          </div>
+          <div class="job-result" id="jobResult" aria-live="polite">
+            <small>SHIFT RESULT</small>
+            <strong>Waiting for an assignment.</strong>
+          </div>
+          <div class="terminal-actions">
+            <button id="randomJob" type="button">RANDOM JOB</button>
+            <button id="shareJob" type="button" disabled>SHARE RESULT ↗</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="challenge section" id="challenge">
+      <div class="section-shell">
+        <div class="challenge-head reveal">
+          <div>
+            <div class="section-index">03 / THE CHALLENGE</div>
+            <p class="eyebrow">THE VIRAL MECHANIC</p>
+            <h2>PASS THE<br><span>HELMET.</span></h2>
+          </div>
+          <div class="challenge-copy">
+            <p>Catch the yellow helmet from the left. Give JOBBY a job. Show the fail. Throw the helmet out to the right so the next creator can continue the chain.</p>
+            <a class="text-link" href="https://x.com/intent/post?text=I%27m%20joining%20%23PassTheHelmet%20with%20%40JOBBYSOL%20%E2%9B%91%0A%0ACatch%20it.%20Give%20JOBBY%20one%20job.%20Pass%20it%20on.%0A%0Ajobby.lol" target="_blank" rel="noopener noreferrer">START ON X ↗</a>
+          </div>
+        </div>
+
+        <div class="challenge-steps">
+          <article class="reveal"><span>01</span><strong>CATCH</strong><p>Catch the helmet from the left.</p></article>
+          <article class="reveal"><span>02</span><strong>ASSIGN</strong><p>Give JOBBY one simple job.</p></article>
+          <article class="reveal"><span>03</span><strong>FAIL</strong><p>Show exactly how it went wrong.</p></article>
+          <article class="reveal"><span>04</span><strong>PASS</strong><p>Throw it right. Tag the next creator.</p></article>
+        </div>
+
+        <div class="helmet-rule reveal">
+          <div class="helmet-symbol">⛑</div>
+          <div>
+            <small>THE ONLY RULE</small>
+            <strong>THE HELMET NEVER TOUCHES THE FLOOR.</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="official section" id="official">
+      <div class="section-shell">
+        <div class="official-head reveal">
+          <div>
+            <div class="section-index light">04 / OFFICIAL</div>
+            <p class="eyebrow dark">VERIFY EVERY LINK</p>
+            <h2>FOLLOW THE<br>REAL JOBBY.</h2>
+          </div>
+          <p>Official accounts are listed here. Admins will never DM first asking for funds, seed phrases, or wallet access.</p>
+        </div>
+
+        <div class="links-grid">
+          <a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer" class="official-link reveal">
+            <span>01</span><small>X / TWITTER</small><strong>@JOBBYSOL</strong><b>↗</b>
+          </a>
+          <a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer" class="official-link reveal">
+            <span>02</span><small>TELEGRAM CHANNEL</small><strong>JOBBYSOL</strong><b>↗</b>
+          </a>
+          <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer" class="official-link reveal">
+            <span>03</span><small>COMMUNITY</small><strong>JOBBYCHAT</strong><b>↗</b>
+          </a>
+          <button class="official-link copy-link reveal" id="copySite" type="button">
+            <span>04</span><small>WEBSITE</small><strong>JOBBY.LOL</strong><b>⧉</b>
+          </button>
+        </div>
+
+        <div class="contract-card reveal">
+          <span>CONTRACT ADDRESS</span>
+          <strong>COMING SOON</strong>
+          <small>THE OFFICIAL ADDRESS WILL APPEAR HERE AT LAUNCH.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="final-word" aria-hidden="true">JOBBY</div>
+      <div class="final-content reveal">
+        <small>THE NEXT SHIFT IS YOURS</small>
+        <h2>HIRE HIM.<br>WE DARE YOU.</h2>
+        <div>
+          <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOIN COMMUNITY ↗</a>
+          <a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">FOLLOW ON X ↗</a>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <a class="brand footer-brand" href="#top"><span class="brand-mark">J</span><span>JOBBY</span></a>
+    <p>ONE JOB. ZERO SUPERVISION.</p>
+    <p>© <span id="year">2026</span> JOBBY · SOLANA · PRE-LAUNCH</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
 </body>
 </html>

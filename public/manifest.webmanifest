@@ -1,10 +1,17 @@
 {
   "name": "JOBBY",
   "short_name": "JOBBY",
-  "description": "Official JOBBY website and job archive.",
+  "description": "One job. Zero supervision.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#090909",
-  "theme_color": "#090909",
-  "icons": []
+  "background_color": "#0b0b0b",
+  "theme_color": "#f5c400",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
