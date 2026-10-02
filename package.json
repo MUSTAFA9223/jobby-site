@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "deploy:cloudflare": "wrangler deploy"
+    "deploy:cloudflare": "wrangler deploy",
+    "cf:build": "echo Cloudflare build trigger"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
