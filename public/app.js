@@ -8,6 +8,7 @@ const randomJob = document.querySelector("#randomJob");
 const shareJob = document.querySelector("#shareJob");
 const jobResult = document.querySelector("#jobResult");
 const copySite = document.querySelector("#copySite");
+const copyHeroSite = document.querySelector("#copyHeroSite");
 const toast = document.querySelector("#toast");
 
 const jobs = [
@@ -72,7 +73,8 @@ if (characterWrap && window.matchMedia("(pointer: fine)").matches && !window.mat
   window.addEventListener("pointermove", function (event) {
     const x = (event.clientX / window.innerWidth - .5) * 10;
     const y = (event.clientY / window.innerHeight - .5) * 5;
-    characterWrap.style.transform = "translateX(calc(-50% + " + x + "px)) translateY(" + y + "px)";
+    characterWrap.style.setProperty("--character-x", x + "px");
+    characterWrap.style.setProperty("--character-y", y + "px");
   });
 }
 
@@ -139,8 +141,9 @@ if (shareJob) {
     }
   });
 }
-if (copySite) {
-  copySite.addEventListener("click", async function () {
+const websiteCopyButtons = [copySite, copyHeroSite].filter(Boolean);
+websiteCopyButtons.forEach(function (button) {
+  button.addEventListener("click", async function () {
     try {
       await navigator.clipboard.writeText("https://jobby.lol");
       showToast("JOBBY.LOL COPIED");
@@ -148,7 +151,7 @@ if (copySite) {
       showToast("JOBBY.LOL");
     }
   });
-}
+});
 
 const revealObserver = "IntersectionObserver" in window
   ? new IntersectionObserver(function (entries) {
