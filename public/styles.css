@@ -500,6 +500,15 @@ footer p:last-child { text-align: right; }
   footer p:last-child { text-align: left; }
 }
 
+/* Keep the mascot opposite the hero copy in tall in-app/desktop-mode mobile views. */
+@media (min-width: 621px) and (max-aspect-ratio: 3 / 4) {
+  .character-wrap {
+    right: 0;
+    bottom: 16%;
+    width: min(56vw, 600px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
