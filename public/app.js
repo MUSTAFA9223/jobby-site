@@ -106,7 +106,7 @@ function executeJob() {
     jobResult.classList.remove("running");
     if (runJob) runJob.disabled = false;
     if (shareJob) shareJob.disabled = false;
-    lastShareText = "I gave JOBBY one job: " + job + "\n\n" + outcome + "\n\n@JOBBYSOL #PassTheHelmet\nhttps://jobby.lol";
+    lastShareText = "I gave JOBBY one job: " + job + "\n\n" + outcome + "\n\n@JOBBYSOL #JOBBY\nhttps://jobby.lol";
   }, 700);
 }
 
