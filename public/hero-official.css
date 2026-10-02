@@ -117,7 +117,7 @@
   top:48%;
   transform:translate(-50%,-50%) scaleX(1.18);
   margin:0;
-  font-size:clamp(420px,68vw,980px);
+  font-size:clamp(320px,29vw,440px);
   line-height:.72;
   letter-spacing:-.105em;
   font-weight:1000;
@@ -181,7 +181,7 @@
   .hero.hero-official .hero-logo-word{
     top:48%;
     transform:translate(-50%,-50%) scaleX(1.14);
-    font-size:clamp(420px,92vw,820px);
+    font-size:clamp(240px,38vw,360px);
     text-shadow:13px 11px 0 #ffd51f;
   }
 }
@@ -225,7 +225,7 @@
   .hero.hero-official .hero-logo-word{
     top:47%;
     transform:translate(-50%,-50%) scaleX(1.15);
-    font-size:clamp(300px,105vw,470px);
+    font-size:clamp(125px,34vw,210px);
     text-shadow:9px 8px 0 #ffd51f;
   }
   .jobby-character{
