@@ -503,7 +503,7 @@ footer p:last-child { text-align: right; }
 /* Keep the mascot opposite the hero copy in tall in-app/desktop-mode mobile views. */
 @media (min-width: 621px) and (max-aspect-ratio: 3 / 4) {
   .character-wrap {
-    right: 4%;
+    right: -6%;
     bottom: 27%;
     width: min(56vw, 600px);
   }
