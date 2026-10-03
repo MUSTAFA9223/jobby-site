@@ -328,6 +328,39 @@ async def admin_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         )
 
 
+def _utf16_len(value: str) -> int:
+    return len(value.encode("utf-16-le")) // 2
+
+
+def rendered_welcome_with_entities(member):
+    """Replace {name} without breaking Telegram custom/animated emoji entities."""
+    text = WELCOME_OVERRIDE
+    entities = list(WELCOME_ENTITIES or [])
+    token = "{name}"
+    pos = text.find(token)
+    if pos < 0:
+        return text, entities
+
+    name = member.full_name or member.first_name or "friend"
+    token_start = _utf16_len(text[:pos])
+    token_len = _utf16_len(token)
+    name_len = _utf16_len(name)
+    delta = name_len - token_len
+    rendered = text[:pos] + name + text[pos + len(token):]
+
+    shifted = []
+    for e in entities:
+        data = e.to_dict()
+        off = int(data.get("offset", 0))
+        length = int(data.get("length", 0))
+        if off >= token_start + token_len:
+            data["offset"] = off + delta
+        elif off < token_start + token_len and off + length > token_start:
+            continue
+        shifted.append(type(e).de_json(data, None))
+    return rendered, shifted
+
+
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not WELCOME_ENABLED or not update.effective_message:
         return
@@ -337,13 +370,11 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             continue
         try:
             if WELCOME_OVERRIDE and WELCOME_ENTITIES:
-                # Preserve Telegram Custom Emoji entities exactly as the admin sent them.
-                # We intentionally keep {name} literal in entity-based templates because
-                # replacing text can shift Telegram UTF-16 entity offsets.
+                rendered, rendered_entities = rendered_welcome_with_entities(member)
                 await update.effective_message.reply_photo(
                     photo=BANNER_URL,
-                    caption=WELCOME_OVERRIDE,
-                    caption_entities=WELCOME_ENTITIES,
+                    caption=rendered,
+                    caption_entities=rendered_entities,
                     reply_markup=official_keyboard(),
                 )
             else:
@@ -356,9 +387,10 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         except Exception:
             log.exception("Could not send JOBBY welcome banner; falling back to text")
             if WELCOME_OVERRIDE and WELCOME_ENTITIES:
+                rendered, rendered_entities = rendered_welcome_with_entities(member)
                 await update.effective_message.reply_text(
-                    WELCOME_OVERRIDE,
-                    entities=WELCOME_ENTITIES,
+                    rendered,
+                    entities=rendered_entities,
                     reply_markup=official_keyboard(),
                     do_quote=True,
                 )
