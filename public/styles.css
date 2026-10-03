@@ -260,8 +260,8 @@ button { color: inherit; }
 .character-wrap {
   position: absolute;
   z-index: 3;
-  right: 5%;
-  bottom: 10%;
+  right: 4%;
+  bottom: 4%;
   width: min(34vw, 520px);
   transform: translate(var(--character-x, 0), var(--character-y, 0));
   transform-origin: 50% 100%;
@@ -478,7 +478,7 @@ footer p:last-child { text-align: right; }
   .header-cta { display: none; }
   .hero-layout { grid-template-columns: minmax(0, 1.08fr) minmax(300px, .92fr); }
   .hero-word { font-size: clamp(5.7rem, 12.5vw, 8.7rem); }
-  .character-wrap { right: 3%; bottom: 11%; width: min(42vw, 520px); }
+  .character-wrap { right: 1%; bottom: 5%; width: min(42vw, 520px); }
   .intro-grid, .lab-grid, .challenge-head, .official-head { grid-template-columns: 1fr; gap: 36px; }
   .steps-grid { grid-template-columns: 1fr 1fr; }
   .step-card.accent { grid-column: 1 / -1; }
@@ -505,7 +505,7 @@ footer p:last-child { text-align: right; }
   .hero-primary { min-height: 45px; padding: 0 16px; box-shadow: 4px 5px 0 var(--ink); }
   .hero-social { width: 43px; height: 43px; box-shadow: 3px 3px 0 var(--ink); }
   .hero-social svg { width: 19px; height: 19px; }
-  .character-wrap { right: -1%; bottom: 11%; width: min(74vw, 410px); }
+  .character-wrap { right: -3%; bottom: 6%; width: min(74vw, 410px); }
   .hero-scribble-one { width: 150px; height: 95px; left: -70px; top: 25%; }
   .hero-scribble-two { width: 190px; height: 110px; right: -85px; top: 16%; }
   .scroll-cue { display: none; }
