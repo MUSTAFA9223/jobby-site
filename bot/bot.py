@@ -89,18 +89,20 @@ def official_text() -> str:
 
 def welcome_text(name: str, *, name_is_html: bool = False) -> str:
     shown_name = name if name_is_html else esc(name)
+    if WELCOME_OVERRIDE:
+        return WELCOME_OVERRIDE.replace("{name}", shown_name)
     return (
-        f"👋 <b>WELCOME TO JOBBY, {shown_name}!</b>\n\n"
+        f"👷 <b>WELCOME TO JOBBY, {shown_name}!</b>\n\n"
         "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n"
         "Community first. Memes every day.\n"
         "$JOBBY launching soon on Solana.\n\n"
-        "<b>OFFICIAL LINKS</b>\n"
-        f"𝕏  <a href=\"{esc(X_URL)}\">X / Twitter</a>\n"
-        f"✈️  <a href=\"{esc(CHANNEL_URL)}\">Telegram Channel</a>\n"
-        f"💬  <a href=\"{esc(COMMUNITY_URL)}\">Telegram Community</a>\n"
-        f"🔗  <a href=\"{esc(WEBSITE_URL)}\">jobby.lol</a>\n\n"
-        "<b>$JOBBY CA: SOON</b>\n"
-        "<i>Admins will never DM you first.</i>"
+        "<b>OFFICIAL LINKS</b>\n\n"
+        f"𝕏  <a href=\"{esc(X_URL)}\"><b>X / Twitter</b></a>\n"
+        f"✈️  <a href=\"{esc(CHANNEL_URL)}\"><b>Telegram Channel</b></a>\n"
+        f"💬  <a href=\"{esc(COMMUNITY_URL)}\"><b>Telegram Community</b></a>\n"
+        f"🌐  <a href=\"{esc(WEBSITE_URL)}\"><b>JOBBY Website</b></a>\n\n"
+        "🪙 <b>$JOBBY CA:</b> <code>SOON</code>\n\n"
+        "🛡 <i>Admins will never DM you first.</i>"
     )
 
 def member_mention(member) -> str:
