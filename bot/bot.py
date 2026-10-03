@@ -32,7 +32,7 @@ X_URL = os.getenv("X_URL", "https://x.com/JOBBYSOL").strip()
 CHANNEL_URL = os.getenv("TELEGRAM_CHANNEL_URL", "https://t.me/JOBBYSOL").strip()
 COMMUNITY_URL = os.getenv("TELEGRAM_COMMUNITY_URL", "").strip()
 WEBSITE_URL = os.getenv("WEBSITE_URL", "https://jobby.lol").strip()
-BANNER_URL = os.getenv("BANNER_URL", "https://jobby.lol/jobby-hero-reference.webp").strip()
+BANNER_URL = os.getenv("BANNER_URL", "https://jobby.lol/jobby-hero-reference.webp?v=welcome-20261003-3").strip()
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
