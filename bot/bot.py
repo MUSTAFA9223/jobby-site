@@ -86,14 +86,18 @@ def official_text() -> str:
 def welcome_text(name: str, *, name_is_html: bool = False) -> str:
     shown_name = name if name_is_html else esc(name)
     return (
-        f"👋 <b>Welcome to JOBBY, {shown_name}.</b>\n\n"
-        "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n\n"
-        "<b>Community first. Memes every day.</b>\n"
-        "<b>$JOBBY launching soon on Solana.</b>\n\n"
-        "<b>Use only the official links below.</b>\n"
-        "<b>Admins will never DM you first.</b>"
+        f"👋 <b>WELCOME TO JOBBY, {shown_name}!</b>\n\n"
+        "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n"
+        "Community first. Memes every day.\n"
+        "$JOBBY launching soon on Solana.\n\n"
+        "<b>OFFICIAL LINKS</b>\n"
+        f"𝕏  <a href=\"{esc(X_URL)}\">X / Twitter</a>\n"
+        f"✈️  <a href=\"{esc(CHANNEL_URL)}\">Telegram Channel</a>\n"
+        f"💬  <a href=\"{esc(COMMUNITY_URL)}\">Telegram Community</a>\n"
+        f"🔗  <a href=\"{esc(WEBSITE_URL)}\">jobby.lol</a>\n\n"
+        "<b>$JOBBY CA: SOON</b>\n"
+        "<i>Admins will never DM you first.</i>"
     )
-
 
 def member_mention(member) -> str:
     display_name = esc(member.full_name or member.first_name or "friend")
