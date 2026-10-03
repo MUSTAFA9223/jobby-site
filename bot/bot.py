@@ -43,6 +43,7 @@ log = logging.getLogger("jobby-bot")
 
 EDIT_WELCOME = 1
 WELCOME_OVERRIDE = ""
+WELCOME_ENTITIES = []
 
 
 def esc(value: object) -> str:
@@ -255,13 +256,22 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await q.answer()
     if q.data == "adm:preview":
         try:
-            await context.bot.send_photo(
-                chat_id=q.from_user.id,
-                photo=BANNER_URL,
-                caption=welcome_text(q.from_user.first_name or "friend"),
-                parse_mode=ParseMode.HTML,
-                reply_markup=official_keyboard(),
-            )
+            if WELCOME_OVERRIDE and WELCOME_ENTITIES:
+                await context.bot.send_photo(
+                    chat_id=q.from_user.id,
+                    photo=BANNER_URL,
+                    caption=WELCOME_OVERRIDE,
+                    caption_entities=WELCOME_ENTITIES,
+                    reply_markup=official_keyboard(),
+                )
+            else:
+                await context.bot.send_photo(
+                    chat_id=q.from_user.id,
+                    photo=BANNER_URL,
+                    caption=welcome_text(q.from_user.first_name or "friend"),
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=official_keyboard(),
+                )
         except Exception:
             await context.bot.send_message(
                 chat_id=q.from_user.id,
@@ -293,7 +303,7 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 
 async def admin_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    global WELCOME_OVERRIDE, BANNER_URL
+    global WELCOME_OVERRIDE, WELCOME_ENTITIES, BANNER_URL
     uid = update.effective_user.id if update.effective_user else None
     if not (is_private(update) and is_admin(uid)):
         return
@@ -308,9 +318,12 @@ async def admin_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
     if context.user_data.get("awaiting_welcome_text") and msg.text:
         WELCOME_OVERRIDE = msg.text
+        WELCOME_ENTITIES = list(msg.entities or [])
         context.user_data["awaiting_welcome_text"] = False
+        custom_count = sum(1 for e in WELCOME_ENTITIES if getattr(e, "type", None) == "custom_emoji")
         await msg.reply_text(
-            "✅ Welcome text updated. Use /admin → Preview welcome to check it.",
+            f"✅ Welcome template saved. Custom/animated emoji detected: {custom_count}. "
+            "Use /admin → Preview welcome to check it.",
             reply_markup=admin_keyboard(),
         )
 
@@ -323,20 +336,39 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if member.is_bot:
             continue
         try:
-            await update.effective_message.reply_photo(
-                photo=BANNER_URL,
-                caption=welcome_text(member_mention(member), name_is_html=True),
-                parse_mode=ParseMode.HTML,
-                reply_markup=official_keyboard(),
-            )
+            if WELCOME_OVERRIDE and WELCOME_ENTITIES:
+                # Preserve Telegram Custom Emoji entities exactly as the admin sent them.
+                # We intentionally keep {name} literal in entity-based templates because
+                # replacing text can shift Telegram UTF-16 entity offsets.
+                await update.effective_message.reply_photo(
+                    photo=BANNER_URL,
+                    caption=WELCOME_OVERRIDE,
+                    caption_entities=WELCOME_ENTITIES,
+                    reply_markup=official_keyboard(),
+                )
+            else:
+                await update.effective_message.reply_photo(
+                    photo=BANNER_URL,
+                    caption=welcome_text(member_mention(member), name_is_html=True),
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=official_keyboard(),
+                )
         except Exception:
             log.exception("Could not send JOBBY welcome banner; falling back to text")
-            await update.effective_message.reply_text(
-                welcome_text(member_mention(member), name_is_html=True),
-                parse_mode=ParseMode.HTML,
-                reply_markup=official_keyboard(),
-                do_quote=True,
-            )
+            if WELCOME_OVERRIDE and WELCOME_ENTITIES:
+                await update.effective_message.reply_text(
+                    WELCOME_OVERRIDE,
+                    entities=WELCOME_ENTITIES,
+                    reply_markup=official_keyboard(),
+                    do_quote=True,
+                )
+            else:
+                await update.effective_message.reply_text(
+                    welcome_text(member_mention(member), name_is_html=True),
+                    parse_mode=ParseMode.HTML,
+                    reply_markup=official_keyboard(),
+                    do_quote=True,
+                )
 
 
 async def text_trigger(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
