@@ -145,21 +145,12 @@ async def post_init(app: Application) -> None:
 
 
 async def send_links(message) -> None:
-    try:
-        await message.reply_photo(
-            photo=BANNER_URL,
-            caption=official_text(),
-            parse_mode=ParseMode.HTML,
-            reply_markup=official_keyboard(),
-        )
-    except Exception:
-        log.exception("Could not send JOBBY banner; falling back to text")
-        await message.reply_text(
-            official_text(),
-            parse_mode=ParseMode.HTML,
-            reply_markup=official_keyboard(),
-            disable_web_page_preview=True,
-        )
+    await message.reply_text(
+        official_text(),
+        parse_mode=ParseMode.HTML,
+        reply_markup=official_keyboard(),
+        disable_web_page_preview=True,
+    )
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -283,12 +274,21 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     for member in update.effective_message.new_chat_members or []:
         if member.is_bot:
             continue
-        await update.effective_message.reply_text(
-            welcome_text(member_mention(member), name_is_html=True),
-            parse_mode=ParseMode.HTML,
-            reply_markup=official_keyboard(),
-            do_quote=True,
-        )
+        try:
+            await update.effective_message.reply_photo(
+                photo=BANNER_URL,
+                caption=welcome_text(member_mention(member), name_is_html=True),
+                parse_mode=ParseMode.HTML,
+                reply_markup=official_keyboard(),
+            )
+        except Exception:
+            log.exception("Could not send JOBBY welcome banner; falling back to text")
+            await update.effective_message.reply_text(
+                welcome_text(member_mention(member), name_is_html=True),
+                parse_mode=ParseMode.HTML,
+                reply_markup=official_keyboard(),
+                do_quote=True,
+            )
 
 
 async def text_trigger(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
