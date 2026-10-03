@@ -728,3 +728,8 @@ footer p:last-child { text-align: right; }
     font-weight: 850;
   }
 }
+
+/* Use the supplied artwork to preserve the exact 3D lettering and spacing. */
+.hero.hero-reference { min-height: 0; background: #ffda00; }
+.hero-reference-art { display: block; width: 100%; height: auto; }
+.hero.hero-reference .hero-layout.sr-only { min-height: 0; }
