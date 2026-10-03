@@ -101,6 +101,26 @@ button { color: inherit; }
   font-weight: 1000;
   transform: rotate(-5deg) skew(4deg);
 }
+
+/* Header brand: keep the icon black, make JOBBY white, larger, heavier and clearer. */
+.site-header .brand {
+  gap: 12px;
+}
+.site-header .brand-mark {
+  color: #0b0b0b;
+  border-color: #0b0b0b;
+  background: transparent;
+  font-weight: 1000;
+}
+.site-header .brand-word,
+.site-header .brand > span:last-child {
+  color: #fff;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 1000;
+  letter-spacing: -.025em;
+  text-shadow: 0 2px 0 rgba(0,0,0,.2);
+}
 .site-nav { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 3vw, 40px); }
 .site-nav a { color: var(--ink); font-size: 10px; font-weight: 1000; letter-spacing: .08em; transition: opacity .2s; }
 .site-nav a:hover { opacity: .55; }
@@ -733,3 +753,10 @@ footer p:last-child { text-align: right; }
 .hero.hero-reference { min-height: 0; background: #ffda00; }
 .hero-reference-art { display: block; width: 100%; height: auto; }
 .hero.hero-reference .hero-layout.sr-only { min-height: 0; }
+
+@media (max-width: 620px) {
+  .site-header .brand-word,
+  .site-header .brand > span:last-child {
+    font-size: 27px;
+  }
+}
