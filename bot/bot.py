@@ -31,7 +31,8 @@ WELCOME_ENABLED = os.getenv("WELCOME_ENABLED", "true").lower() in {
 X_URL = os.getenv("X_URL", "https://x.com/JOBBYSOL").strip()
 CHANNEL_URL = os.getenv("TELEGRAM_CHANNEL_URL", "https://t.me/JOBBYSOL").strip()
 COMMUNITY_URL = os.getenv("TELEGRAM_COMMUNITY_URL", "").strip()
-WEBSITE_URL = os.getenv("WEBSITE_URL", "").strip()
+WEBSITE_URL = os.getenv("WEBSITE_URL", "https://jobby.lol").strip()
+BANNER_URL = os.getenv("BANNER_URL", "https://jobby.lol/jobby-hero-reference.webp").strip()
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -73,11 +74,12 @@ def official_keyboard() -> InlineKeyboardMarkup:
 
 def official_text() -> str:
     return (
-        "<b>JOBBY</b>\n\n"
-        "<b>ONE JOB. ALWAYS MESSES IT UP.</b>\n\n"
-        "<b>Building the community before the coin.</b>\n"
-        "<b>$JOBBY launching soon on Solana.</b>\n\n"
-        "<b>Give JOBBY his next job ↓</b>"
+        "<b>JOBBY — OFFICIAL LINKS</b>\n\n"
+        f"𝕏  <a href=\"{esc(X_URL)}\">X / Twitter</a>\n"
+        f"✈️  <a href=\"{esc(CHANNEL_URL)}\">Telegram Channel</a>\n"
+        f"💬  <a href=\"{esc(COMMUNITY_URL)}\">Telegram Community</a>\n"
+        f"🔗  <a href=\"{esc(WEBSITE_URL)}\">jobby.lol</a>\n\n"
+        "<b>$JOBBY CA: SOON</b>"
     )
 
 
@@ -143,12 +145,21 @@ async def post_init(app: Application) -> None:
 
 
 async def send_links(message) -> None:
-    await message.reply_text(
-        official_text(),
-        parse_mode=ParseMode.HTML,
-        reply_markup=official_keyboard(),
-        disable_web_page_preview=True,
-    )
+    try:
+        await message.reply_photo(
+            photo=BANNER_URL,
+            caption=official_text(),
+            parse_mode=ParseMode.HTML,
+            reply_markup=official_keyboard(),
+        )
+    except Exception:
+        log.exception("Could not send JOBBY banner; falling back to text")
+        await message.reply_text(
+            official_text(),
+            parse_mode=ParseMode.HTML,
+            reply_markup=official_keyboard(),
+            disable_web_page_preview=True,
+        )
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -247,13 +258,22 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             reply_markup=official_keyboard(),
         )
     elif q.data == "adm:links":
-        await context.bot.send_message(
-            chat_id=q.from_user.id,
-            text=official_text(),
-            parse_mode=ParseMode.HTML,
-            reply_markup=official_keyboard(),
-            disable_web_page_preview=True,
-        )
+        try:
+            await context.bot.send_photo(
+                chat_id=q.from_user.id,
+                photo=BANNER_URL,
+                caption=official_text(),
+                parse_mode=ParseMode.HTML,
+                reply_markup=official_keyboard(),
+            )
+        except Exception:
+            await context.bot.send_message(
+                chat_id=q.from_user.id,
+                text=official_text(),
+                parse_mode=ParseMode.HTML,
+                reply_markup=official_keyboard(),
+                disable_web_page_preview=True,
+            )
 
 
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
