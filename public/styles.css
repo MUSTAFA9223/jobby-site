@@ -175,16 +175,21 @@ button { color: inherit; }
   font-size: clamp(7rem, 13.2vw, 12.25rem);
   line-height: .76;
   font-weight: 1000;
-  letter-spacing: -.055em;
+  letter-spacing: -.012em;
   white-space: nowrap;
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
-  text-shadow: 9px 11px 0 var(--ink);
+  text-shadow:
+    0 2px 0 var(--ink),
+    0 4px 0 var(--ink),
+    0 6px 0 var(--ink),
+    7px 10px 0 var(--ink),
+    12px 17px 22px rgba(0,0,0,.22);
 }
-.hero-word span { display: inline-block; margin-right: .015em; }
+.hero-word span { display: inline-block; margin-right: .035em; }
 .hero-tagline {
   max-width: 545px;
-  margin: 28px 0 0;
+  margin: 46px 0 0;
   color: rgba(11,11,11,.78);
   font-size: clamp(15px, 1.42vw, 19px);
   font-weight: 750;
@@ -468,8 +473,8 @@ footer p:last-child { text-align: right; }
   .hero-layout { display: block; width: 100%; min-height: 820px; padding: 102px 18px 0; }
   .hero-copy { padding: 0; }
   .hero-kicker { margin-bottom: 15px; font-size: 7px; letter-spacing: .11em; }
-  .hero-word { font-size: clamp(4.5rem, 23.5vw, 7rem); -webkit-text-stroke-width: 2px; text-shadow: 5px 6px 0 var(--ink); }
-  .hero-tagline { max-width: 315px; margin-top: 22px; font-size: 14px; line-height: 1.5; }
+  .hero-word { font-size: clamp(4.25rem, 22.5vw, 6.8rem); letter-spacing: -.005em; -webkit-text-stroke-width: 2px; text-shadow: 0 2px 0 var(--ink), 0 4px 0 var(--ink), 5px 8px 0 var(--ink), 7px 12px 14px rgba(0,0,0,.18); }
+  .hero-tagline { max-width: 315px; margin-top: 34px; font-size: 14px; line-height: 1.5; }
   .hero-actions { max-width: 330px; gap: 8px; margin-top: 21px; }
   .hero-primary { min-height: 45px; padding: 0 16px; box-shadow: 4px 5px 0 var(--ink); }
   .hero-social { width: 43px; height: 43px; box-shadow: 3px 3px 0 var(--ink); }
