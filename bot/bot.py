@@ -127,7 +127,7 @@ def admin_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("👁 Preview welcome", callback_data="adm:preview")],
-            [InlineKeyboardButton("✏️ Edit welcome text", callback_data="adm:edit_welcome")],
+            [InlineKeyboardButton("✏️ Edit welcome template", callback_data="adm:edit_welcome")],
             [InlineKeyboardButton("🔗 Official links", callback_data="adm:links")],
             [InlineKeyboardButton("🖼 Welcome image", callback_data="adm:image_help")],
         ]
@@ -281,7 +281,13 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         context.user_data["awaiting_welcome_text"] = True
         await context.bot.send_message(
             chat_id=q.from_user.id,
-            text="✏️ Send the new welcome message now.\n\nUse <code>{name}</code> where the new member's name should appear. HTML formatting is supported.",
+            text=(
+                "✏️ <b>Edit the full welcome template</b>\n\n"
+                "Send the complete message exactly as you want it to appear.\n"
+                "Use <code>{name}</code> for the member name.\n\n"
+                "You can paste Telegram custom/animated emoji directly in the message; "
+                "the bot will preserve the message entities when possible."
+            ),
             parse_mode=ParseMode.HTML,
         )
 
