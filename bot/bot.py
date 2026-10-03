@@ -10,6 +10,7 @@ from telegram.ext import (
     CommandHandler,
     ContextTypes,
     MessageHandler,
+    ConversationHandler,
     filters,
 )
 
@@ -39,6 +40,9 @@ logging.basicConfig(
     level=logging.INFO,
 )
 log = logging.getLogger("jobby-bot")
+
+EDIT_WELCOME = 1
+WELCOME_OVERRIDE = ""
 
 
 def esc(value: object) -> str:
@@ -120,8 +124,10 @@ def admin_text() -> str:
 def admin_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("Preview", callback_data="adm:preview")],
-            [InlineKeyboardButton("Links", callback_data="adm:links")],
+            [InlineKeyboardButton("👁 Preview welcome", callback_data="adm:preview")],
+            [InlineKeyboardButton("✏️ Edit welcome text", callback_data="adm:edit_welcome")],
+            [InlineKeyboardButton("🔗 Official links", callback_data="adm:links")],
+            [InlineKeyboardButton("🖼 Welcome image", callback_data="adm:image_help")],
         ]
     )
 
@@ -246,29 +252,59 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     await q.answer()
     if q.data == "adm:preview":
-        await context.bot.send_message(
-            chat_id=q.from_user.id,
-            text=welcome_text(q.from_user.first_name or "friend"),
-            parse_mode=ParseMode.HTML,
-            reply_markup=official_keyboard(),
-        )
-    elif q.data == "adm:links":
         try:
             await context.bot.send_photo(
                 chat_id=q.from_user.id,
                 photo=BANNER_URL,
-                caption=official_text(),
+                caption=welcome_text(q.from_user.first_name or "friend"),
                 parse_mode=ParseMode.HTML,
                 reply_markup=official_keyboard(),
             )
         except Exception:
             await context.bot.send_message(
                 chat_id=q.from_user.id,
-                text=official_text(),
+                text=welcome_text(q.from_user.first_name or "friend"),
                 parse_mode=ParseMode.HTML,
                 reply_markup=official_keyboard(),
-                disable_web_page_preview=True,
             )
+    elif q.data == "adm:links":
+        await send_links(q.message)
+    elif q.data == "adm:image_help":
+        await context.bot.send_message(
+            chat_id=q.from_user.id,
+            text="🖼 <b>Welcome image</b>\n\nSend the new image to the bot with caption <code>/welcomeimage</code>. It will be used for future welcome messages.",
+            parse_mode=ParseMode.HTML,
+        )
+    elif q.data == "adm:edit_welcome":
+        context.user_data["awaiting_welcome_text"] = True
+        await context.bot.send_message(
+            chat_id=q.from_user.id,
+            text="✏️ Send the new welcome message now.\n\nUse <code>{name}</code> where the new member's name should appear. HTML formatting is supported.",
+            parse_mode=ParseMode.HTML,
+        )
+
+
+async def admin_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    global WELCOME_OVERRIDE, BANNER_URL
+    uid = update.effective_user.id if update.effective_user else None
+    if not (is_private(update) and is_admin(uid)):
+        return
+    msg = update.effective_message
+    if not msg:
+        return
+
+    if msg.photo and (msg.caption or "").strip().lower().startswith("/welcomeimage"):
+        BANNER_URL = msg.photo[-1].file_id
+        await msg.reply_text("✅ Welcome image updated. Use /admin → Preview welcome to check it.")
+        return
+
+    if context.user_data.get("awaiting_welcome_text") and msg.text:
+        WELCOME_OVERRIDE = msg.text
+        context.user_data["awaiting_welcome_text"] = False
+        await msg.reply_text(
+            "✅ Welcome text updated. Use /admin → Preview welcome to check it.",
+            reply_markup=admin_keyboard(),
+        )
 
 
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -333,6 +369,7 @@ def main() -> None:
     app.add_handler(CommandHandler("admin", admin_cmd))
 
     app.add_handler(CallbackQueryHandler(admin_callback, pattern=r"^adm:"))
+    app.add_handler(MessageHandler(filters.ChatType.PRIVATE & (filters.PHOTO | (filters.TEXT & ~filters.COMMAND)), admin_input))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_trigger))
 
