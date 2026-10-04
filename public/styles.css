@@ -1804,3 +1804,39 @@ footer{color:#8f887d}
   outline:2px solid #14f195;
   outline-offset:3px;
 }
+
+
+/* Header logo subtle lift/scale 2026-10-04 */
+.site-header .brand{
+  transform:translateY(-3px) !important;
+  gap:3px !important;
+}
+.site-header .brand-mark{
+  width:38px !important;
+  height:32px !important;
+}
+.site-header .brand-mark svg{
+  width:38px !important;
+  height:32px !important;
+}
+.site-header .brand-word,
+.site-header .brand>span:last-child{
+  font-size:31px !important;
+}
+@media(max-width:620px){
+  .site-header .brand{
+    transform:translateY(-2px) !important;
+  }
+  .site-header .brand-mark{
+    width:30px !important;
+    height:27px !important;
+  }
+  .site-header .brand-mark svg{
+    width:30px !important;
+    height:27px !important;
+  }
+  .site-header .brand-word,
+  .site-header .brand>span:last-child{
+    font-size:25px !important;
+  }
+}
