@@ -1586,3 +1586,60 @@ footer{color:#8f887d}
     transform: translateY(2.5vh);
   }
 }
+
+/* Header logo match: crown + cream 3D JOBBY */
+.site-header .brand{
+  gap:4px;
+  align-items:center;
+}
+.site-header .brand-mark{
+  width:45px;
+  height:38px;
+  margin-right:-2px;
+  color:#d6a83b;
+  flex:0 0 auto;
+}
+.site-header .brand-mark svg{
+  width:45px;
+  height:38px;
+  overflow:visible;
+  color:#d6a83b;
+  filter:
+    drop-shadow(0 0 3px rgba(242,199,92,.72))
+    drop-shadow(0 2px 0 rgba(83,49,5,.75));
+}
+.site-header .brand-word,
+.site-header .brand>span:last-child{
+  color:#f6f0e5;
+  font-family:Impact,Haettenschweiler,"Arial Black","Franklin Gothic Heavy",sans-serif;
+  font-size:36px;
+  line-height:.9;
+  font-style:normal;
+  font-weight:1000;
+  letter-spacing:.005em;
+  -webkit-text-stroke:1.4px #d6a83b;
+  paint-order:stroke fill;
+  text-shadow:
+    0 1px 0 #fff7df,
+    0 2px 0 #d6a83b,
+    0 4px 0 #7c4e08,
+    0 0 9px rgba(242,199,92,.34),
+    0 5px 8px rgba(0,0,0,.58);
+}
+@media(max-width:620px){
+  .site-header .brand{gap:2px}
+  .site-header .brand-mark{
+    width:34px;
+    height:30px;
+    margin-right:-1px;
+  }
+  .site-header .brand-mark svg{
+    width:34px;
+    height:30px;
+  }
+  .site-header .brand-word,
+  .site-header .brand>span:last-child{
+    font-size:28px;
+    -webkit-text-stroke-width:1px;
+  }
+}
