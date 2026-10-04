@@ -1872,3 +1872,22 @@ footer{color:#8f887d}
   opacity:1;
   transform:scale(1);
 }
+/* Reliable CSS-only SOON state for the native Solana button */
+.hero-social-row button.hero-social-solana{
+  appearance:none;
+  -webkit-appearance:none;
+  font:inherit;
+  padding:0;
+}
+.hero-social-row .hero-social-solana:focus .solana-mark,
+.hero-social-row .hero-social-solana:active .solana-mark,
+.hero-social-row .hero-social-solana.is-soon .solana-mark{
+  opacity:0;
+  transform:scale(.72) rotate(-6deg);
+}
+.hero-social-row .hero-social-solana:focus .solana-soon-label,
+.hero-social-row .hero-social-solana:active .solana-soon-label,
+.hero-social-row .hero-social-solana.is-soon .solana-soon-label{
+  opacity:1;
+  transform:scale(1);
+}
