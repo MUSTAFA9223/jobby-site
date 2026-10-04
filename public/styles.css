@@ -1786,16 +1786,16 @@ footer{color:#8f887d}
 
 /* Crown visibility hard-fix 2026-10-04 */
 .character-wrap{
-  bottom:-7% !important;
+  bottom:-3% !important;
 }
 @media(max-width:900px){
   .character-wrap{
-    bottom:-6% !important;
+    bottom:-2% !important;
   }
 }
 @media(max-width:620px){
   .character-wrap{
-    bottom:-4% !important;
+    bottom:-1% !important;
     width:min(76vw,395px);
   }
 }
