@@ -67,7 +67,12 @@ function showToast(message) {
 }
 
 function showSolanaSoon() {
-  showToast("SOON");
+  if (!solanaSoon) return;
+  solanaSoon.classList.add("is-soon");
+  clearTimeout(showSolanaSoon.timer);
+  showSolanaSoon.timer = setTimeout(function () {
+    solanaSoon.classList.remove("is-soon");
+  }, 1600);
 }
 
 if (solanaSoon) {
