@@ -1344,3 +1344,238 @@ footer{color:#8f887d}
   .step-shot{min-height:170px}
   .section{padding:78px 0}
 }
+/* JOBBY story cards reference match 2026-10-04 */
+.intro{
+  padding:28px 0 64px;
+  background:
+    radial-gradient(ellipse at 50% -8%,rgba(214,168,59,.10),transparent 30%),
+    linear-gradient(180deg,#080808 0%,#0b0b0b 100%);
+  border-top:1px solid rgba(214,168,59,.18);
+}
+.intro-grid{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:min(1440px,calc(100% - 64px));
+  text-align:center;
+}
+.intro-copy h2{
+  position:relative;
+  display:inline-block;
+  margin:0;
+  padding:0 28px;
+  color:#f7efe2;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(36px,3.2vw,50px);
+  line-height:1;
+  letter-spacing:.005em;
+  text-shadow:0 2px 12px rgba(0,0,0,.75);
+}
+.intro-copy h2 span{
+  color:transparent;
+  background:linear-gradient(180deg,#ffe9a6 0%,#f2c75c 48%,#d6a83b 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  text-shadow:none;
+}
+.intro-copy h2:before,
+.intro-copy h2:after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:clamp(120px,25vw,360px);
+  height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(242,199,92,.35) 20%,#d6a83b 100%);
+  box-shadow:0 0 7px rgba(214,168,59,.12);
+}
+.intro-copy h2:before{right:100%;margin-right:20px}
+.intro-copy h2:after{left:100%;margin-left:20px;transform:scaleX(-1)}
+.steps-grid{
+  width:min(1340px,calc(100% - 64px));
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:28px;
+  margin-top:27px;
+}
+.step-card,
+.step-card.accent{
+  min-height:158px;
+  grid-template-columns:minmax(0,1.42fr) minmax(150px,.88fr);
+  border:1px solid rgba(214,168,59,.92);
+  border-radius:15px;
+  background:#0b0b0b;
+  box-shadow:
+    inset 0 0 22px rgba(214,168,59,.025),
+    0 7px 24px rgba(0,0,0,.28);
+}
+.step-card:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0 52%,rgba(214,168,59,.025) 66%,transparent 100%);
+}
+.step-content{
+  position:relative;
+  z-index:4;
+  display:grid;
+  grid-template-columns:54px minmax(0,1fr);
+  align-items:center;
+  gap:17px;
+  padding:23px 12px 23px 25px;
+  text-align:left;
+}
+.step-card .step-icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  margin:0;
+  color:#e4ad38!important;
+  filter:drop-shadow(0 0 5px rgba(242,199,92,.18));
+}
+.step-card .step-icon svg{
+  width:42px;
+  height:42px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:3.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.step-copy{min-width:0}
+.step-card h3{
+  margin:0 0 6px;
+  color:#fffaf0;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(20px,1.55vw,25px);
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.005em;
+  white-space:nowrap;
+}
+.step-card p,
+.step-card.accent p{
+  margin:0;
+  color:#d7d2ca;
+  font-size:clamp(13px,1vw,16px);
+  line-height:1.28;
+  font-weight:500;
+}
+.step-shot{
+  position:relative;
+  min-height:156px;
+  overflow:hidden;
+  border-left:1px solid rgba(214,168,59,.12);
+  background:
+    radial-gradient(circle at 55% 35%,rgba(242,199,92,.28),transparent 38%),
+    linear-gradient(110deg,#17110a 0%,#2b1d0d 42%,#0b0b0b 100%);
+}
+.step-shot:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    repeating-linear-gradient(90deg,rgba(255,224,151,.05) 0 2px,transparent 2px 38px),
+    linear-gradient(90deg,rgba(0,0,0,.52) 0%,transparent 28%,transparent 78%,rgba(0,0,0,.30) 100%);
+  pointer-events:none;
+}
+.step-shot:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:3;
+  background:linear-gradient(90deg,#0b0b0b 0%,rgba(11,11,11,.72) 6%,transparent 32%,transparent 100%);
+  pointer-events:none;
+}
+.step-shot img{
+  position:absolute;
+  z-index:2;
+  right:-4%;
+  bottom:-49%;
+  width:126%;
+  max-width:none;
+  filter:
+    drop-shadow(0 12px 13px rgba(0,0,0,.50))
+    saturate(.94)
+    contrast(1.05);
+}
+.step-card.hired .step-shot img{right:-12%;bottom:-53%;width:128%}
+.step-card.confident .step-shot img{right:-7%;bottom:-52%;width:126%}
+.step-card.fired .step-shot img{right:-10%;bottom:-52%;width:130%}
+.step-prop{z-index:5}
+.hired .step-prop{
+  left:7%;bottom:5%;
+  width:82px;height:48px;
+  border-radius:3px;
+  background:linear-gradient(160deg,#34210f,#090807);
+  border:1px solid rgba(242,199,92,.22);
+  box-shadow:0 8px 16px rgba(0,0,0,.42);
+}
+.hired .step-prop:after{
+  content:"";
+  position:absolute;
+  left:50%;top:7px;
+  width:12px;height:12px;
+  transform:translateX(-50%) rotate(45deg);
+  border:1px solid rgba(214,168,59,.72);
+}
+.confident .step-prop{
+  right:27%;top:27%;
+  width:78px;height:22px;
+}
+.confident .step-prop:before,
+.confident .step-prop:after{
+  top:0;width:31px;height:16px;
+  background:#080808;
+  border:2px solid #211608;
+  border-radius:4px 4px 15px 15px;
+  box-shadow:0 0 5px rgba(0,0,0,.7);
+}
+.confident .step-prop:before{left:0;transform:rotate(4deg)}
+.confident .step-prop:after{right:0;transform:rotate(-4deg)}
+.fired .step-prop{
+  left:4%;bottom:4%;
+  padding:7px 12px 6px;
+  background:#d3ad73;
+  color:#21160a;
+  border:1px solid #f0d29c;
+  transform:rotate(-3deg);
+  font-size:13px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  box-shadow:0 7px 15px rgba(0,0,0,.42);
+}
+.fired .step-prop:after{content:"FIRED"}
+
+@media(max-width:900px){
+  .intro-grid,
+  .steps-grid{width:calc(100% - 32px)}
+  .steps-grid{grid-template-columns:1fr;gap:15px}
+  .step-card,.step-card.accent{min-height:168px;grid-template-columns:minmax(0,1.35fr) minmax(150px,.85fr)}
+  .step-shot{min-height:166px}
+  .intro-copy h2:before,
+  .intro-copy h2:after{width:clamp(50px,15vw,120px)}
+}
+@media(max-width:620px){
+  .intro{padding:28px 0 48px}
+  .intro-copy h2{font-size:31px;padding:0 8px}
+  .intro-copy h2:before,
+  .intro-copy h2:after{display:none}
+  .steps-grid{margin-top:23px}
+  .step-card,.step-card.accent{
+    min-height:156px;
+    grid-template-columns:minmax(0,1.35fr) minmax(118px,.65fr);
+    border-radius:13px;
+  }
+  .step-content{
+    grid-template-columns:42px minmax(0,1fr);
+    gap:11px;
+    padding:18px 6px 18px 17px;
+  }
+  .step-card .step-icon{width:36px;height:36px}
+  .step-card .step-icon svg{width:34px;height:34px}
+  .step-card h3{font-size:18px}
+  .step-card p,.step-card.accent p{font-size:12px}
+  .step-shot{min-height:154px}
+}
