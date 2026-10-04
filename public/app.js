@@ -13,26 +13,26 @@ const toast = document.querySelector("#toast");
 const solanaSoon = document.querySelector("#solanaSoon");
 
 const jobs = [
-  "Hold the chart",
-  "Guard the green candle",
-  "Carry one bag",
-  "Press one button",
-  "Watch the market",
-  "Do not touch anything",
-  "Post one meme",
-  "Fix the Wi-Fi"
+  { job: "Hold the chart", match: /chart|candle|market|hold|bag|سوق|شارت|شمعة/i, outcome: "He held the monitor. The chart kept falling.", challenge: "Make a meme or a 5–10 second clip of JOBBY physically holding a falling red chart." },
+  { job: "Post one meme", match: /post|meme|tweet|social|ميم|تغريد|منشور/i, outcome: "He posted the screenshot. The caption still says: write something funny here.", challenge: "Give JOBBY your worst unfinished caption. Turn it into a meme." },
+  { job: "Mute the meeting", match: /mute|meeting|call|zoom|اجتماع|مكالمة/i, outcome: "He muted everyone except himself. The whole meeting heard him chewing.", challenge: "Make a two-panel meme: the meeting instruction, then JOBBY eating with his mic on." },
+  { job: "Save the file", match: /save|file|folder|document|حفظ|ملف/i, outcome: "Saved as final_FINAL_v27_ACTUALLY_FINAL. He still sent v2.", challenge: "Create JOBBY's desktop with the most ridiculous collection of final files." },
+  { job: "Bring one coffee", match: /coffee|drink|قهوة/i, outcome: "He brought one coffee. In a plate. He says it cools faster.", challenge: "Show JOBBY serving coffee in the worst possible container." },
+  { job: "Fix the Wi-Fi", match: /wi.?fi|internet|router|network|واي|انترنت|إنترنت/i, outcome: "He unplugged the router to save electricity. The Wi-Fi problem is now permanent.", challenge: "Make a before-and-after meme of JOBBY proudly unplugging the router." },
+  { job: "Deliver the package", match: /deliver|package|parcel|box|طرد|توصيل/i, outcome: "He delivered the empty box. The package looked too heavy.", challenge: "Draw or film JOBBY handing over an empty box like employee of the month." },
+  { job: "Do not touch anything", match: /touch|button|press|لمس|زر/i, outcome: "He pressed the only red button. It looked like it needed attention.", challenge: "Put JOBBY beside one huge red button. Give the button a disastrous label." }
 ];
 
-const outcomes = [
-  "JOBBY finished the job. Unfortunately, it was the wrong job.",
-  "Mission complete. The original mission is no longer recognizable.",
-  "JOBBY followed every instruction — just not in the right order.",
-  "The good news: JOBBY showed up. The bad news: JOBBY showed up.",
-  "Result logged as: technically an attempt.",
-  "JOBBY says everything went exactly according to a plan nobody approved."
-];
+function pickScenario(job) {
+  return jobs.find(function (entry) { return entry.match.test(job); }) || {
+    job: job,
+    outcome: 'The brief: "' + job + '". JOBBY spent the entire shift making an EMPLOYEE OF THE MONTH badge for himself.',
+    challenge: "Make a two-panel meme: your exact instruction, then JOBBY proudly showing his badge while the job stays undone."
+  };
+}
 
 let lastShareText = "";
+let lastMemePrompt = "";
 
 function closeMenu() {
   if (!menuButton || !siteNav) return;
@@ -99,35 +99,49 @@ if (characterWrap && window.matchMedia("(pointer: fine)").matches && !window.mat
   });
 }
 
-function renderResult(text) {
+function renderResult(text, challenge) {
   if (!jobResult) return;
   const small = document.createElement("small");
   small.textContent = "SHIFT RESULT";
   const strong = document.createElement("strong");
   strong.textContent = text;
   jobResult.replaceChildren(small, strong);
+  if (challenge) {
+    const prompt = document.createElement("p");
+    prompt.className = "meme-challenge";
+    prompt.textContent = "YOUR MEME CHALLENGE: " + challenge;
+    jobResult.append(prompt);
+  }
 }
 
 function executeJob() {
-  if (!jobInput || !jobResult) return;
-  const job = jobInput.value.trim();
+  if (!jobInput || !jobResult || (runJob && runJob.disabled)) return;
+  const job = jobInput.value.trim().slice(0, 80);
   if (!job) {
     renderResult("Give JOBBY one job first.");
     jobInput.focus();
     return;
   }
 
+  lastShareText = "";
+  lastMemePrompt = "";
+  if (shareJob) shareJob.disabled = true;
+  const copyPrompt = document.querySelector("#copyMemePrompt");
+  if (copyPrompt) copyPrompt.disabled = true;
   jobResult.classList.add("running");
-  renderResult("JOBBY is working. This is already concerning...");
+  renderResult("Writing JOBBY’s next workplace disaster...");
   if (runJob) runJob.disabled = true;
 
   window.setTimeout(function () {
-    const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
-    renderResult(outcome);
+    const scenario = pickScenario(job);
+    const outcome = scenario.outcome;
+    renderResult(outcome, scenario.challenge);
     jobResult.classList.remove("running");
     if (runJob) runJob.disabled = false;
     if (shareJob) shareJob.disabled = false;
-    lastShareText = "I gave JOBBY one job: " + job + "\n\n" + outcome + "\n\n@JOBBYSOL #JOBBY\nhttps://jobby.lol";
+    lastShareText = "I gave JOBBY one job: " + job + "\n\n" + outcome + "\n\nYour turn: " + scenario.challenge + "\n\n@JOBBYSOL #JOBBY\nhttps://jobby.lol";
+    lastMemePrompt = "Create a meme featuring JOBBY, the cream-colored mascot with a black hoodie, sunglasses and a gold crown.\nInstruction: " + job + "\nPunchline: " + outcome + "\nScene: " + scenario.challenge + "\nKeep JOBBY recognizable. This is a fictional comedy scene.";
+    if (copyPrompt) copyPrompt.disabled = false;
   }, 700);
 }
 
@@ -139,7 +153,7 @@ if (jobInput) {
 }
 if (randomJob && jobInput) {
   randomJob.addEventListener("click", function () {
-    jobInput.value = jobs[Math.floor(Math.random() * jobs.length)];
+    jobInput.value = jobs[Math.floor(Math.random() * jobs.length)].job;
     jobInput.focus();
   });
 }
@@ -162,6 +176,24 @@ if (shareJob) {
     }
   });
 }
+document.querySelectorAll("[data-job]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    if (!jobInput || (runJob && runJob.disabled)) return;
+    jobInput.value = button.dataset.job;
+    executeJob();
+  });
+});
+const copyMemePrompt = document.querySelector("#copyMemePrompt");
+if (copyMemePrompt) copyMemePrompt.addEventListener("click", async function () {
+  if (!lastMemePrompt) return;
+  try {
+    await navigator.clipboard.writeText(lastMemePrompt);
+    showToast("MEME PROMPT COPIED");
+  } catch (error) {
+    showToast("COPY FAILED");
+  }
+});
+
 const websiteCopyButtons = [copySite, copyHeroSite].filter(Boolean);
 websiteCopyButtons.forEach(function (button) {
   button.addEventListener("click", async function () {

@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="JOBBY — Give Him One Job">
   <meta name="twitter:description" content="One job. Zero supervision. Infinite ways to mess it up.">
-  <link rel="stylesheet" href="/styles.css?v=20261004-solana-toggle-soon-v1">
+  <link rel="stylesheet" href="/styles.css?v=20261004-meme-jobs-v1">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -193,28 +193,37 @@
           <div class="section-index light">02 / JOB LAB</div>
           <p class="eyebrow dark">YOUR SHIFT STARTS HERE</p>
           <h2>GIVE HIM<br>ONE JOB.</h2>
-          <p>Type any assignment. JOBBY will report back with the kind of result only JOBBY could produce.</p>
-          <div class="lab-tags"><span>NO WALLET</span><span>NO LOGIN</span><span>BAD RESULTS</span></div>
+          <p>Real-life jobs. Spectacularly wrong results. Pick a task, get a meme idea, then make your own image or short clip and share it with the JOBBY community.</p>
+          <div class="lab-tags"><span>NO WALLET</span><span>NO LOGIN</span><span>MAKE A MEME</span></div>
         </div>
 
         <div class="terminal reveal">
           <div class="terminal-bar">
             <span>JOBBY://SHIFT_TERMINAL</span>
-            <span class="terminal-live"><i></i> ONLINE</span>
+            <span class="terminal-live"><i></i> MEME MODE</span>
           </div>
-          <label for="jobInput">ENTER ASSIGNMENT</label>
+          <div class="job-presets" aria-label="Pick a meme task">
+            <button type="button" data-job="Hold the chart">HOLD THE CHART</button>
+            <button type="button" data-job="Mute the meeting">MUTE THE MEETING</button>
+            <button type="button" data-job="Save the file">SAVE THE FILE</button>
+            <button type="button" data-job="Bring one coffee">BRING ONE COFFEE</button>
+          </div>
+          <label for="jobInput">OR GIVE HIM YOUR OWN JOB</label>
           <div class="input-row">
             <input id="jobInput" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Hold the chart">
-            <button id="runJob" type="button">RUN JOB</button>
+            <button id="runJob" type="button">MAKE A MEME</button>
           </div>
           <div class="job-result" id="jobResult" aria-live="polite">
             <small>SHIFT RESULT</small>
-            <strong>Waiting for an assignment.</strong>
+            <strong>One job. What could go wrong?</strong>
           </div>
           <div class="terminal-actions">
             <button id="randomJob" type="button">RANDOM JOB</button>
-            <button id="shareJob" type="button" disabled>SHARE RESULT ↗</button>
+            <button id="shareJob" type="button" disabled>SHARE MEME IDEA ↗</button>
+            <button id="copyMemePrompt" type="button" disabled>COPY MEME PROMPT</button>
           </div>
+          <p class="lab-community">Made it? <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">SHOW THE COMMUNITY ↗</a></p>
+          <p class="lab-note">Fictional meme ideas. Your task stays in this browser.</p>
         </div>
       </div>
     </section>
@@ -239,7 +248,7 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js?v=20261004-solana-toggle-soon-v1" defer></script>
+  <script src="/app.js?v=20261004-meme-jobs-v1" defer></script>
   <!-- production deployment: luxury black-gold reference -->
 </body>
 </html>
