@@ -1753,7 +1753,7 @@ footer{color:#8f887d}
 
 /* Solana — official mark on a dark 3D button */
 .hero-social-row .hero-social-solana{
-  cursor:default;
+  cursor:pointer;
   background:linear-gradient(145deg,#18151f 0%,#090a0d 58%,#030405 100%)!important;
   border-color:#6a55b8!important;
   box-shadow:
@@ -1798,4 +1798,9 @@ footer{color:#8f887d}
     bottom:-1% !important;
     width:min(76vw,395px);
   }
+}
+
+.hero-social-row .hero-social-solana:focus-visible{
+  outline:2px solid #14f195;
+  outline-offset:3px;
 }
