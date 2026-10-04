@@ -1643,3 +1643,50 @@ footer{color:#8f887d}
     -webkit-text-stroke-width:1px;
   }
 }
+
+/* Cream 3D hero title */
+.hero-word{
+  color:transparent;
+  background:linear-gradient(
+    180deg,
+    #fffdf7 0%,
+    #f6f0e5 18%,
+    #f0dfb4 42%,
+    #d6a83b 68%,
+    #8b5e11 100%
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-stroke:1.5px #f2c75c;
+  paint-order:stroke fill;
+  text-shadow:
+    0 2px 0 #fff7df,
+    0 4px 0 #c9972f,
+    0 7px 0 #6b4308,
+    0 0 14px rgba(242,199,92,.38),
+    0 0 34px rgba(214,168,59,.24),
+    12px 18px 26px rgba(0,0,0,.72);
+  filter:none;
+}
+@media(max-width:620px){
+  .hero-word{
+    color:transparent;
+    background:linear-gradient(
+      180deg,
+      #fffdf7 0%,
+      #f6f0e5 18%,
+      #f0dfb4 42%,
+      #d6a83b 68%,
+      #8b5e11 100%
+    );
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-stroke:1.2px #f2c75c;
+    text-shadow:
+      0 1px 0 #fff7df,
+      0 3px 0 #c9972f,
+      0 5px 0 #6b4308,
+      0 0 10px rgba(242,199,92,.30),
+      8px 12px 18px rgba(0,0,0,.62);
+  }
+}
