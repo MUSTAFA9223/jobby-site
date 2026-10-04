@@ -1579,3 +1579,10 @@ footer{color:#8f887d}
   .step-card p,.step-card.accent p{font-size:12px}
   .step-shot{min-height:154px}
 }
+
+/* Align hero copy beside mascot in tall mobile/desktop-mode views */
+@media (min-width: 621px) and (max-aspect-ratio: 3 / 4) {
+  .hero-copy {
+    transform: translateY(2.5vh);
+  }
+}
