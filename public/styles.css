@@ -1840,3 +1840,35 @@ footer{color:#8f887d}
     font-size:25px !important;
   }
 }
+/* Solana inline SOON state 2026-10-04 */
+.hero-social-row .hero-social-solana{
+  isolation:isolate;
+}
+.hero-social-row .hero-social-solana .solana-mark{
+  transition:opacity .18s ease,transform .18s ease;
+}
+.hero-social-row .hero-social-solana .solana-soon-label{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:grid;
+  place-items:center;
+  opacity:0;
+  transform:scale(.72);
+  pointer-events:none;
+  color:#fff;
+  font-size:9px;
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.09em;
+  text-shadow:0 1px 2px rgba(0,0,0,.72);
+  transition:opacity .18s ease,transform .18s ease;
+}
+.hero-social-row .hero-social-solana.is-soon .solana-mark{
+  opacity:0;
+  transform:scale(.72) rotate(-6deg);
+}
+.hero-social-row .hero-social-solana.is-soon .solana-soon-label{
+  opacity:1;
+  transform:scale(1);
+}
