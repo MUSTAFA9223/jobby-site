@@ -10,6 +10,7 @@ const jobResult = document.querySelector("#jobResult");
 const copySite = document.querySelector("#copySite");
 const copyHeroSite = document.querySelector("#copyHeroSite");
 const toast = document.querySelector("#toast");
+const solanaSoon = document.querySelector("#solanaSoon");
 
 const jobs = [
   "Hold the chart",
@@ -64,6 +65,21 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 1800);
 }
+
+function showSolanaSoon() {
+  showToast("SOON");
+}
+
+if (solanaSoon) {
+  solanaSoon.addEventListener("click", showSolanaSoon);
+  solanaSoon.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      showSolanaSoon();
+    }
+  });
+}
+
 
 window.addEventListener("scroll", function () {
   if (siteHeader) siteHeader.classList.toggle("compact", window.scrollY > 40);
