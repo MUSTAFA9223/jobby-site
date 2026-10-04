@@ -1711,14 +1711,7 @@ footer{color:#8f887d}
   pointer-events:none;
 }
 .hero-social-row .hero-social::after{
-  content:"";
-  position:absolute;
-  inset:auto 5px 4px 5px;
-  height:18%;
-  border-radius:50%;
-  background:rgba(0,0,0,.28);
-  filter:blur(5px);
-  pointer-events:none;
+  content:none;
 }
 .hero-social-row .hero-social svg{
   position:relative;
@@ -1736,16 +1729,12 @@ footer{color:#8f887d}
   border-color:#4b4b4b!important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.26),
-    inset 0 -6px 12px rgba(0,0,0,.72),
-    0 7px 0 #000,
-    0 11px 20px rgba(0,0,0,.46)!important;
+    inset 0 -6px 12px rgba(0,0,0,.72)!important;
 }
 .hero-social-row .hero-social-x:hover{
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.32),
-    inset 0 -6px 12px rgba(0,0,0,.78),
-    0 8px 0 #000,
-    0 14px 24px rgba(0,0,0,.52)!important;
+    inset 0 -6px 12px rgba(0,0,0,.78)!important;
 }
 
 /* Telegram — official blue */
@@ -1754,16 +1743,12 @@ footer{color:#8f887d}
   border-color:#77d6ff!important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.48),
-    inset 0 -7px 13px rgba(4,78,125,.42),
-    0 7px 0 #0c6f9f,
-    0 12px 24px rgba(42,171,238,.30)!important;
+    inset 0 -7px 13px rgba(4,78,125,.42)!important;
 }
 .hero-social-row .hero-social-tg:hover{
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.56),
-    inset 0 -7px 13px rgba(4,78,125,.46),
-    0 8px 0 #0b6a98,
-    0 15px 28px rgba(42,171,238,.42)!important;
+    inset 0 -7px 13px rgba(4,78,125,.46)!important;
 }
 
 /* Solana — green / cyan / violet gradient */
@@ -1774,9 +1759,7 @@ footer{color:#8f887d}
   border-color:#6fffc7!important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.44),
-    inset 0 -7px 13px rgba(55,25,120,.34),
-    0 7px 0 #4630a5,
-    0 12px 25px rgba(20,241,149,.22)!important;
+    inset 0 -7px 13px rgba(55,25,120,.34)!important;
 }
 .hero-social-row .hero-social-solana svg{
   fill:#fff!important;
@@ -1785,15 +1768,10 @@ footer{color:#8f887d}
   transform:translateY(-3px) scale(1.035);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.52),
-    inset 0 -7px 13px rgba(55,25,120,.40),
-    0 8px 0 #402a9a,
-    0 15px 30px rgba(153,69,255,.28)!important;
+    inset 0 -7px 13px rgba(55,25,120,.40)!important;
 }
 @media(max-width:620px){
   .hero-social-row .hero-social{
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.28),
-      0 5px 0 rgba(0,0,0,.5),
-      0 9px 15px rgba(0,0,0,.28);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
   }
 }
