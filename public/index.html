@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="JOBBY — Give Him One Job">
   <meta name="twitter:description" content="One job. Zero supervision. Infinite ways to mess it up.">
-  <link rel="stylesheet" href="/styles.css?v=20261004-solana-inline-soon-v2">
+  <link rel="stylesheet" href="/styles.css?v=20261004-solana-inline-soon-v3">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -79,7 +79,7 @@
               <a class="hero-social hero-social-tg" href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer" aria-label="Official JOBBY Telegram channel">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 3.3a1.5 1.5 0 0 0-1.55-.23L3.04 9.67c-1.17.46-1.16 1.12-.21 1.41l4.4 1.37 1.7 5.28c.22.64.11.9.75.9.5 0 .72-.23 1-.5l2.12-2.06 4.42 3.26c.81.45 1.4.22 1.6-.76l2.9-13.67c.3-1.2-.46-1.74-1.02-1.6ZM8.05 12.14l9.85-6.22c.49-.3.93-.14.57.18l-8.13 7.34-.31 3.34-1.98-4.64Z"/></svg>
               </a>
-              <span class="hero-social hero-social-solana" id="solanaSoon" role="button" tabindex="0" aria-label="Solana — soon" title="Solana — SOON" onclick="event.stopImmediatePropagation();const i=this.querySelector('.solana-mark'),s=this.querySelector('.solana-soon-label');i.style.display='none';s.style.display='grid';clearTimeout(this._soonTimer);this._soonTimer=setTimeout(()=>{i.style.display='block';s.style.display='none'},1600)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopImmediatePropagation();this.click()}">
+              <span class="hero-social hero-social-solana" id="solanaSoon" role="button" tabindex="0" aria-label="Solana — soon" title="Solana — SOON">
                 <svg class="solana-mark" viewBox="0 0 397.7 311.7" aria-hidden="true" focusable="false">
                   <defs>
                     <linearGradient id="solanaMarkGradient" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -92,7 +92,7 @@
                   <path fill="url(#solanaMarkGradient)" d="M64.6 4.7C67 2.3 70.3.9 73.7.9h314.9c5.6 0 8.4 6.8 4.5 10.7l-62.2 62.2c-2.4 2.4-5.7 3.8-9.1 3.8H6.9c-5.6 0-8.4-6.8-4.5-10.7L64.6 4.7Z"/>
                   <path fill="url(#solanaMarkGradient)" d="M330.9 120.5c-2.4-2.4-5.7-3.8-9.1-3.8H6.9c-5.6 0-8.4 6.8-4.5 10.7l62.2 62.2c2.4 2.4 5.7 3.8 9.1 3.8h314.9c5.6 0 8.4-6.8 4.5-10.7l-62.2-62.2Z"/>
                 </svg>
-                <span class="solana-soon-label" aria-hidden="true" style="display:none;position:absolute;inset:0;place-items:center;color:#fff;font-size:9px;line-height:1;font-weight:1000;letter-spacing:.09em;text-shadow:0 1px 2px rgba(0,0,0,.72)">SOON</span>
+                <span class="solana-soon-label" aria-hidden="true" >SOON</span>
               </span>
             </div>
           </div>
@@ -238,7 +238,7 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js?v=20261004-solana-inline-soon-v2" defer></script>
+  <script src="/app.js?v=20261004-solana-inline-soon-v3" defer></script>
   <!-- production deployment: luxury black-gold reference -->
 </body>
 </html>
