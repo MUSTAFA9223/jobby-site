@@ -1891,3 +1891,26 @@ footer{color:#8f887d}
   opacity:1;
   transform:scale(1);
 }
+/* Persistent no-JS Solana SOON toggle 2026-10-04 */
+.hero-social-row .solana-soon-toggle{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+.hero-social-row label.hero-social-solana{
+  appearance:none;
+  -webkit-appearance:none;
+  font:inherit;
+  padding:0;
+  cursor:pointer;
+}
+.hero-social-row .solana-soon-toggle:checked + .hero-social-solana .solana-mark{
+  opacity:0!important;
+  transform:scale(.72) rotate(-6deg)!important;
+}
+.hero-social-row .solana-soon-toggle:checked + .hero-social-solana .solana-soon-label{
+  opacity:1!important;
+  transform:scale(1)!important;
+}
