@@ -18,7 +18,7 @@
   <meta name="twitter:title" content="JOBBY — No Lore. Just JOBBY.">
   <meta name="twitter:description" content="Meme him. Remix him. Put him anywhere.">
   <meta name="twitter:image" content="https://jobby.lol/jobby-official-20261005.png">
-  <link rel="stylesheet" href="/styles.css?v=20261005-jobby-v2">
+  <link rel="stylesheet" href="/styles.css?v=20261005-meme-gallery">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -181,19 +181,19 @@
       </div>
     </section>
 
-    <section class="section wild">
+    <section class="section wild" id="meme-gallery">
       <div class="section-shell">
         <div class="split-heading reveal">
           <div><span>JOBBY IN THE WILD</span><h2>THE FORMAT IS<br>THE PRODUCT.</h2></div>
           <p>Fast, readable jokes built for Crypto X: one visual, one reaction, one line.</p>
         </div>
         <div class="meme-grid">
-          <article class="meme-card reveal"><em>01</em><p>“me after one green candle”</p><strong>FOMO JOBBY</strong></article>
-          <article class="meme-card reveal"><em>02</em><p>“i said i was done buying meme coins”</p><strong>LIAR JOBBY</strong></article>
-          <article class="meme-card reveal"><em>03</em><p>“watching the chart like i know what i'm doing”</p><strong>EXPERT JOBBY</strong></article>
-          <article class="meme-card reveal"><em>04</em><p>“buying the dip for the 14th time”</p><strong>CONVICTION JOBBY</strong></article>
-          <article class="meme-card reveal"><em>05</em><p>“the group chat said ‘trust me bro’”</p><strong>RESEARCH JOBBY</strong></article>
-          <article class="meme-card reveal"><em>06</em><p>“everyone sold. jobby is still looking at the button.”</p><strong>DELAY JOBBY</strong></article>
+          <a class="meme-card reveal" href="/memes/fomo.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/fomo.webp" alt="FOMO JOBBY: “me after one green candle”" width="1254" height="1254" loading="lazy" decoding="async"><em>01</em><p>“me after one green candle”</p><strong>FOMO JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
+          <a class="meme-card reveal" href="/memes/liar.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/liar.webp" alt="LIAR JOBBY: “i said i was done buying meme coins”" width="1254" height="1254" loading="lazy" decoding="async"><em>02</em><p>“i said i was done buying meme coins”</p><strong>LIAR JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
+          <a class="meme-card reveal" href="/memes/expert.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/expert.webp" alt="EXPERT JOBBY: “watching the chart like i know what i'm doing”" width="1254" height="1254" loading="lazy" decoding="async"><em>03</em><p>“watching the chart like i know what i'm doing”</p><strong>EXPERT JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
+          <a class="meme-card reveal" href="/memes/dip.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/dip.webp" alt="CONVICTION JOBBY: “buying the dip for the 14th time”" width="1254" height="1254" loading="lazy" decoding="async"><em>04</em><p>“buying the dip for the 14th time”</p><strong>CONVICTION JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
+          <a class="meme-card reveal" href="/memes/research.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/research.webp" alt="RESEARCH JOBBY: “the group chat said ‘trust me bro’”" width="1254" height="1254" loading="lazy" decoding="async"><em>05</em><p>“the group chat said ‘trust me bro’”</p><strong>RESEARCH JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
+          <a class="meme-card reveal" href="/memes/delay.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/delay.webp" alt="DELAY JOBBY: “everyone sold. jobby is still looking at the button.”" width="1254" height="1254" loading="lazy" decoding="async"><em>06</em><p>“everyone sold. jobby is still looking at the button.”</p><strong>DELAY JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
         </div>
       </div>
     </section>
@@ -224,7 +224,13 @@
     <p>© <span id="year">2026</span> JOBBY · SOLANA · PRE-LAUNCH</p>
   </footer>
 
+  <dialog class="meme-viewer" id="memeViewer" aria-labelledby="memeViewerTitle">
+    <div class="meme-viewer-bar"><h2 id="memeViewerTitle">JOBBY MEME</h2><button type="button" id="closeMemeViewer" aria-label="Close meme">×</button></div>
+    <img id="memeViewerImage" alt="">
+    <p id="memeViewerCaption"></p>
+    <a id="downloadMeme" class="button primary" download>DOWNLOAD IMAGE ↓</a>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js?v=20261005-jobby-v2" defer></script>
+  <script src="/app.js?v=20261005-meme-gallery" defer></script>
 </body>
 </html>

@@ -194,3 +194,32 @@ document.querySelectorAll('.reveal').forEach(element => {
 const year = document.querySelector('#year');
 if (year) year.textContent = String(new Date().getFullYear());
 buildMeme();
+
+const memeViewer = document.querySelector('#memeViewer');
+const memeViewerImage = document.querySelector('#memeViewerImage');
+let activeMemeCard = null;
+if (memeViewer && typeof memeViewer.showModal === 'function') {
+  document.querySelectorAll('[data-meme]').forEach(card => {
+    card.addEventListener('click', event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      activeMemeCard = card;
+      memeViewerImage.src = card.href;
+      memeViewerImage.alt = card.querySelector('img').alt;
+      document.querySelector('#memeViewerTitle').textContent = card.querySelector('strong').textContent;
+      document.querySelector('#memeViewerCaption').textContent = card.querySelector('p').textContent;
+      document.querySelector('#downloadMeme').href = card.href;
+      memeViewer.showModal();
+      document.body.classList.add('meme-viewer-open');
+    });
+  });
+  document.querySelector('#closeMemeViewer').addEventListener('click', () => memeViewer.close());
+  memeViewer.addEventListener('click', event => {
+    const box = memeViewer.getBoundingClientRect();
+    if (event.target === memeViewer && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom)) memeViewer.close();
+  });
+  memeViewer.addEventListener('close', () => {
+    document.body.classList.remove('meme-viewer-open');
+    activeMemeCard?.focus({ preventScroll: true });
+  });
+}
