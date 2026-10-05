@@ -1,17 +1,9 @@
 {
-  "name": "JOBBY",
+  "name": "JOBBY — No Lore. Just JOBBY.",
   "short_name": "JOBBY",
-  "description": "One job. Zero supervision.",
+  "description": "A weird little creature made for the internet. Meme him. Remix him. Put him anywhere.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b0b0b",
-  "theme_color": "#0b0b0b",
-  "icons": [
-    {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
-  ]
+  "background_color": "#f7f0e6",
+  "theme_color": "#9d6bef"
 }
