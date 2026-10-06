@@ -362,33 +362,42 @@ def rendered_welcome_with_entities(member):
 
 
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not update.effective_message:
+    message = update.effective_message
+    chat = update.effective_chat
+    if not message or not chat:
         return
+
+    # Capture the new members before deleting Telegram's service message.
+    # Welcome messages are sent directly to the chat so they never depend
+    # on replying to a service message that has already been deleted.
+    new_members = list(message.new_chat_members or [])
 
     # Remove Telegram's automatic "joined the group" service message.
     # The bot must be a group admin with permission to delete messages.
     try:
-        await update.effective_message.delete()
+        await message.delete()
     except Exception:
         log.warning("Could not delete Telegram join service message; check bot admin delete permission")
 
     if not WELCOME_ENABLED:
         return
 
-    for member in update.effective_message.new_chat_members or []:
+    for member in new_members:
         if member.is_bot:
             continue
         try:
             if WELCOME_OVERRIDE and WELCOME_ENTITIES:
                 rendered, rendered_entities = rendered_welcome_with_entities(member)
-                await update.effective_message.reply_photo(
+                await context.bot.send_photo(
+                    chat_id=chat.id,
                     photo=BANNER_URL,
                     caption=rendered,
                     caption_entities=rendered_entities,
                     reply_markup=official_keyboard(),
                 )
             else:
-                await update.effective_message.reply_photo(
+                await context.bot.send_photo(
+                    chat_id=chat.id,
                     photo=BANNER_URL,
                     caption=welcome_text(member_mention(member), name_is_html=True),
                     parse_mode=ParseMode.HTML,
@@ -398,18 +407,18 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             log.exception("Could not send JOBBY welcome banner; falling back to text")
             if WELCOME_OVERRIDE and WELCOME_ENTITIES:
                 rendered, rendered_entities = rendered_welcome_with_entities(member)
-                await update.effective_message.reply_text(
-                    rendered,
+                await context.bot.send_message(
+                    chat_id=chat.id,
+                    text=rendered,
                     entities=rendered_entities,
                     reply_markup=official_keyboard(),
-                    do_quote=True,
                 )
             else:
-                await update.effective_message.reply_text(
-                    welcome_text(member_mention(member), name_is_html=True),
+                await context.bot.send_message(
+                    chat_id=chat.id,
+                    text=welcome_text(member_mention(member), name_is_html=True),
                     parse_mode=ParseMode.HTML,
                     reply_markup=official_keyboard(),
-                    do_quote=True,
                 )
 
 
