@@ -362,7 +362,17 @@ def rendered_welcome_with_entities(member):
 
 
 async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not WELCOME_ENABLED or not update.effective_message:
+    if not update.effective_message:
+        return
+
+    # Remove Telegram's automatic "joined the group" service message.
+    # The bot must be a group admin with permission to delete messages.
+    try:
+        await update.effective_message.delete()
+    except Exception:
+        log.warning("Could not delete Telegram join service message; check bot admin delete permission")
+
+    if not WELCOME_ENABLED:
         return
 
     for member in update.effective_message.new_chat_members or []:
@@ -401,6 +411,16 @@ async def welcome(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                     reply_markup=official_keyboard(),
                     do_quote=True,
                 )
+
+
+async def delete_service_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Hide Telegram member-left service messages."""
+    if not update.effective_message:
+        return
+    try:
+        await update.effective_message.delete()
+    except Exception:
+        log.warning("Could not delete Telegram member-left service message; check bot admin delete permission")
 
 
 async def text_trigger(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -443,6 +463,7 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(admin_callback, pattern=r"^adm:"))
     app.add_handler(MessageHandler(filters.ChatType.PRIVATE & (filters.PHOTO | (filters.TEXT & ~filters.COMMAND)), admin_input))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
+    app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, delete_service_message))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_trigger))
 
     app.add_error_handler(error_handler)
