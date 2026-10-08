@@ -252,6 +252,14 @@
   }
 
   function closeDialog() { $('#story-dialog').close(); }
+  window.addEventListener('jobby-challenge-entry', event => {
+    const entryId = String(event.detail?.id || 'JOBBY-W01').replace(/[^a-zA-Z0-9-]/g, '');
+    openDialog('WEEKLY CHALLENGE', 'Share it with the community.', '<p>Download your PNG from the meme lab, or write an original idea. Open JOBBYChat and attach your image yourself.</p><ol><li>Include #JOBBYChallenge and your public display name.</li><li>Use the current official JOBBY character and your own joke.</li><li>Submit before the deadline shown in the weekly challenge.</li></ol><p>Selected contributions may appear on the site and official channels with your public name. No image is sent automatically.</p>', [
+      {label:'Open JOBBYChat ↗',href:communityUrl,primary:true},
+      {label:'Copy entry caption',run:()=>copyText('#JOBBYChallenge · ' + entryId + '\n\n' + captionText(), 'Entry caption copied. Attach your PNG in JOBBYChat.')},
+      {label:'Create a meme ↓',run:()=>{closeDialog();$('#lab').scrollIntoView({behavior:'smooth'});}}
+    ]);
+  });
   $('.dialog-close').addEventListener('click', closeDialog);
   $('#story-dialog').addEventListener('close', () => dialogTrigger?.focus());
   $('#story-dialog').addEventListener('click', event => {
