@@ -1,225 +1,307 @@
-const menuButton = document.querySelector('#menuButton');
-const siteNav = document.querySelector('#siteNav');
-const siteHeader = document.querySelector('#siteHeader');
-const heroArt = document.querySelector('#heroArt');
-const solanaButton = document.querySelector('#solanaButton');
-const toast = document.querySelector('#toast');
-const moodChips = document.querySelector('#moodChips');
-const sceneChips = document.querySelector('#sceneChips');
-const customRow = document.querySelector('#customRow');
-const customScene = document.querySelector('#customScene');
-const generateMeme = document.querySelector('#generateMeme');
-const memeOutput = document.querySelector('#memeOutput');
-const copyCaption = document.querySelector('#copyCaption');
-const copyPrompt = document.querySelector('#copyPrompt');
-const randomizeMeme = document.querySelector('#randomizeMeme');
-const copyStarterPrompt = document.querySelector('#copyStarterPrompt');
-
-const moods = {
-  smug: { label: 'smug', face: 'half-lidded eyes and a tiny knowing grin' },
-  shocked: { label: 'shocked', face: 'wide eyes and an open mouth' },
-  fomo: { label: 'FOMO-crazed', face: 'huge excited eyes and frantic energy' },
-  confused: { label: 'confused', face: 'a tilted head and suspicious side-eye' },
-  sleepy: { label: 'sleepy', face: 'heavy eyelids and zero urgency' }
-};
-
-const scenes = {
-  'green candle': {
-    idea: 'JOBBY sees one green candle and immediately acts like the bull market personally called him back.',
-    caption: 'me after one green candle'
-  },
-  'buying the dip': {
-    idea: 'JOBBY presses BUY with total confidence while the chart keeps falling behind him.',
-    caption: 'buying the dip for the 14th time'
-  },
-  'group chat rumor': {
-    idea: 'JOBBY reads one “trust me bro” message, nods like he finished a PhD, then opens the chart.',
-    caption: 'the group chat said trust me bro'
-  },
-  'late to the trend': {
-    idea: 'JOBBY finally arrives looking confident after everybody else already posted, pumped and moved on.',
-    caption: 'me discovering the trend 6 hours late'
-  }
-};
-
-let selectedMood = 'smug';
-let selectedScene = 'green candle';
-let lastCaption = scenes[selectedScene].caption;
-let lastPrompt = '';
-
-function closeMenu() {
-  if (!menuButton || !siteNav) return;
-  menuButton.setAttribute('aria-expanded', 'false');
-  siteNav.classList.remove('open');
-  document.body.classList.remove('menu-open');
-}
-
-if (menuButton && siteNav) {
-  menuButton.addEventListener('click', () => {
-    const open = menuButton.getAttribute('aria-expanded') === 'true';
-    menuButton.setAttribute('aria-expanded', String(!open));
-    siteNav.classList.toggle('open', !open);
-    document.body.classList.toggle('menu-open', !open);
-  });
-  siteNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-}
-
-window.addEventListener('scroll', () => {
-  if (siteHeader) siteHeader.classList.toggle('compact', window.scrollY > 60);
-}, { passive: true });
-
-if (heroArt && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  window.addEventListener('pointermove', event => {
-    const x = (event.clientX / innerWidth - .5) * 12;
-    const y = (event.clientY / innerHeight - .5) * 8;
-    heroArt.style.setProperty('--mx', `${x}px`);
-    heroArt.style.setProperty('--my', `${y}px`);
-  }, { passive: true });
-}
-
-if (solanaButton) {
-  const showSoon = () => {
-    solanaButton.classList.add('is-soon');
-    clearTimeout(showSoon.timer);
-    showSoon.timer = setTimeout(() => solanaButton.classList.remove('is-soon'), 1500);
+'use strict';
+(() => {
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
+  const communityUrl = 'https://t.me/JOBBYChat';
+  const storageKey = 'jobby-community-missions-v1';
+  const missionKeys = ['community', 'create', 'conversation'];
+  const presets = {
+    chaos: ['THE TIMELINE IS PANICKING', 'JOBBY: ACT NATURAL.'],
+    late: ['NOBODY SENT HIM THE INVITE', 'HE SHOWED UP ANYWAY.'],
+    confidence: ['NO CONTEXT. NO EXPLANATION.', 'STILL THE MAIN CHARACTER.']
   };
-  solanaButton.addEventListener('click', showSoon);
-}
-
-function showToast(message) {
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add('show');
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove('show'), 1700);
-}
-
-function selectChip(container, button, type) {
-  if (!container || !button) return;
-  container.querySelectorAll('button').forEach(item => item.classList.remove('active'));
-  button.classList.add('active');
-  if (type === 'mood') selectedMood = button.dataset.mood;
-  if (type === 'scene') {
-    selectedScene = button.dataset.scene;
-    if (customRow) customRow.hidden = selectedScene !== 'custom';
-    if (selectedScene === 'custom' && customScene) customScene.focus();
-  }
-}
-
-if (moodChips) moodChips.addEventListener('click', event => {
-  const button = event.target.closest('button[data-mood]');
-  if (button) selectChip(moodChips, button, 'mood');
-});
-if (sceneChips) sceneChips.addEventListener('click', event => {
-  const button = event.target.closest('button[data-scene]');
-  if (button) selectChip(sceneChips, button, 'scene');
-});
-
-function buildMeme() {
-  const mood = moods[selectedMood] || moods.smug;
-  let sceneName = selectedScene;
-  let data = scenes[selectedScene];
-  if (selectedScene === 'custom') {
-    const custom = (customScene?.value || '').trim().slice(0, 70);
-    sceneName = custom || 'a completely unnecessary crypto situation';
-    data = {
-      idea: `JOBBY walks into “${sceneName}” with absolutely unjustified confidence and somehow becomes the reaction image.`,
-      caption: `jobby when ${sceneName}`
-    };
-  }
-  lastCaption = data.caption;
-  lastPrompt = `Create a clean, highly shareable Crypto X meme image featuring JOBBY, the exact cream-colored creature with soft purple antenna tips, purple toe tips, black eyes and the same body proportions. Expression: ${mood.face}. Situation: ${sceneName}. Joke: ${data.idea} Keep JOBBY instantly recognizable. Do not add a crown. Do not force the tongue out; only use it if the expression naturally needs it. Simple composition, strong facial reaction, readable in one second, premium 3D cartoon render, no watermark.`;
-
-  if (memeOutput) {
-    memeOutput.replaceChildren();
-    const small = document.createElement('small');
-    small.textContent = `MEME IDEA · ${mood.label.toUpperCase()}`;
-    const strong = document.createElement('strong');
-    strong.textContent = data.idea;
-    const p = document.createElement('p');
-    p.textContent = `Caption: “${lastCaption}”`;
-    memeOutput.append(small, strong, p);
-  }
-}
-
-if (generateMeme) generateMeme.addEventListener('click', buildMeme);
-if (customScene) customScene.addEventListener('keydown', event => { if (event.key === 'Enter') buildMeme(); });
-
-async function copyText(text, success) {
+  const scenes = {
+    calm: 'Calm in the chaos.',
+    mystery: 'Nobody knows. Everybody asks.',
+    chaos: 'The timeline is his now.'
+  };
+  let selectedLook = 'spotlight';
+  let toastTimer;
+  let dialogTrigger;
+  let missions = {};
   try {
-    await navigator.clipboard.writeText(text);
-    showToast(success);
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    for (const key of missionKeys) missions[key] = saved?.[key] === true;
   } catch {
-    showToast('COPY FAILED');
+    for (const key of missionKeys) missions[key] = false;
   }
-}
 
-if (copyCaption) copyCaption.addEventListener('click', () => copyText(lastCaption, 'CAPTION COPIED'));
-if (copyPrompt) copyPrompt.addEventListener('click', () => {
-  if (!lastPrompt) buildMeme();
-  copyText(lastPrompt, 'PROMPT COPIED');
-});
-if (copyStarterPrompt) copyStarterPrompt.addEventListener('click', () => {
-  const prompt = 'Use the provided JOBBY mascot as the exact character reference. Keep the cream body, soft purple antenna tips and toes, black eyes, proportions and face identity unchanged. Put JOBBY into a new funny situation that is understandable in one second. Keep the composition simple and meme-ready. Do not add a crown. Do not keep the tongue out in every image; vary the mouth and expression naturally.';
-  copyText(prompt, 'STARTER PROMPT COPIED');
-});
+  function notify(message) {
+    clearTimeout(toastTimer);
+    $('#toast').textContent = message;
+    $('#toast').hidden = false;
+    toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 3500);
+  }
 
-if (randomizeMeme) randomizeMeme.addEventListener('click', () => {
-  const moodButtons = [...(moodChips?.querySelectorAll('button[data-mood]') || [])];
-  const sceneButtons = [...(sceneChips?.querySelectorAll('button[data-scene]:not([data-scene="custom"])') || [])];
-  const m = moodButtons[Math.floor(Math.random() * moodButtons.length)];
-  const s = sceneButtons[Math.floor(Math.random() * sceneButtons.length)];
-  if (m) selectChip(moodChips, m, 'mood');
-  if (s) selectChip(sceneChips, s, 'scene');
-  buildMeme();
-});
+  async function copyText(text, message) {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(text);
+      notify(message);
+    } catch {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.setAttribute('readonly', '');
+      temp.style.position = 'fixed';
+      temp.style.top = '-1000px';
+      document.body.appendChild(temp);
+      temp.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch { /* Manual fallback below. */ }
+      temp.remove();
+      if (copied) notify(message);
+      else {
+        openDialog('COPY TEXT', 'Select and copy.', `<p>Automatic copying is unavailable in this browser. You can copy the text below.</p>`, []);
+        const field = document.createElement('textarea');
+        field.value = text;
+        field.readOnly = true;
+        field.style.cssText = 'width:100%;min-height:110px;margin-top:12px;padding:12px;background:#0d0a10;color:#eee;border:1px solid #655075;border-radius:6px;font:inherit';
+        $('#dialog-content').appendChild(field);
+        field.focus();
+        field.select();
+      }
+    }
+  }
 
-const revealObserver = 'IntersectionObserver' in window
-  ? new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: .1 })
-  : null;
-
-document.querySelectorAll('.reveal').forEach(element => {
-  if (revealObserver) revealObserver.observe(element);
-  else element.classList.add('visible');
-});
-
-const year = document.querySelector('#year');
-if (year) year.textContent = String(new Date().getFullYear());
-buildMeme();
-
-const memeViewer = document.querySelector('#memeViewer');
-const memeViewerImage = document.querySelector('#memeViewerImage');
-let activeMemeCard = null;
-if (memeViewer && typeof memeViewer.showModal === 'function') {
-  document.querySelectorAll('[data-meme]').forEach(card => {
-    card.addEventListener('click', event => {
-      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      activeMemeCard = card;
-      memeViewerImage.src = card.href;
-      memeViewerImage.alt = card.querySelector('img').alt;
-      document.querySelector('#memeViewerTitle').textContent = card.querySelector('strong').textContent;
-      document.querySelector('#memeViewerCaption').textContent = card.querySelector('p').textContent;
-      document.querySelector('#downloadMeme').href = card.href;
-      memeViewer.showModal();
-      document.body.classList.add('meme-viewer-open');
+  function setActive(buttons, active) {
+    buttons.forEach(button => {
+      const isActive = button === active;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
     });
+  }
+
+  $$('.scene-button').forEach(button => button.addEventListener('click', () => {
+    $('#character-stage').dataset.scene = button.dataset.scene;
+    $('#scene-caption').textContent = scenes[button.dataset.scene];
+    setActive($$('.scene-button'), button);
+  }));
+
+  function captionText() {
+    return [$('#top-caption').value.trim(), $('#bottom-caption').value.trim(), 'JOBBY', communityUrl].filter(Boolean).join('\n\n');
+  }
+
+  function updateMeme() {
+    const top = $('#top-caption').value;
+    const bottom = $('#bottom-caption').value;
+    $('#preview-top').textContent = top;
+    $('#preview-bottom').textContent = bottom;
+    $('#top-count').textContent = `${top.length}/64`;
+    $('#bottom-count').textContent = `${bottom.length}/64`;
+    $('#x-draft').href = 'https://x.com/intent/post?text=' + encodeURIComponent(captionText());
+  }
+
+  $$('.preset').forEach(button => button.addEventListener('click', () => {
+    const [top, bottom] = presets[button.dataset.preset];
+    $('#top-caption').value = top;
+    $('#bottom-caption').value = bottom;
+    setActive($$('.preset'), button);
+    updateMeme();
+  }));
+
+  ['#top-caption', '#bottom-caption'].forEach(selector => $(selector).addEventListener('input', () => {
+    $(selector).value = $(selector).value.slice(0, 64);
+    setActive($$('.preset'), null);
+    updateMeme();
+  }));
+
+  $$('.look-button').forEach(button => button.addEventListener('click', () => {
+    selectedLook = button.dataset.look;
+    $('#meme-preview').dataset.look = selectedLook;
+    setActive($$('.look-button'), button);
+  }));
+
+  $('#copy-caption').addEventListener('click', () => copyText(captionText(), 'Caption copied.'));
+  $('#copy-invite').addEventListener('click', () => copyText(communityUrl, 'Community invite copied.'));
+
+  function wrapText(ctx, text, width) {
+    const lines = [];
+    let line = '';
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    for (const word of words) {
+      // Break long unspaced captions too, so nothing runs past the canvas.
+      const parts = [];
+      let part = '';
+      for (const char of word) {
+        if (ctx.measureText(part + char).width > width && part) { parts.push(part); part = char; }
+        else part += char;
+      }
+      if (part) parts.push(part);
+      for (const piece of parts) {
+        const attempt = line ? `${line} ${piece}` : piece;
+        if (ctx.measureText(attempt).width > width && line) { lines.push(line); line = piece; }
+        else line = attempt;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function paintCaption(ctx, text, centerY, color) {
+    let fontSize = 58;
+    let lines;
+    do {
+      ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+      lines = wrapText(ctx, text, 950);
+      if (lines.length <= 2) break;
+      fontSize -= 2;
+    } while (fontSize > 30);
+    const spacing = fontSize * 1.1;
+    const y = centerY - (lines.length - 1) * spacing / 2;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 7;
+    ctx.strokeStyle = '#09090b';
+    ctx.fillStyle = color;
+    lines.forEach((line, i) => { ctx.strokeText(line, 540, y + i * spacing); ctx.fillText(line, 540, y + i * spacing); });
+  }
+
+  $('#download-meme').addEventListener('click', async () => {
+    const button = $('#download-meme');
+    button.disabled = true;
+    button.textContent = 'Preparing image…';
+    $('#download-error').hidden = true;
+    try {
+      const image = new Image();
+      const loaded = new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = () => reject(new Error('The character image could not load.'));
+      });
+      image.src = '/jobby-official-20261005.png';
+      await loaded;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Image export is unavailable in this browser.');
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(0, 0, 1080, 1080);
+      if (selectedLook === 'spotlight') {
+        const glow = ctx.createRadialGradient(540, 550, 30, 540, 580, 570);
+        glow.addColorStop(0, '#533866');
+        glow.addColorStop(.48, '#19111f');
+        glow.addColorStop(1, '#09090b');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, 1080, 1080);
+      }
+      const imageHeight = 720;
+      const imageWidth = image.naturalWidth / image.naturalHeight * imageHeight;
+      ctx.drawImage(image, (1080 - imageWidth) / 2, 180, imageWidth, imageHeight);
+      paintCaption(ctx, $('#top-caption').value, 85, '#f4f0e9');
+      paintCaption(ctx, $('#bottom-caption').value, 972, '#d9befd');
+      ctx.font = '700 15px Arial, sans-serif';
+      ctx.fillStyle = '#9b86b0';
+      ctx.fillText('JOBBY', 540, 1052);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Image export did not complete. Please try again.');
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'jobby-meme.png';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      notify('Your 1080 × 1080 meme is ready.');
+    } catch (error) {
+      $('#download-error').textContent = error.message || 'Image export failed. Please try again.';
+      $('#download-error').hidden = false;
+    } finally {
+      button.disabled = false;
+      button.innerHTML = 'Download PNG <span aria-hidden="true">↓</span>';
+    }
   });
-  document.querySelector('#closeMemeViewer').addEventListener('click', () => memeViewer.close());
-  memeViewer.addEventListener('click', event => {
-    const box = memeViewer.getBoundingClientRect();
-    if (event.target === memeViewer && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom)) memeViewer.close();
+
+  function updateMissions(persist = false) {
+    const count = missionKeys.filter(key => missions[key]).length;
+    $('#progress-label').textContent = `${count} of 3 explored`;
+    $('#progress-track').setAttribute('aria-valuenow', String(count));
+    $('#progress-fill').style.width = `${count / 3 * 100}%`;
+    $$('[data-check]').forEach(input => { input.checked = missions[input.dataset.check]; });
+    $$('[data-mission]').forEach(row => { row.classList.toggle('complete', missions[row.dataset.mission]); });
+    if (persist) {
+      try { localStorage.setItem(storageKey, JSON.stringify(missions)); }
+      catch { notify('Checklist updated. This browser cannot save it between visits.'); }
+    }
+  }
+
+  $$('[data-check]').forEach(input => input.addEventListener('change', () => {
+    missions[input.dataset.check] = input.checked;
+    updateMissions(true);
+  }));
+
+  function openDialog(eyebrow, title, content, actions) {
+    dialogTrigger = document.activeElement;
+    $('#dialog-eyebrow').textContent = eyebrow;
+    $('#dialog-title').textContent = title;
+    $('#dialog-content').innerHTML = content;
+    $('#dialog-actions').replaceChildren();
+    actions.forEach(action => {
+      const element = document.createElement(action.href ? 'a' : 'button');
+      element.className = 'button ' + (action.primary ? 'button-primary' : 'button-secondary');
+      element.textContent = action.label;
+      if (action.href) {
+        element.href = action.href;
+        element.target = '_blank';
+        element.rel = 'noopener noreferrer';
+      } else element.addEventListener('click', action.run);
+      $('#dialog-actions').appendChild(element);
+    });
+    if (!$('#story-dialog').open) $('#story-dialog').showModal();
+    $('.dialog-close').focus();
+  }
+
+  function closeDialog() { $('#story-dialog').close(); }
+  $('.dialog-close').addEventListener('click', closeDialog);
+  $('#story-dialog').addEventListener('close', () => dialogTrigger?.focus());
+  $('#story-dialog').addEventListener('click', event => {
+    if (event.target !== $('#story-dialog')) return;
+    const bounds = $('#story-dialog').getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog();
   });
-  memeViewer.addEventListener('close', () => {
-    document.body.classList.remove('meme-viewer-open');
-    activeMemeCard?.focus({ preventScroll: true });
+
+  $('#meet-button').addEventListener('click', () => openDialog('THE CHARACTER', 'He showed up anyway.', '<img src="/jobby-official-20261005.png" alt="Official JOBBY"><p>JOBBY is the unexpected face in a familiar situation. Calm when everyone panics. Confident without an explanation.</p><p>The character is the starting point. The community turns the moments into memes.</p>', [
+    { label: 'Try the meme lab ↓', primary: true, run: () => { closeDialog(); $('#lab').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Meet the community ↗', href: communityUrl }
+  ]));
+
+  const missionDetails = {
+    community: ['CONNECT', 'Find your people.', '<p>Join JOBBYChat to meet the community, explore original memes, and share your own ideas. The official channel keeps announcements in one place.</p>', [
+      {label:'Open community ↗',href:communityUrl,primary:true},
+      {label:'Official updates ↗',href:'https://t.me/JOBBYSOL'}
+    ]],
+    create: ['CREATE', 'Make your first JOBBY meme.', '<p>Pick a familiar situation in the meme lab, write your own setup and response, then download the image. Keep the original character and make the joke yours.</p>', [
+      {label:'Go to meme lab ↓',primary:true,run:()=>{closeDialog();$('#lab').scrollIntoView({behavior:'smooth'});$('#top-caption').focus({preventScroll:true});}}
+    ]],
+    conversation: ['CONTRIBUTE', 'Bring your own perspective.', '<p>Follow @JOBBYSOL and explore the conversation. A thoughtful reply, a new idea, or an original meme is a good way to participate.</p><p>The checklist is yours to mark after you’ve explored. It doesn’t verify external actions.</p>', [
+      {label:'Explore JOBBY on X ↗',href:'https://x.com/JOBBYSOL',primary:true},
+      {label:'Open your meme draft ↗',href:()=>$('#x-draft').href}
+    ]]
+  };
+  $$('[data-open-mission]').forEach(button => button.addEventListener('click', () => {
+    const [eyebrow, title, content, actions] = missionDetails[button.dataset.openMission];
+    openDialog(eyebrow, title, content, actions.map(action => ({...action, href: typeof action.href === 'function' ? action.href() : action.href})));
+  }));
+
+  $('#reset-progress').addEventListener('click', () => openDialog('YOUR CHECKLIST', 'Start fresh?', '<p>This will clear the three explored items saved on this device.</p>', [
+    {label:'Reset checklist',primary:true,run:()=>{for(const key of missionKeys)missions[key]=false;updateMissions(true);closeDialog();notify('Checklist reset.');}},
+    {label:'Keep progress',run:closeDialog}
+  ]));
+
+  function closeMenu() {
+    $('#mobile-nav').hidden = true;
+    $('#menu-toggle').setAttribute('aria-expanded', 'false');
+    $('#menu-toggle').setAttribute('aria-label', 'Open menu');
+  }
+  $('#menu-toggle').addEventListener('click', () => {
+    const expanded = $('#menu-toggle').getAttribute('aria-expanded') === 'true';
+    $('#mobile-nav').hidden = expanded;
+    $('#menu-toggle').setAttribute('aria-expanded', String(!expanded));
+    $('#menu-toggle').setAttribute('aria-label', expanded ? 'Open menu' : 'Close menu');
   });
-}
+  $$('#mobile-nav a').forEach(link => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 760) closeMenu(); });
+  updateMeme();
+  updateMissions();
+})();

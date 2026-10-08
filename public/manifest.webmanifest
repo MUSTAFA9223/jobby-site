@@ -1,9 +1,9 @@
 {
-  "name": "JOBBY — No Lore. Just JOBBY.",
+  "name": "JOBBY \u2014 Who TF is JOBBY?",
   "short_name": "JOBBY",
-  "description": "A weird little creature made for the internet. Meme him. Remix him. Put him anywhere.",
+  "description": "Meet JOBBY, make original memes and join the community.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f0e6",
-  "theme_color": "#9d6bef"
+  "background_color": "#09090b",
+  "theme_color": "#09090b"
 }

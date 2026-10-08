@@ -3,234 +3,87 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JOBBY — No Lore. Just JOBBY.</title>
-  <meta name="description" content="JOBBY is a weird little internet creature made to be memed, remixed and dropped into every timeline.">
-  <meta name="theme-color" content="#8f62e8">
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="Meet JOBBY. Explore the character, create original memes and join the community. Solana meme project, built from the ground up.">
+  <title>JOBBY — Who TF is JOBBY?</title>
   <link rel="canonical" href="https://jobby.lol/">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="JOBBY — No Lore. Just JOBBY.">
-  <meta property="og:description" content="A weird little creature made for the internet. Meme him. Remix him. Put him anywhere.">
+  <meta property="og:title" content="JOBBY — Who TF is JOBBY?">
+  <meta property="og:description" content="He showed up anyway. Meet JOBBY, make a meme and join the community.">
   <meta property="og:url" content="https://jobby.lol/">
   <meta property="og:image" content="https://jobby.lol/jobby-official-20261005.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="JOBBY — No Lore. Just JOBBY.">
-  <meta name="twitter:description" content="Meme him. Remix him. Put him anywhere.">
+  <meta name="twitter:title" content="JOBBY — Who TF is JOBBY?">
+  <meta name="twitter:description" content="He showed up anyway. Meet JOBBY, make a meme and join the community.">
   <meta name="twitter:image" content="https://jobby.lol/jobby-official-20261005.png">
-  <link rel="stylesheet" href="/styles.css?v=20261005-meme-gallery">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/jobby-official-20261005.png" as="image">
+  <link rel="stylesheet" href="/styles.css?v=20261008-interactive">
+  <script src="/app.js?v=20261008-interactive" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="noise" aria-hidden="true"></div>
-
-  <header class="site-header" id="siteHeader">
-    <a class="brand" href="#top" aria-label="JOBBY home">
-      <span class="brand-orb" aria-hidden="true">J</span>
-      <span>JOBBY</span>
-    </a>
-
-    <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="siteNav">
-      <span></span><span></span><span class="sr-only">Toggle menu</span>
-    </button>
-
-    <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
-      <a href="#meet">MEET JOBBY</a>
-      <a href="#meme-lab">MEME LAB</a>
-      <a href="#remix">REMIX</a>
-    </nav>
-
-    <a class="header-cta" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOIN THE CHAOS ↗</a>
+  <header class="header">
+    <a class="brand" href="#" aria-label="JOBBY home"><span class="brand-mark">J<span>·</span></span><span>JOBBY</span></a>
+    <nav class="desktop-nav" aria-label="Main navigation"><a href="#story">The idea</a><a href="#lab">Meme lab</a><a href="#missions">Missions</a><a href="#community">Community</a></nav>
+    <div class="header-end"><a class="header-join" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">Join community <span aria-hidden="true">↗</span></a><button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#story">The idea</a><a href="#lab">Meme lab</a><a href="#missions">Missions</a><a href="#community">Community</a></nav>
   </header>
-
   <main id="main">
-    <section class="hero" id="top">
-      <div class="hero-blob hero-blob-a" aria-hidden="true"></div>
-      <div class="hero-blob hero-blob-b" aria-hidden="true"></div>
-      <div class="hero-grid" aria-hidden="true"></div>
-
-      <div class="hero-shell">
-        <div class="hero-copy reveal">
-          <div class="status-pill"><i></i> SOLANA · PRE-LAUNCH · COMMUNITY MEME</div>
-          <p class="eyebrow">NO LORE. NO RULES. JUST JOBBY.</p>
-          <h1>JOBBY</h1>
-          <p class="hero-tagline">A weird little creature made for the internet. Meme him. Remix him. Put him anywhere.</p>
-          <div class="hero-actions">
-            <a class="button primary" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOIN COMMUNITY ↗</a>
-            <a class="button ghost" href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">FOLLOW ON X ↗</a>
-          </div>
-          <div class="social-row" aria-label="Official links">
-            <a class="social x" href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer" aria-label="JOBBY on X">X</a>
-            <a class="social tg" href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer" aria-label="JOBBY Telegram channel">✈</a>
-            <button class="social sol" id="solanaButton" type="button" aria-label="Solana launch status"><span class="sol-mark">≋</span><span class="sol-soon">SOON</span></button>
-          </div>
-        </div>
-
-        <div class="hero-art reveal" id="heroArt">
-          <div class="orbit orbit-a" aria-hidden="true"></div>
-          <div class="orbit orbit-b" aria-hidden="true"></div>
-          <img src="/jobby-official-20261005.png" alt="JOBBY, the official cream and purple meme mascot" width="1122" height="1402">
-        </div>
+    <section class="hero section-width" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="status-dot"></span>A new character. A familiar chaos.</div>
+        <h1 id="hero-title">WHO TF<br>IS <span>JOBBY?</span></h1>
+        <p class="hero-description">Everyone has a theory.<br>He just showed up.</p>
+        <div class="hero-actions"><button class="button button-primary" id="meet-button">Meet JOBBY <span aria-hidden="true">↗</span></button><a class="button button-secondary" href="#lab">Make a meme <span aria-hidden="true">↓</span></a></div>
+        <div class="hero-foot"><span class="solana"><i></i><i></i><i></i></span><span>Built around a character.<br><strong>Growing with a community.</strong></span></div>
       </div>
-
-      <a class="scroll-cue" href="#meet"><span>MEET THE CREATURE</span><span>↓</span></a>
+      <div class="character-stage" id="character-stage" data-scene="calm">
+        <div class="stage-word" aria-hidden="true">JOBBY</div><div class="stage-orbit" aria-hidden="true"></div><div class="stage-light" aria-hidden="true"></div>
+        <span class="stage-tag"><span class="status-dot"></span>THE MAIN CHARACTER</span>
+        <img class="hero-character" src="/jobby-official-20261005.png" width="1122" height="1402" alt="The official JOBBY character with a mischievous grin and crossed arms" fetchpriority="high">
+        <div class="stage-caption"><span>01 / THE ENTRANCE</span><p id="scene-caption">Calm in the chaos.</p></div>
+        <div class="scene-control" role="group" aria-label="Explore JOBBY's vibe"><button class="scene-button active" data-scene="calm" aria-pressed="true">Unbothered</button><button class="scene-button" data-scene="mystery" aria-pressed="false">Mysterious</button><button class="scene-button" data-scene="chaos" aria-pressed="false">Chaotic</button></div>
+      </div>
     </section>
-
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>MEME HIM</span><b>✦</b><span>REMIX HIM</span><b>✦</b><span>PUT HIM ANYWHERE</span><b>✦</b><span>POST IT</span><b>✦</b><span>TAG US</span><b>✦</b>
-        <span>MEME HIM</span><b>✦</b><span>REMIX HIM</span><b>✦</b><span>PUT HIM ANYWHERE</span><b>✦</b><span>POST IT</span><b>✦</b><span>TAG US</span><b>✦</b>
-      </div>
-    </div>
-
-    <section class="section meet" id="meet">
-      <div class="section-shell">
-        <div class="section-heading reveal">
-          <span>01 / MEET JOBBY</span>
-          <h2>NOBODY KNOWS<br>WHY HE'S HERE.</h2>
-          <p>That's the point. JOBBY has no complicated lore to memorize. He is a face, a mood, and a bad idea waiting for a caption.</p>
-        </div>
-
-        <div class="fact-grid">
-          <article class="fact-card reveal"><strong>01</strong><h3>HE SHOWS UP.</h3><p>Markets, group chats, timelines, family photos. Nothing is safe.</p></article>
-          <article class="fact-card reveal"><strong>02</strong><h3>HE REACTS.</h3><p>Smug, confused, shocked, sleepy, victorious. The face does the work.</p></article>
-          <article class="fact-card reveal"><strong>03</strong><h3>YOU MAKE THE MEME.</h3><p>JOBBY belongs in the hands of the community. Remix first. Explain never.</p></article>
+    <div class="word-strip" aria-hidden="true"><span>HE SHOWED UP ANYWAY.</span><b>✳</b><span>THE TIMELINE IS HIS NOW.</span><b>✳</b><span>HE SHOWED UP ANYWAY.</span></div>
+    <section class="story section-width section-pad" id="story" aria-labelledby="story-title">
+      <div class="section-heading"><span class="eyebrow">01 / THE IDEA</span><h2 id="story-title">The character<br>is the <em>punchline.</em></h2><p>One unexpected face. Endless familiar situations.<br>JOBBY doesn’t need a complicated backstory to become a meme.</p></div>
+      <div class="story-sequence"><article><span class="sequence-number">01</span><h3>He appears.</h3><p>The room is loud. The timeline is louder.<br>JOBBY enters like he owns the place.</p></article><article><span class="sequence-number">02</span><h3>You recognise it.</h3><p>That look. That confidence.<br>We all know someone like JOBBY.</p></article><article><span class="sequence-number">03</span><h3>You make it yours.</h3><p>Add your situation. Find the punchline.<br>The community takes it from there.</p></article></div>
+    </section>
+    <section class="lab section-width section-pad" id="lab" aria-labelledby="lab-title">
+      <div class="section-top"><div><span class="eyebrow">02 / MEME LAB</span><h2 id="lab-title">Your situation.<br><em>His reaction.</em></h2></div><p>Put the official character in your own context.<br>Try a caption. Keep the attitude.</p></div>
+      <div class="lab-layout">
+        <div class="meme-preview-wrap"><div class="preview-corner"><span class="status-dot"></span>LIVE PREVIEW <span>1:1</span></div><div class="meme-preview" id="meme-preview" data-look="spotlight"><div class="meme-top" id="preview-top">THE TIMELINE IS PANICKING</div><img src="/jobby-official-20261005.png" width="1122" height="1402" alt="Official JOBBY in your meme" loading="lazy"><div class="meme-bottom" id="preview-bottom">JOBBY: ACT NATURAL.</div><span class="meme-signature">JOBBY</span></div></div>
+        <div class="lab-controls">
+          <div class="control-heading"><span class="step-chip">01</span><h3>Pick the moment</h3></div>
+          <div class="preset-list" role="group" aria-label="Meme situations"><button class="preset active" data-preset="chaos" aria-pressed="true"><span>Timeline chaos</span><small>Everyone panics. He doesn’t.</small><span aria-hidden="true">↗</span></button><button class="preset" data-preset="late" aria-pressed="false"><span>Late to the party</span><small>Missed the invite. Made the entrance.</small><span aria-hidden="true">↗</span></button><button class="preset" data-preset="confidence" aria-pressed="false"><span>Unexplained confidence</span><small>No context. Fully convinced.</small><span aria-hidden="true">↗</span></button></div>
+          <div class="control-heading"><span class="step-chip">02</span><h3>Write the punchline</h3></div>
+          <label class="field-label" for="top-caption">The setup <span id="top-count">25/64</span></label><input id="top-caption" maxlength="64" value="THE TIMELINE IS PANICKING" autocomplete="off">
+          <label class="field-label" for="bottom-caption">JOBBY’s response <span id="bottom-count">19/64</span></label><input id="bottom-caption" maxlength="64" value="JOBBY: ACT NATURAL." autocomplete="off">
+          <div class="look-row"><span class="field-label">The setting</span><div role="group" aria-label="Meme background"><button class="look-button active" data-look="spotlight" aria-pressed="true">Spotlight</button><button class="look-button" data-look="minimal" aria-pressed="false">Pure black</button></div></div>
+          <div class="lab-actions"><button class="button button-primary" id="download-meme">Download PNG <span aria-hidden="true">↓</span></button><button class="button button-secondary" id="copy-caption">Copy caption</button></div>
+          <a class="draft-link" id="x-draft" href="https://x.com/intent/post" target="_blank" rel="noopener noreferrer">Open a draft on X <span aria-hidden="true">↗</span></a><p class="control-note">The character stays original. Your caption makes it yours.</p><p class="error-message" id="download-error" role="alert" hidden></p>
         </div>
       </div>
     </section>
-
-    <section class="section moods">
-      <div class="section-shell">
-        <div class="split-heading reveal">
-          <div><span>THE DEFAULT MOODS</span><h2>ONE CREATURE.<br>TOO MANY REACTIONS.</h2></div>
-          <p>The tongue is not the logo. It's just one expression. JOBBY changes face depending on the meme.</p>
-        </div>
-        <div class="mood-strip" aria-label="JOBBY reaction moods">
-          <span>SMUG</span><span>SHOCKED</span><span>FOMO</span><span>CONFUSED</span><span>ANGRY</span><span>SLEEPY</span><span>VICTORIOUS</span>
-        </div>
-      </div>
+    <section class="missions section-width section-pad" id="missions" aria-labelledby="missions-title">
+      <div class="section-top"><div><span class="eyebrow">03 / COMMUNITY MISSIONS</span><h2 id="missions-title">Small actions.<br><em>Real participation.</em></h2></div><div class="mission-progress"><span id="progress-label" aria-live="polite">0 of 3 explored</span><div class="progress-track" id="progress-track" role="progressbar" aria-label="Explored missions" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><div id="progress-fill"></div></div><small>Your checklist is saved on this device.</small></div></div>
+      <div class="mission-list">
+        <article class="mission-row" data-mission="community"><span class="mission-number">01</span><div class="mission-body"><span class="mission-type">CONNECT</span><h3>Find your people.</h3><p>Meet the community and see what they’re making.</p></div><button class="mission-open" data-open-mission="community">Explore <span aria-hidden="true">↗</span></button><label class="mission-check"><input type="checkbox" data-check="community"><span aria-hidden="true">✓</span><span class="sr-only">Mark Find your people as explored</span></label></article>
+        <article class="mission-row" data-mission="create"><span class="mission-number">02</span><div class="mission-body"><span class="mission-type">CREATE</span><h3>Make your first JOBBY meme.</h3><p>Turn one familiar moment into an original reaction.</p></div><button class="mission-open" data-open-mission="create">Explore <span aria-hidden="true">↗</span></button><label class="mission-check"><input type="checkbox" data-check="create"><span aria-hidden="true">✓</span><span class="sr-only">Mark Make your first JOBBY meme as explored</span></label></article>
+        <article class="mission-row" data-mission="conversation"><span class="mission-number">03</span><div class="mission-body"><span class="mission-type">CONTRIBUTE</span><h3>Bring something to the conversation.</h3><p>A meme, an idea, or a normal reply. Make it yours.</p></div><button class="mission-open" data-open-mission="conversation">Explore <span aria-hidden="true">↗</span></button><label class="mission-check"><input type="checkbox" data-check="conversation"><span aria-hidden="true">✓</span><span class="sr-only">Mark Bring something to the conversation as explored</span></label></article>
+      </div><div class="mission-note"><span>Personal checklist. No points, rewards, or activity verification.</span><button id="reset-progress">Reset checklist</button></div>
     </section>
-
-    <section class="section meme-lab" id="meme-lab">
-      <div class="section-shell lab-layout">
-        <div class="lab-copy reveal">
-          <span>02 / MEME LAB</span>
-          <h2>GIVE JOBBY<br>A SITUATION.</h2>
-          <p>Pick a mood and a situation. JOBBY will give you a short meme idea plus a ready-to-copy image/video prompt.</p>
-          <div class="lab-notes"><span>NO WALLET</span><span>NO LOGIN</span><span>JUST MEMES</span></div>
-        </div>
-
-        <div class="lab-panel reveal">
-          <div class="lab-top"><span>JOBBY://MEME_MACHINE</span><span class="live-dot"><i></i> ONLINE</span></div>
-
-          <label>1. PICK A MOOD</label>
-          <div class="chip-row" id="moodChips">
-            <button type="button" data-mood="smug" class="active">SMUG</button>
-            <button type="button" data-mood="shocked">SHOCKED</button>
-            <button type="button" data-mood="fomo">FOMO</button>
-            <button type="button" data-mood="confused">CONFUSED</button>
-            <button type="button" data-mood="sleepy">SLEEPY</button>
-          </div>
-
-          <label>2. PICK A SITUATION</label>
-          <div class="chip-row" id="sceneChips">
-            <button type="button" data-scene="green candle" class="active">GREEN CANDLE</button>
-            <button type="button" data-scene="buying the dip">BUY THE DIP</button>
-            <button type="button" data-scene="group chat rumor">GROUP CHAT</button>
-            <button type="button" data-scene="late to the trend">LATE AGAIN</button>
-            <button type="button" data-scene="custom">CUSTOM</button>
-          </div>
-
-          <div class="custom-row" id="customRow" hidden>
-            <input id="customScene" maxlength="70" placeholder="e.g. the chart turns green for 3 seconds">
-          </div>
-
-          <button class="generate" id="generateMeme" type="button">MAKE THE MEME IDEA</button>
-
-          <div class="meme-output" id="memeOutput" aria-live="polite">
-            <small>MEME IDEA</small>
-            <strong>JOBBY sees one green candle and immediately acts like the bull market personally called him back.</strong>
-            <p>Caption: “me after one green candle”</p>
-          </div>
-
-          <div class="lab-actions">
-            <button type="button" id="copyCaption">COPY CAPTION</button>
-            <button type="button" id="copyPrompt">COPY PROMPT</button>
-            <button type="button" id="randomizeMeme">RANDOMIZE</button>
-          </div>
-        </div>
-      </div>
+    <section class="community section-width section-pad" id="community" aria-labelledby="community-title">
+      <div class="community-title"><span class="eyebrow">04 / THE COMMUNITY</span><h2 id="community-title">The face is JOBBY.<br><em>The energy is you.</em></h2><p>Follow the story. Join the conversation.<br>Build something worth showing up for.</p></div>
+      <div class="community-links"><a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon x-icon" aria-hidden="true">𝕏</span><span><strong>Follow on X</strong><small>@JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer"><span class="social-icon telegram-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m20 4-3 16-5-4-3 3 1-5 7-7-10 6-5-2Z"/></svg></span><span><strong>Join the community</strong><small>Telegram · JOBBYChat</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon channel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 9 13-5v16L4 15Z"/><path d="m6 15 2 6h4l-2-5M20 9v6"/></svg></span><span><strong>Official updates</strong><small>Telegram · JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><button class="copy-invite" id="copy-invite">Copy community invite <span aria-hidden="true">⧉</span></button></div>
     </section>
-
-    <section class="section remix" id="remix">
-      <div class="section-shell remix-grid">
-        <div class="remix-art reveal">
-          <div class="remix-badge">FREE TO MEME</div>
-          <img src="/jobby-official-20261005.png" alt="JOBBY mascot ready to remix" width="1122" height="1402">
-        </div>
-        <div class="remix-copy reveal">
-          <span>03 / PUT JOBBY ANYWHERE</span>
-          <h2>STEAL THE POSE.<br>MAKE THE JOKE.</h2>
-          <p>Drop JOBBY into charts, sports clips, movie scenes, group-chat screenshots, bad decisions and whatever the timeline is talking about today.</p>
-          <div class="remix-actions">
-            <a class="button primary" href="/jobby-official-20261005.png" download="jobby-official.png">DOWNLOAD JOBBY ↓</a>
-            <button class="button ghost" id="copyStarterPrompt" type="button">COPY STARTER PROMPT</button>
-          </div>
-          <blockquote>“Put JOBBY in the worst possible place. If it makes sense, you went too far.”</blockquote>
-        </div>
-      </div>
-    </section>
-
-    <section class="section wild" id="meme-gallery">
-      <div class="section-shell">
-        <div class="split-heading reveal">
-          <div><span>JOBBY IN THE WILD</span><h2>THE FORMAT IS<br>THE PRODUCT.</h2></div>
-          <p>Fast, readable jokes built for Crypto X: one visual, one reaction, one line.</p>
-        </div>
-        <div class="meme-grid">
-          <a class="meme-card reveal" href="/memes/fomo.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/fomo.webp" alt="FOMO JOBBY: “me after one green candle”" width="1254" height="1254" loading="lazy" decoding="async"><em>01</em><p>“me after one green candle”</p><strong>FOMO JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-          <a class="meme-card reveal" href="/memes/liar.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/liar.webp" alt="LIAR JOBBY: “i said i was done buying meme coins”" width="1254" height="1254" loading="lazy" decoding="async"><em>02</em><p>“i said i was done buying meme coins”</p><strong>LIAR JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-          <a class="meme-card reveal" href="/memes/expert.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/expert.webp" alt="EXPERT JOBBY: “watching the chart like i know what i'm doing”" width="1254" height="1254" loading="lazy" decoding="async"><em>03</em><p>“watching the chart like i know what i'm doing”</p><strong>EXPERT JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-          <a class="meme-card reveal" href="/memes/dip.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/dip.webp" alt="CONVICTION JOBBY: “buying the dip for the 14th time”" width="1254" height="1254" loading="lazy" decoding="async"><em>04</em><p>“buying the dip for the 14th time”</p><strong>CONVICTION JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-          <a class="meme-card reveal" href="/memes/research.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/research.webp" alt="RESEARCH JOBBY: “the group chat said ‘trust me bro’”" width="1254" height="1254" loading="lazy" decoding="async"><em>05</em><p>“the group chat said ‘trust me bro’”</p><strong>RESEARCH JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-          <a class="meme-card reveal" href="/memes/delay.webp" data-meme aria-haspopup="dialog" aria-controls="memeViewer"><img src="/memes/delay.webp" alt="DELAY JOBBY: “everyone sold. jobby is still looking at the button.”" width="1254" height="1254" loading="lazy" decoding="async"><em>06</em><p>“everyone sold. jobby is still looking at the button.”</p><strong>DELAY JOBBY</strong><span class="meme-open">VIEW MEME ↗</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="challenge">
-      <div class="challenge-shell reveal">
-        <p>COMMUNITY CHALLENGE</p>
-        <h2>PUT JOBBY IN THE<br>WORST POSSIBLE PLACE.</h2>
-        <span>Post it on X. Tag <b>@JOBBYSOL</b>. Best ones get reposted.</span>
-        <div><a class="button primary" href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">POST ON X ↗</a><a class="button ghost" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOIN TELEGRAM ↗</a></div>
-      </div>
-    </section>
-
-    <section class="final-cta">
-      <div class="final-glow" aria-hidden="true"></div>
-      <div class="final-copy reveal">
-        <small>THE INTERNET DOESN'T NEED ANOTHER HERO.</small>
-        <h2>IT NEEDS<br>JOBBY.</h2>
-        <p>$JOBBY · SOLANA · PRE-LAUNCH</p>
-      </div>
-      <img src="/jobby-official-20261005.png" alt="Playful JOBBY reaction" width="1122" height="1402">
-    </section>
+    <section class="faq section-width" aria-label="Questions"><details><summary>Where does the project stand?<span aria-hidden="true">+</span></summary><p>JOBBY is a Solana meme project being built from the ground up. The current focus is the character, original content, and the community. Follow the official channels for confirmed launch updates.</p></details><details><summary>Where can I find official updates?<span aria-hidden="true">+</span></summary><p>Follow <a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">@JOBBYSOL on X</a> and the <a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer">official Telegram channel</a>. The community chat is <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOBBYChat</a>.</p></details><details><summary>Does the meme lab post for me?<span aria-hidden="true">+</span></summary><p>No. You can download an image, copy a caption, or open an X draft. You choose whether and where to post it. The checklist records only what you mark on your device.</p></details></section>
   </main>
-
-  <footer>
-    <a class="brand footer-brand" href="#top"><span class="brand-orb">J</span><span>JOBBY</span></a>
-    <p>NO LORE. JUST JOBBY.</p>
-    <p>© <span id="year">2026</span> JOBBY · SOLANA · PRE-LAUNCH</p>
-  </footer>
-
-  <dialog class="meme-viewer" id="memeViewer" aria-labelledby="memeViewerTitle">
-    <div class="meme-viewer-bar"><h2 id="memeViewerTitle">JOBBY MEME</h2><button type="button" id="closeMemeViewer" aria-label="Close meme">×</button></div>
-    <img id="memeViewerImage" alt="">
-    <p id="memeViewerCaption"></p>
-    <a id="downloadMeme" class="button primary" download>DOWNLOAD IMAGE ↓</a>
-  </dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js?v=20261005-meme-gallery" defer></script>
+  <footer class="footer section-width"><a class="brand" href="#"><span class="brand-mark">J<span>·</span></span><span>JOBBY</span></a><span>He showed up anyway.</span><span class="footer-status">SOLANA · PRE-LAUNCH</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="story-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close dialog">×</button><span class="eyebrow" id="dialog-eyebrow">MEET JOBBY</span><h2 id="dialog-title">He showed up anyway.</h2><div id="dialog-content"></div><div class="dialog-actions" id="dialog-actions"></div></dialog>
 </body>
 </html>
