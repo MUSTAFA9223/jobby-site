@@ -168,7 +168,7 @@
         image.onload = resolve;
         image.onerror = () => reject(new Error('The character image could not load.'));
       });
-      image.src = '/jobby-character-facing-copy.webp';
+      image.src = '/jobby-official-20261005.png';
       await loaded;
       const canvas = document.createElement('canvas');
       canvas.width = canvas.height = 1080;
@@ -268,7 +268,7 @@
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog();
   });
 
-  $('#meet-button').addEventListener('click', () => openDialog('THE CHARACTER', 'He showed up anyway.', '<img src="/jobby-character-facing-copy.webp" alt="Official JOBBY"><p>JOBBY is the unexpected face in a familiar situation. Calm when everyone panics. Confident without an explanation.</p><p>The character is the starting point. The community turns the moments into memes.</p>', [
+  $('#meet-button').addEventListener('click', () => openDialog('THE CHARACTER', 'He showed up anyway.', '<img src="/jobby-official-20261005.png" alt="Official JOBBY"><p>JOBBY is the unexpected face in a familiar situation. Calm when everyone panics. Confident without an explanation.</p><p>The character is the starting point. The community turns the moments into memes.</p>', [
     { label: 'Try the meme lab ↓', primary: true, run: () => { closeDialog(); $('#lab').scrollIntoView({ behavior: 'smooth' }); } },
     { label: 'Meet the community ↗', href: communityUrl }
   ]));

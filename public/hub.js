@@ -18,7 +18,7 @@
     }
     const empty = document.getElementById(emptyId); if (empty) empty.hidden = list.children.length > 0;
   }
-  fetch('/community.json?v=20261009-community-r3', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
+  fetch('/community.json?v=20261009-community-r4', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
     render(data.contributors, 'contributors-list', 'contributors-empty', 'contributors');
     render(data.archive, 'archive-list', 'archive-empty', 'archive');
   }).catch(() => {});
