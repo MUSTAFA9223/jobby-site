@@ -251,13 +251,20 @@
     $('.dialog-close').focus();
   }
 
+  function openMemeLab() {
+    const lab = $('#lab');
+    const fold = lab.closest('details');
+    if (fold) fold.open = true;
+    lab.scrollIntoView({ behavior: 'smooth' });
+  }
+
   function closeDialog() { $('#story-dialog').close(); }
   window.addEventListener('jobby-challenge-entry', event => {
     const entryId = String(event.detail?.id || 'JOBBY-W01').replace(/[^a-zA-Z0-9-]/g, '');
     openDialog('WEEKLY CHALLENGE', 'Share it with the community.', '<p>Download your PNG from the meme lab, or write an original idea. Open JOBBYChat and attach your image yourself.</p><ol><li>Include #JOBBYChallenge and your public display name.</li><li>Use the current official JOBBY character and your own joke.</li><li>Submit before the deadline shown in the weekly challenge.</li></ol><p>Selected contributions may appear on the site and official channels with your public name. No image is sent automatically.</p>', [
       {label:'Open JOBBYChat ↗',href:communityUrl,primary:true},
       {label:'Copy entry caption',run:()=>copyText('#JOBBYChallenge · ' + entryId + '\n\n' + captionText(), 'Entry caption copied. Attach your PNG in JOBBYChat.')},
-      {label:'Create a meme ↓',run:()=>{closeDialog();$('#lab').scrollIntoView({behavior:'smooth'});}}
+      {label:'Create a meme ↓',run:()=>{closeDialog();openMemeLab();}}
     ]);
   });
   $('.dialog-close').addEventListener('click', closeDialog);
@@ -269,7 +276,7 @@
   });
 
   $('#meet-button').addEventListener('click', () => openDialog('THE CHARACTER', 'He showed up anyway.', '<img src="/jobby-official-20261005.png" alt="Official JOBBY"><p>JOBBY is the unexpected face in a familiar situation. Calm when everyone panics. Confident without an explanation.</p><p>The character is the starting point. The community turns the moments into memes.</p>', [
-    { label: 'Try the meme lab ↓', primary: true, run: () => { closeDialog(); $('#lab').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Try the meme lab ↓', primary: true, run: () => { closeDialog(); openMemeLab(); } },
     { label: 'Meet the community ↗', href: communityUrl }
   ]));
 
@@ -279,7 +286,7 @@
       {label:'Official updates ↗',href:'https://t.me/JOBBYSOL'}
     ]],
     create: ['CREATE', 'Make your first JOBBY meme.', '<p>Pick a familiar situation in the meme lab, write your own setup and response, then download the image. Keep the original character and make the joke yours.</p>', [
-      {label:'Go to meme lab ↓',primary:true,run:()=>{closeDialog();$('#lab').scrollIntoView({behavior:'smooth'});$('#top-caption').focus({preventScroll:true});}}
+      {label:'Go to meme lab ↓',primary:true,run:()=>{closeDialog();openMemeLab();$('#top-caption').focus({preventScroll:true});}}
     ]],
     conversation: ['CONTRIBUTE', 'Bring your own perspective.', '<p>Follow @JOBBYSOL and explore the conversation. A thoughtful reply, a new idea, or an original meme is a good way to participate.</p><p>The checklist is yours to mark after you’ve explored. It doesn’t verify external actions.</p>', [
       {label:'Explore JOBBY on X ↗',href:'https://x.com/JOBBYSOL',primary:true},

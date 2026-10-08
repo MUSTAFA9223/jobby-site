@@ -19,18 +19,18 @@
   <meta name="twitter:image" content="https://jobby.lol/jobby-official-20261005.png">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/jobby-official-20261005.png" as="image">
-  <link rel="stylesheet" href="/styles.css?v=20261009-community-r6">
-  <script src="/community.js?v=20261009-community-r6" defer></script>
-  <script src="/hub.js?v=20261009-community-r6" defer></script>
-  <script src="/app.js?v=20261009-community-r6" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20261009-compact-r1">
+  <script src="/community.js?v=20261009-compact-r1" defer></script>
+  <script src="/hub.js?v=20261009-compact-r1" defer></script>
+  <script src="/app.js?v=20261009-compact-r1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="header">
     <a class="brand" href="#" aria-label="JOBBY home"><span class="brand-mark">J<span>·</span></span><span>JOBBY</span></a>
-    <nav class="desktop-nav" aria-label="Main navigation"><a href="#latest">Latest</a><a href="#lab">Meme lab</a><a href="#challenge">Weekly challenge</a><a href="#assets">Character kit</a><a href="#community">Community</a></nav>
+    <nav class="desktop-nav" aria-label="Main navigation"><a href="#latest">The project</a><a href="#lab">Meme lab</a><a href="#challenge">Weekly challenge</a><a href="#community">Community</a></nav>
     <div class="header-end"><a class="header-join" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">Join community <span aria-hidden="true">↗</span></a><button class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div>
-    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#latest">Latest</a><a href="#lab">Meme lab</a><a href="#challenge">Weekly challenge</a><a href="#assets">Character kit</a><a href="#community">Community</a></nav>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#latest">The project</a><a href="#lab">Meme lab</a><a href="#challenge">Weekly challenge</a><a href="#community">Community</a></nav>
   </header>
   <main id="main">
     <section class="hero section-width" aria-labelledby="hero-title">
@@ -38,7 +38,7 @@
         <div class="eyebrow"><span class="status-dot"></span>A new character. A familiar chaos.</div>
         <h1 id="hero-title">WHO TF<br>IS <span>JOBBY?</span></h1>
         <p class="hero-description">Everyone has a theory.<br>He just showed up.</p>
-        <div class="hero-actions"><button class="button button-primary" id="meet-button">Meet JOBBY <span aria-hidden="true">↗</span></button><a class="button button-secondary" href="#lab">Make a meme <span aria-hidden="true">↓</span></a></div>
+        <div class="hero-actions"><a class="button button-primary" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">Join JOBBY <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#challenge">Explore the challenge <span aria-hidden="true">↓</span></a></div><button id="meet-button" class="character-story-link">Meet the character ↗</button>
         <div class="hero-foot"><span class="solana"><i></i><i></i><i></i></span><span>Built around a character.<br><strong>Growing with a community.</strong></span></div>
       </div>
       <div class="character-stage" id="character-stage" data-scene="calm">
@@ -50,41 +50,21 @@
       </div>
     </section>
     <div class="word-strip" aria-hidden="true"><span>HE SHOWED UP ANYWAY.</span><b>✳</b><span>THE TIMELINE IS HIS NOW.</span><b>✳</b><span>HE SHOWED UP ANYWAY.</span></div>
-    <section class="section-width section-pad hub-section" id="latest" aria-labelledby="latest-title">
-      <div class="section-top"><div><span class="eyebrow">THE COMMUNITY JOURNAL</span><h2 id="latest-title">Something to<br><em>come back for.</em></h2></div><p>New prompts, original memes and community highlights.<br>All in one place.</p></div>
-      <div class="hub-grid">
-        <article class="hub-card"><time datetime="2026-10-09">09 OCT 2026</time><h3>A new home for your creativity.</h3><p>Explore the character kit, make a meme and take part in the first community challenge.</p><a class="button button-secondary" href="#assets">Explore the character kit ↓</a></article>
-        <article class="hub-card"><span class="eyebrow">CHALLENGE / ROUND 01</span><h3>The unexpected entrance.</h3><p>Put JOBBY somewhere nobody expected him. Share your original image or idea in JOBBYChat by 16 October.</p><a class="button button-secondary" href="#challenge">See the challenge ↓</a></article>
-        <article class="hub-card"><span class="eyebrow">COMMUNITY / NEXT UP</span><h3>The first highlights are yours.</h3><p>Reviewed contributions will appear in the hall of fame with their creators’ public names.</p><a class="button button-secondary" href="#hall-of-fame">Visit the hall of fame ↓</a></article>
-      </div>
-    </section>
-    <section class="story section-width section-pad" id="story" aria-labelledby="story-title">
-      <div class="section-heading"><span class="eyebrow">01 / THE IDEA</span><h2 id="story-title">The character<br>is the <em>punchline.</em></h2><p>One unexpected face. Endless familiar situations.<br>JOBBY doesn’t need a complicated backstory to become a meme.</p></div>
-      <div class="story-sequence"><article><span class="sequence-number">01</span><h3>He appears.</h3><p>The room is loud. The timeline is louder.<br>JOBBY enters like he owns the place.</p></article><article><span class="sequence-number">02</span><h3>You recognise it.</h3><p>That look. That confidence.<br>We all know someone like JOBBY.</p></article><article><span class="sequence-number">03</span><h3>You make it yours.</h3><p>Add your situation. Find the punchline.<br>The community takes it from there.</p></article></div>
-    </section>
+    <section class="project-summary section-width" id="latest" aria-labelledby="latest-title"><span class="eyebrow">PROJECT SNAPSHOT</span><h2 id="latest-title">A character. A community. A shared story.</h2><p>JOBBY is a Solana meme project built around original content and community participation.</p><div class="project-facts"><span><small>STAGE</small><strong>Pre-launch</strong></span><span><small>NETWORK</small><strong>Solana</strong></span><span><small>FOCUS NOW</small><strong>Building the community</strong></span></div></section>
     <section class="weekly-challenge section-width section-pad" id="challenge" aria-labelledby="challenge-title">
       <div class="challenge-layout">
         <div class="section-heading"><span class="eyebrow">THIS WEEK / JOBBY-W01</span><h2 id="challenge-title">Put JOBBY in an<br><em>unexpected situation.</em></h2><p id="challenge-description">Create a funny, original meme with the current official JOBBY character. Share the image or your idea in JOBBYChat with #JOBBYChallenge and your public display name.</p>
           <div class="hero-actions"><button class="button button-primary" data-submit-challenge>Participate now <span aria-hidden="true">↗</span></button><a class="button button-secondary" href="#lab">Create your entry <span aria-hidden="true">↓</span></a></div>
         </div>
-        <aside class="challenge-card" aria-label="Challenge details"><span class="challenge-status" id="challenge-status">ROUND 01 · OPEN</span><p class="challenge-deadline">Entries close <time id="challenge-deadline" datetime="2026-10-16T23:59:00+03:00">16 October 2026, 23:59 (UTC+3)</time></p><p class="challenge-countdown" id="challenge-countdown">One week to make your mark.</p><h3>Your creativity. Your credit.</h3><p>Up to <span id="challenge-limit">10</span> standout contributors will be featured on this site with their public names. Early contributors receive special recognition in the community.</p><p class="challenge-fineprint">Selection is based on originality, humour and the current JOBBY identity. This round has no confirmed token or cash reward.</p></aside>
+        <aside class="challenge-card" aria-label="Challenge details"><span class="challenge-status" id="challenge-status">ROUND 01 · OPEN</span><p class="challenge-deadline">Entries close <time id="challenge-deadline" datetime="2026-10-16T23:59:00+03:00">16 October 2026, 23:59 (UTC+3)</time></p><p class="challenge-countdown" id="challenge-countdown">One week to make your mark.</p><p>Up to <span id="challenge-limit">10</span> standout contributors will be featured on this site with their public names. Early contributors receive special recognition in the community.</p><p class="challenge-fineprint">Selection is based on originality, humour and the current JOBBY identity. This round has no confirmed token or cash reward.</p></aside>
       </div>
-      <ol class="challenge-steps"><li><span>01</span><strong>Create</strong><p>Use the meme lab or share an original idea.</p></li><li><span>02</span><strong>Share in JOBBYChat</strong><p>Post your entry with #JOBBYChallenge. Joining the chat alone does not submit an entry.</p></li><li><span>03</span><strong>Return for the highlights</strong><p>Selected entries and their creators appear below after review.</p></li></ol>
+      <p class="challenge-short">Make a meme → Share it in JOBBYChat with #JOBBYChallenge → Return for selected highlights.</p>
     </section>
     <section class="hall-of-fame section-width section-pad" id="hall-of-fame" aria-labelledby="hall-title">
-      <div class="section-top"><div><span class="eyebrow">COMMUNITY / HALL OF FAME</span><h2 id="hall-title">Made by you.<br><em>Seen by everyone.</em></h2></div><p>Original community contributions.<br>Selected and credited after review.</p></div>
-      <div id="featured-gallery" class="featured-gallery"></div><div class="gallery-empty" id="gallery-empty"><span class="eyebrow">YOUR NAME COULD BE HERE</span><h3>The first highlights start with you.</h3><p>No selected entries yet. Share your meme or idea in JOBBYChat, then come back to see the reviewed highlights.</p><button class="button button-secondary" data-submit-challenge>Send the first entry <span aria-hidden="true">↗</span></button></div>
+      <div class="section-top"><div><span class="eyebrow">COMMUNITY / HALL OF FAME</span><h2 id="hall-title">Community highlights.</h2></div><p><a href="/contributors.html" class="contributors-back">Meet the contributors ↗</a></p></div>
+      <div id="featured-gallery" class="featured-gallery"></div><div class="gallery-empty" id="gallery-empty"><h3>Your meme could be here.</h3><p>The first round is open. Selected entries will be featured with their creators’ names.</p><button class="button button-secondary" data-submit-challenge>Send the first entry <span aria-hidden="true">↗</span></button></div>
     </section>
-    <section class="section-width section-pad hub-section" id="assets" aria-labelledby="assets-title">
-      <div class="section-top"><div><span class="eyebrow">OFFICIAL CHARACTER KIT</span><h2 id="assets-title">The original face.<br><em>Your next idea.</em></h2></div><p>Start with the current official JOBBY.<br>Download the character or remix a caption in the lab.</p></div>
-      <div class="asset-layout"><article class="character-download hub-card"><img src="/jobby-official-20261005.png" width="1122" height="1402" loading="lazy" decoding="async" alt="Full official JOBBY character"><h3>Official JOBBY character</h3><p>Use this reference to keep the face, outfit and proportions consistent.</p><a class="button button-primary" href="/jobby-official-20261005.png" download="jobby-official.png">Download character PNG ↓</a></article>
-      <div class="starter-list"><h3>Three ways to start.</h3><p class="hub-intro">Choose a caption starter, edit it in the meme lab and download your image.</p>
-        <button class="starter-card" data-starter="chaos"><span>01 / TIMELINE CHAOS</span><strong>Everyone panics. He doesn’t.</strong><small>Open in the meme lab ↗</small></button>
-        <button class="starter-card" data-starter="late"><span>02 / THE ENTRANCE</span><strong>Missed the invite. Made the entrance.</strong><small>Open in the meme lab ↗</small></button>
-        <button class="starter-card" data-starter="confidence"><span>03 / THE CONFIDENCE</span><strong>No context. Fully convinced.</strong><small>Open in the meme lab ↗</small></button>
-        <a class="draft-link" href="#challenge">Share your creation in this week’s challenge ↗</a>
-      </div></div>
-    </section>
+    <details class="expandable section-width" id="meme-tools"><summary>Make your own JOBBY meme <span aria-hidden="true">+</span></summary>
     <section class="lab section-width section-pad" id="lab" aria-labelledby="lab-title">
       <div class="section-top"><div><span class="eyebrow">02 / MEME LAB</span><h2 id="lab-title">Your situation.<br><em>His reaction.</em></h2></div><p>Put the official character in your own context.<br>Try a caption. Keep the attitude.</p></div>
       <div class="lab-layout">
@@ -102,6 +82,22 @@
         </div>
       </div>
     </section>
+    </details>
+    <section class="community section-width section-pad" id="community" aria-labelledby="community-title">
+      <div class="community-title"><span class="eyebrow">04 / THE COMMUNITY</span><h2 id="community-title">The face is JOBBY.<br><em>The energy is you.</em></h2><p>Follow the story. Join the conversation.<br>Build something worth showing up for.</p></div>
+      <div class="community-links"><a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon x-icon" aria-hidden="true">𝕏</span><span><strong>Follow on X</strong><small>@JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer"><span class="social-icon telegram-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m20 4-3 16-5-4-3 3 1-5 7-7-10 6-5-2Z"/></svg></span><span><strong>Join the community</strong><small>Telegram · JOBBYChat</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon channel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 9 13-5v16L4 15Z"/><path d="m6 15 2 6h4l-2-5M20 9v6"/></svg></span><span><strong>Official updates</strong><small>Telegram · JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><button class="copy-invite" id="copy-invite">Copy community invite <span aria-hidden="true">⧉</span></button></div>
+    </section>
+    <details class="expandable section-width" id="explore-more"><summary>Character kit, missions and community history <span aria-hidden="true">+</span></summary>
+    <section class="section-width section-pad hub-section" id="assets" aria-labelledby="assets-title">
+      <div class="section-top"><div><span class="eyebrow">OFFICIAL CHARACTER KIT</span><h2 id="assets-title">The original face.<br><em>Your next idea.</em></h2></div><p>Start with the current official JOBBY.<br>Download the character or remix a caption in the lab.</p></div>
+      <div class="asset-layout"><article class="character-download hub-card"><img src="/jobby-official-20261005.png" width="1122" height="1402" loading="lazy" decoding="async" alt="Full official JOBBY character"><h3>Official JOBBY character</h3><p>Use this reference to keep the face, outfit and proportions consistent.</p><a class="button button-primary" href="/jobby-official-20261005.png" download="jobby-official.png">Download character PNG ↓</a></article>
+      <div class="starter-list"><h3>Three ways to start.</h3><p class="hub-intro">Choose a caption starter, edit it in the meme lab and download your image.</p>
+        <button class="starter-card" data-starter="chaos"><span>01 / TIMELINE CHAOS</span><strong>Everyone panics. He doesn’t.</strong><small>Open in the meme lab ↗</small></button>
+        <button class="starter-card" data-starter="late"><span>02 / THE ENTRANCE</span><strong>Missed the invite. Made the entrance.</strong><small>Open in the meme lab ↗</small></button>
+        <button class="starter-card" data-starter="confidence"><span>03 / THE CONFIDENCE</span><strong>No context. Fully convinced.</strong><small>Open in the meme lab ↗</small></button>
+        <a class="draft-link" href="#challenge">Share your creation in this week’s challenge ↗</a>
+      </div></div>
+    </section>
     <section class="missions section-width section-pad" id="missions" aria-labelledby="missions-title">
       <div class="section-top"><div><span class="eyebrow">03 / COMMUNITY MISSIONS</span><h2 id="missions-title">Small actions.<br><em>Real participation.</em></h2></div><div class="mission-progress"><span id="progress-label" aria-live="polite">0 of 3 explored</span><div class="progress-track" id="progress-track" role="progressbar" aria-label="Explored missions" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0"><div id="progress-fill"></div></div><small>Your checklist is saved on this device.</small></div></div>
       <div class="mission-list">
@@ -112,10 +108,7 @@
     </section>
     <section class="section-width section-pad hub-section" id="contributors" aria-labelledby="contributors-title"><div class="section-top"><div><span class="eyebrow">EARLY CONTRIBUTORS</span><h2 id="contributors-title">Build the story.<br><em>Leave your mark.</em></h2></div><a class="button button-secondary" href="/contributors.html">Meet the contributors ↗</a></div><p class="hub-intro">Original memes, useful ideas and thoughtful contributions deserve credit. Reviewed contributors and their work will be recognised here.</p><div id="contributors-list" class="hub-grid"></div><div id="contributors-empty" class="gallery-empty"><h3>The first chapter is still being written.</h3><p>No contributors have been featured yet. Share something original in JOBBYChat to take part.</p><a class="button button-secondary" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">Contribute in JOBBYChat ↗</a></div></section>
     <section class="section-width section-pad hub-section" id="archive" aria-labelledby="archive-title"><div class="section-top"><div><span class="eyebrow">CHALLENGE ARCHIVE</span><h2 id="archive-title">Every round.<br><em>Part of the story.</em></h2></div><p>Past prompts and reviewed highlights stay here.</p></div><article class="hub-card current-round"><span class="eyebrow">FIRST ROUND</span><h3>JOBBY-W01 · The unexpected situation</h3><p>The first challenge closes on 16 October 2026. Once reviewed, its selected contributions will stay in the archive.</p><a class="button button-secondary" href="#challenge">View current round ↑</a></article><div id="archive-list" class="hub-grid"></div><p id="archive-empty" class="hub-intro">No completed rounds yet. This is where the community’s history begins.</p></section>
-    <section class="community section-width section-pad" id="community" aria-labelledby="community-title">
-      <div class="community-title"><span class="eyebrow">04 / THE COMMUNITY</span><h2 id="community-title">The face is JOBBY.<br><em>The energy is you.</em></h2><p>Follow the story. Join the conversation.<br>Build something worth showing up for.</p></div>
-      <div class="community-links"><a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon x-icon" aria-hidden="true">𝕏</span><span><strong>Follow on X</strong><small>@JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer"><span class="social-icon telegram-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m20 4-3 16-5-4-3 3 1-5 7-7-10 6-5-2Z"/></svg></span><span><strong>Join the community</strong><small>Telegram · JOBBYChat</small></span><b aria-hidden="true">↗</b></a><a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer"><span class="social-icon channel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 9 13-5v16L4 15Z"/><path d="m6 15 2 6h4l-2-5M20 9v6"/></svg></span><span><strong>Official updates</strong><small>Telegram · JOBBYSOL</small></span><b aria-hidden="true">↗</b></a><button class="copy-invite" id="copy-invite">Copy community invite <span aria-hidden="true">⧉</span></button></div>
-    </section>
+    </details>
     <section class="faq section-width" aria-label="Questions"><details><summary>How do I enter the weekly challenge?<span aria-hidden="true">+</span></summary><p>Download your meme or write an original idea, then post it in JOBBYChat with #JOBBYChallenge and your public display name before the deadline. Entries are reviewed manually for originality, humour and the current JOBBY identity. By entering, you allow JOBBY to feature your entry and public name on this site and official channels. There is no automatic upload, vote count or confirmed token reward.</p></details><details><summary>Where does the project stand?<span aria-hidden="true">+</span></summary><p>JOBBY is a Solana meme project being built from the ground up. The current focus is the character, original content, and the community. Follow the official channels for confirmed launch updates.</p></details><details><summary>Where can I find official updates?<span aria-hidden="true">+</span></summary><p>Follow <a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">@JOBBYSOL on X</a> and the <a href="https://t.me/JOBBYSOL" target="_blank" rel="noopener noreferrer">official Telegram channel</a>. The community chat is <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOBBYChat</a>.</p></details><details><summary>Does the meme lab post for me?<span aria-hidden="true">+</span></summary><p>No. You can download an image, copy a caption, or open an X draft. You choose whether and where to post it. The checklist records only what you mark on your device.</p></details></section>
   </main>
   <footer class="footer section-width"><a class="brand" href="#"><span class="brand-mark">J<span>·</span></span><span>JOBBY</span></a><span>He showed up anyway.</span><span class="footer-status">SOLANA · PRE-LAUNCH</span></footer>

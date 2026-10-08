@@ -1,8 +1,20 @@
 'use strict';
 (() => {
+  function revealHashTarget() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = document.getElementById(id);
+    if (!target) return;
+    let parent = target.parentElement;
+    let opened = false;
+    while (parent) { if (parent.tagName === 'DETAILS' && !parent.open) { parent.open = true; opened = true; } parent = parent.parentElement; }
+    if (opened) target.scrollIntoView({ behavior: 'instant' });
+  }
+  window.addEventListener('hashchange', revealHashTarget);
+  revealHashTarget();
+
   document.querySelectorAll('[data-starter]').forEach(button => button.addEventListener('click', () => {
     const preset = document.querySelector('[data-preset="' + button.dataset.starter + '"]');
-    if (preset) { preset.click(); document.querySelector('#lab').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); document.querySelector('#top-caption').focus({ preventScroll: true }); }
+    if (preset) { const fold = document.querySelector('#lab').closest('details'); if (fold) fold.open = true; preset.click(); document.querySelector('#lab').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); document.querySelector('#top-caption').focus({ preventScroll: true }); }
   }));
   function render(items, listId, emptyId, type) {
     const list = document.getElementById(listId); if (!list || !Array.isArray(items)) return;
@@ -18,7 +30,7 @@
     }
     const empty = document.getElementById(emptyId); if (empty) empty.hidden = list.children.length > 0;
   }
-  fetch('/community.json?v=20261009-community-r6', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
+  fetch('/community.json?v=20261009-compact-r1', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
     render(data.contributors, 'contributors-list', 'contributors-empty', 'contributors');
     render(data.archive, 'archive-list', 'archive-empty', 'archive');
   }).catch(() => {});
