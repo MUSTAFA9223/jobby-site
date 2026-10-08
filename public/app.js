@@ -10,6 +10,12 @@
     late: ['NOBODY SENT HIM THE INVITE', 'HE SHOWED UP ANYWAY.'],
     confidence: ['NO CONTEXT. NO EXPLANATION.', 'STILL THE MAIN CHARACTER.']
   };
+  const presetImages = {
+    chaos: { src: '/jobby-official-20261005.png', alt: 'JOBBY staying calm in the chaos', width: 1122, height: 1402 },
+    late: { src: '/memes/fomo.webp', alt: 'JOBBY checking his phone after arriving late', width: 1254, height: 1254 },
+    confidence: { src: '/memes/expert.webp', alt: 'JOBBY confidently explaining a chart', width: 1254, height: 1254 }
+  };
+  let selectedImage = presetImages.chaos;
   const scenes = {
     calm: 'Calm in the chaos.',
     mystery: 'Nobody knows. Everybody asks.',
@@ -93,6 +99,12 @@
 
   $$('.preset').forEach(button => button.addEventListener('click', () => {
     const [top, bottom] = presets[button.dataset.preset];
+    selectedImage = presetImages[button.dataset.preset];
+    const previewImage = $('#meme-preview > img');
+    previewImage.src = selectedImage.src;
+    previewImage.alt = selectedImage.alt;
+    previewImage.width = selectedImage.width;
+    previewImage.height = selectedImage.height;
     $('#top-caption').value = top;
     $('#bottom-caption').value = bottom;
     setActive($$('.preset'), button);
@@ -159,6 +171,10 @@
 
   $('#download-meme').addEventListener('click', async () => {
     const button = $('#download-meme');
+    const exportImage = selectedImage.src;
+    const exportLook = selectedLook;
+    const exportTop = $('#top-caption').value;
+    const exportBottom = $('#bottom-caption').value;
     button.disabled = true;
     button.textContent = 'Preparing image…';
     $('#download-error').hidden = true;
@@ -168,7 +184,7 @@
         image.onload = resolve;
         image.onerror = () => reject(new Error('The character image could not load.'));
       });
-      image.src = '/jobby-official-20261005.png';
+      image.src = exportImage;
       await loaded;
       const canvas = document.createElement('canvas');
       canvas.width = canvas.height = 1080;
@@ -176,7 +192,7 @@
       if (!ctx) throw new Error('Image export is unavailable in this browser.');
       ctx.fillStyle = '#09090b';
       ctx.fillRect(0, 0, 1080, 1080);
-      if (selectedLook === 'spotlight') {
+      if (exportLook === 'spotlight') {
         const glow = ctx.createRadialGradient(540, 550, 30, 540, 580, 570);
         glow.addColorStop(0, '#533866');
         glow.addColorStop(.48, '#19111f');
@@ -184,11 +200,12 @@
         ctx.fillStyle = glow;
         ctx.fillRect(0, 0, 1080, 1080);
       }
-      const imageHeight = 720;
-      const imageWidth = image.naturalWidth / image.naturalHeight * imageHeight;
-      ctx.drawImage(image, (1080 - imageWidth) / 2, 180, imageWidth, imageHeight);
-      paintCaption(ctx, $('#top-caption').value, 85, '#f4f0e9');
-      paintCaption(ctx, $('#bottom-caption').value, 972, '#d9befd');
+      const scale = Math.min(777.6 / image.naturalWidth, 777.6 / image.naturalHeight);
+      const imageWidth = image.naturalWidth * scale;
+      const imageHeight = image.naturalHeight * scale;
+      ctx.drawImage(image, (1080 - imageWidth) / 2, (1080 - imageHeight) / 2, imageWidth, imageHeight);
+      paintCaption(ctx, exportTop, 85, '#f4f0e9');
+      paintCaption(ctx, exportBottom, 972, '#d9befd');
       ctx.font = '700 15px Arial, sans-serif';
       ctx.fillStyle = '#9b86b0';
       ctx.fillText('JOBBY', 540, 1052);

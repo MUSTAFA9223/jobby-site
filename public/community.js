@@ -38,7 +38,7 @@
   }
   updateCountdown();
   timer = setInterval(updateCountdown, 60000);
-  fetch('/community.json?v=20261009-community-r4', { cache: 'no-cache' }).then(response => {
+  fetch('/community.json?v=20261009-community-r5', { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('Community content unavailable'); return response.json();
   }).then(data => {
     const current = data.challenge;
