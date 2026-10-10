@@ -30,8 +30,10 @@
     }
     const empty = document.getElementById(emptyId); if (empty) empty.hidden = list.children.length > 0;
   }
-  fetch('/community.json?v=20261009-compact-r1', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
+  fetch('/community.json?v=20261010-contest-r2', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error('Unavailable'); return response.json(); }).then(data => {
     render(data.contributors, 'contributors-list', 'contributors-empty', 'contributors');
     render(data.archive, 'archive-list', 'archive-empty', 'archive');
+    document.querySelector('#contributors').hidden = !Array.isArray(data.contributors) || data.contributors.length === 0;
+    document.querySelector('#archive').hidden = !Array.isArray(data.archive) || data.archive.length === 0;
   }).catch(() => {});
 })();

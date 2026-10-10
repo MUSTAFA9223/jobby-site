@@ -78,7 +78,7 @@
   }));
 
   function captionText() {
-    return [$('#top-caption').value.trim(), $('#bottom-caption').value.trim(), 'JOBBY', communityUrl].filter(Boolean).join('\n\n');
+    return [$('#top-caption').value.trim(), $('#bottom-caption').value.trim(), '@JOBBYSOL #JOBBY', 'https://jobby.lol'].filter(Boolean).join('\n\n');
   }
 
   function updateMeme() {
@@ -259,11 +259,11 @@
   }
 
   function closeDialog() { $('#story-dialog').close(); }
-  window.addEventListener('jobby-challenge-entry', event => {
-    const entryId = String(event.detail?.id || 'JOBBY-W01').replace(/[^a-zA-Z0-9-]/g, '');
-    openDialog('WEEKLY CHALLENGE', 'Share it with the community.', '<p>Download your PNG from the meme lab, or write an original idea. Open JOBBYChat and attach your image yourself.</p><ol><li>Include #JOBBYChallenge and your public display name.</li><li>Use the current official JOBBY character and your own joke.</li><li>Submit before the deadline shown in the weekly challenge.</li></ol><p>Selected contributions may appear on the site and official channels with your public name. No image is sent automatically.</p>', [
-      {label:'Open JOBBYChat ↗',href:communityUrl,primary:true},
-      {label:'Copy entry caption',run:()=>copyText('#JOBBYChallenge · ' + entryId + '\n\n' + captionText(), 'Entry caption copied. Attach your PNG in JOBBYChat.')},
+  window.addEventListener('jobby-challenge-entry', () => {
+    openDialog('JOBBY MEME CONTEST', 'Create it. Post it. Share it.', '<p>Create a meme with the official JOBBY character, then publish it on X with @JOBBYSOL and #JOBBY. Share your X post link in the meme-only Telegram group.</p><p>Follow the official X account and Telegram channel. For the complete prize conditions and closing time, read the official contest announcement. Your image is never sent automatically.</p>', [
+      {label:'Open meme group ↗',href:'https://t.me/JOBBYMeme',primary:true},
+      {label:'Official contest rules ↗',href:'https://x.com/JOBBYSOL/status/2108670523039437123'},
+      {label:'Copy X caption',run:()=>copyText(captionText(), 'X caption copied. Add your meme image before posting.')},
       {label:'Create a meme ↓',run:()=>{closeDialog();openMemeLab();}}
     ]);
   });

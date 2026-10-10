@@ -1,9 +1,16 @@
 {
   "challenge": {
-    "id": "JOBBY-W01",
-    "title": "Put JOBBY in an unexpected situation.",
-    "description": "Create a funny, original meme with the current official JOBBY character. Share the image or your idea in JOBBYChat with #JOBBYChallenge and your public display name.",
-    "endsAt": "2026-10-16T23:59:00+03:00",
+    "id": "JOBBY-MEME-2026-10",
+    "title": "Your meme. Your moment.",
+    "description": "Create an original meme with the official JOBBY character. Post it on X with @JOBBYSOL and #JOBBY, then share your X post link in the dedicated JOBBY Meme Telegram group.",
+    "durationDays": 5,
+    "announcementUrl": "https://x.com/JOBBYSOL/status/2108670523039437123",
+    "submissionGroup": "https://t.me/JOBBYMeme",
+    "prizes": [
+      25,
+      15,
+      10
+    ],
     "maxFeatured": 10
   },
   "featured": [],
