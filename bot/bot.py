@@ -14,8 +14,6 @@ from telegram.ext import (
     filters,
 )
 
-from chaos_game import play_command, play_callback
-
 BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 ADMIN_IDS = {
     int(x.strip())
@@ -143,7 +141,6 @@ async def post_init(app: Application) -> None:
     await app.bot.set_my_commands(
         [
             BotCommand("start", "Open JOBBY bot"),
-            BotCommand("chaos", "Play JOBBY CHAOS privately"),
             BotCommand("links", "Official JOBBY links"),
             BotCommand("x", "Official X account"),
             BotCommand("channel", "Official Telegram channel"),
@@ -170,9 +167,6 @@ async def send_links(message) -> None:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if is_private(update) and context.args and context.args[0].lower() == "chaos":
-        await play_command(update, context)
-        return
     if is_private(update) and is_admin(update.effective_user.id if update.effective_user else None):
         await update.effective_message.reply_text(
             admin_text(),
@@ -474,10 +468,8 @@ def main() -> None:
     app.add_handler(CommandHandler("ca", ca_cmd))
     app.add_handler(CommandHandler("web", web_cmd))
     app.add_handler(CommandHandler("admin", admin_cmd))
-    app.add_handler(CommandHandler(["chaos", "play"], play_command))
 
     app.add_handler(CallbackQueryHandler(admin_callback, pattern=r"^adm:"))
-    app.add_handler(CallbackQueryHandler(play_callback, pattern=r"^chaos:"))
     app.add_handler(MessageHandler(filters.ChatType.PRIVATE & (filters.PHOTO | (filters.TEXT & ~filters.COMMAND)), admin_input))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, delete_service_message))
