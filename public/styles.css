@@ -41,3 +41,36 @@
   .weekly-challenge .hero-actions .button{flex:1;gap:7px}
 }
 @media(max-width:380px){.contest-prizes span{font-size:7px}.contest-prizes strong{font-size:22px}}
+
+/* Official JOBBY story and project vision: compact, responsive two-column feature. */
+.story-vision{padding:0;overflow:hidden;background:linear-gradient(125deg,#17111e 0%,#0f0d12 65%);border-color:#3a2b47}
+.story-vision-grid{display:grid;grid-template-columns:1.08fr 1fr;min-width:0}
+.story-vision-story,.story-vision-idea{position:relative;min-width:0;padding:35px 39px 37px}
+.story-vision-story::before{content:"?";position:absolute;right:26px;top:-55px;font-size:240px;line-height:1;font-weight:900;color:#bb98f20c;pointer-events:none}
+.story-vision-story>*{position:relative}
+.story-vision-story h2{font-size:clamp(27px,3vw,40px);line-height:1.12;letter-spacing:-.055em;margin:17px 0 19px}
+.story-vision-story h2 em{font-style:normal;color:var(--accent)}
+.story-vision-story p,.story-vision-idea p{max-width:55ch;font-size:13px;line-height:1.75;color:#b8b0c0}
+.story-vision-story p+p{margin-top:10px}
+.story-vision-link{display:inline-flex;align-items:center;gap:16px;min-height:44px;padding:10px 0 5px;margin-top:13px;border:0;border-bottom:1px solid #8564a1;background:transparent;color:#dec4ff;font-weight:700;font-size:12px;text-align:left}
+.story-vision-link:hover{color:#fff;border-color:#dec4ff}
+.story-vision-idea{background:#101016;border-left:1px solid #34293c}
+.story-vision-idea h3{font-size:clamp(22px,2vw,28px);line-height:1.21;letter-spacing:-.035em;margin:17px 0 15px}
+.story-vision .project-facts{gap:25px;margin-top:23px}
+.story-vision .project-facts strong{font-size:12px}
+#story-dialog{max-height:min(85vh,780px);overflow-y:auto}
+@media(max-width:760px){
+  .story-vision-grid{grid-template-columns:1fr}
+  .story-vision-story,.story-vision-idea{padding:27px 24px}
+  .story-vision-story h2{font-size:32px}
+  .story-vision-story::before{right:12px;top:-25px;font-size:160px}
+  .story-vision-idea{border-left:0;border-top:1px solid #34293c}
+  .story-vision-idea h3{font-size:24px}
+  .story-vision .project-facts{gap:19px}
+  #story-dialog{padding:30px 23px;max-height:85dvh}
+}
+@media(max-width:380px){
+  .story-vision-story,.story-vision-idea{padding:24px 19px}
+  .story-vision-story h2{font-size:29px}
+  .story-vision .project-facts{gap:13px}
+}

@@ -275,10 +275,24 @@
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog();
   });
 
-  $('#meet-button').addEventListener('click', () => openDialog('THE CHARACTER', 'He showed up anyway.', '<img src="/jobby-official-20261005.png" alt="Official JOBBY"><p>JOBBY is the unexpected face in a familiar situation. Calm when everyone panics. Confident without an explanation.</p><p>The character is the starting point. The community turns the moments into memes.</p>', [
-    { label: 'Try the meme lab ↓', primary: true, run: () => { closeDialog(); openMemeLab(); } },
-    { label: 'Meet the community ↗', href: communityUrl }
-  ]));
+  // Ashley's official JOBBY story. Both entry points use the same accessible dialog.
+  function openJobbyStory() {
+    openDialog('THE OFFICIAL STORY', "Nobody knows what he'll do next.", [
+      "<p>Nobody knows where JOBBY came from. Nobody knows what he's thinking. And honestly, nobody knows what he'll do next.</p>",
+      "<p>One thing is certain: wherever JOBBY goes, chaos follows.</p>",
+      "<p>A mysterious purple character with a rebellious spirit, a weird sense of humor, and a talent for turning ordinary moments into ridiculous adventures, JOBBY doesn't follow the rules. He makes his own.</p>",
+      "<p>But JOBBY's story is only beginning.</p>",
+      "<p>There's no fixed universe, no final destination, and no script to follow. Every meme, every crazy moment, and every community creation adds another piece to his world.</p>",
+      "<p>JOBBY isn't just a character created for memes. He's a character the community gets to bring to life.</p>",
+      "<p>The mission? Build the community, unleash the creativity, and let the purple chaos evolve.</p>",
+      "<p>Welcome to JOBBY's world. The story is ours to create.</p>"
+    ].join(''), [
+      { label: 'Make a JOBBY meme ↓', primary: true, run: () => { closeDialog(); openMemeLab(); } },
+      { label: 'Join the community ↗', href: communityUrl }
+    ]);
+  }
+  $('#meet-button').addEventListener('click', openJobbyStory);
+  $('#read-story-button').addEventListener('click', openJobbyStory);
 
   const missionDetails = {
     community: ['CONNECT', 'Find your people.', '<p>Join JOBBYChat to meet the community, explore original memes, and share your own ideas. The official channel keeps announcements in one place.</p>', [
