@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0710">
+  <meta name="description" content="Play JOBBY CHAOS: choose the next absurd move of the official purple JOBBY character. A free community mini-game.">
+  <meta property="og:title" content="JOBBY CHAOS — What Will JOBBY Do Next?">
+  <meta property="og:description" content="Five weird situations. Three ridiculous choices each. How chaotic are you?">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jobby.lol/play.html">
+  <meta property="og:image" content="https://jobby.lol/jobby-official-20261005.png">
+  <link rel="canonical" href="https://jobby.lol/play.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>JOBBY CHAOS — Community Mini-Game</title>
+  <style>
+    :root{color-scheme:dark;--base:#09070d;--surface:#15101c;--line:rgba(231,199,255,.18);--purple:#c276f3;--purple-soft:#e3b5ff;--text:#f6f1fa;--muted:#b0a6b8;--lime:#e6f797}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 45% at 70% -5%,#3d1a54 0%,transparent 68%),var(--base);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(--lime);outline-offset:4px}.wrap{max-width:1200px;margin:auto;padding:0 24px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center;text-decoration:none;font-weight:1000;letter-spacing:.11em;font-size:22px}.brand-emblem{display:grid;place-items:center;background:var(--purple);color:#130719;border-radius:12px;width:40px;height:40px;font-size:24px;box-shadow:0 0 24px #c276f350}.navlinks{display:flex;gap:22px;align-items:center}.navlinks a{color:var(--muted);font-size:13px;text-decoration:none;font-weight:750}.navlinks a:hover{color:var(--text)}.navlinks a:last-child{border:1px solid #704985;color:#f6e5ff;border-radius:99px;padding:11px 16px}.intro{padding:44px 0 26px;display:flex;align-items:end;justify-content:space-between;gap:32px}.eyebrow{color:var(--purple-soft);font-size:11px;font-weight:900;letter-spacing:.24em;text-transform:uppercase}.intro h1{font-size:clamp(40px,7vw,90px);font-weight:1000;letter-spacing:-.075em;line-height:.96;margin:14px 0}.intro h1 span{display:block;color:var(--purple)}.intro p{color:var(--muted);max-width:580px;line-height:1.6;font-size:16px;margin:0}.intro-right{text-align:right;flex:0 0 auto}.intro-right strong{font-size:34px;line-height:1;display:block}.intro-right small{font-size:11px;color:var(--muted);letter-spacing:.12em}.game{display:grid;grid-template-columns:minmax(310px,.95fr) minmax(360px,1fr);gap:22px;align-items:stretch}.stage,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#1e132b 0%,#100c18 68%,#0d0a12 100%);border-radius:26px;overflow:hidden;min-height:525px}.stage{position:relative;display:flex;flex-direction:column;isolation:isolate}.stage:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 50% 55%,#ad5ddd33,transparent 54%),repeating-linear-gradient(0deg,transparent 0 47px,#ffffff08 48px 49px),repeating-linear-gradient(90deg,transparent 0 47px,#ffffff08 48px 49px);opacity:.8}.stage:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #e3b5ff22;border-radius:50%;top:25%;left:50%;transform:translateX(-50%);box-shadow:0 0 0 60px #e3b5ff0b,0 0 0 120px #e3b5ff07;z-index:-1}.stage-top{padding:26px 27px;display:flex;justify-content:space-between;align-items:center;gap:10px}.micro{font-size:11px;letter-spacing:.16em;font-weight:900;color:#d7bde6}.pill{font-size:11px;color:var(--lime);border:1px solid #e6f79755;padding:9px 12px;border-radius:99px;letter-spacing:.1em}.artbox{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:315px}.artbox img{height:360px;width:auto;max-width:85%;object-fit:contain;filter:drop-shadow(0px 19px 35px #0009);transform:translateY(6px);transition:transform .32s cubic-bezier(.18,.8,.26,1)}.artbox img.bounce{transform:translateY(-17px) rotate(-3deg) scale(1.035)}.floating{position:absolute;font-size:12px;font-weight:900;letter-spacing:.2em;opacity:.5;user-select:none;pointer-events:none}.float-one{top:15%;right:7%;transform:rotate(12deg)}.float-two{bottom:15%;left:6%;transform:rotate(-12deg)}.stage-bottom{padding:20px 27px 26px;background:linear-gradient(0deg,#0c0913 45%,transparent)}.stage-bottom strong{font-size:15px;display:block}.stage-bottom p{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.55}.panel{padding:30px;display:flex;flex-direction:column;background:#120e1a}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:20px}.roundnum{font-size:12px;font-weight:900;color:var(--purple-soft);letter-spacing:.15em}.scorebox{text-align:right}.scorebox b{font-size:29px;font-variant-numeric:tabular-nums}.scorebox span{font-size:11px;font-weight:800;color:var(--muted);display:block;letter-spacing:.12em}.progress{height:6px;border-radius:99px;background:#31203e;margin:19px 0 33px;overflow:hidden}.progress span{display:block;background:linear-gradient(90deg,var(--purple),#ffd3fa);height:100%;width:20%;border-radius:99px;transition:width .3s}.question{font-size:clamp(25px,3vw,37px);letter-spacing:-.04em;line-height:1.18;margin:0 0 12px}.desc{color:var(--muted);font-size:14px;line-height:1.55;margin:0 0 26px}.optionlist{display:grid;gap:11px}.option{appearance:none;width:100%;text-align:left;background:#201628;color:var(--text);border:1px solid #52345e;border-radius:15px;padding:17px 18px;display:flex;align-items:center;gap:16px;transition:transform .15s,background .15s,border-color .15s;min-height:69px}.option:hover:not(:disabled){background:#342042;border-color:var(--purple);transform:translateY(-2px)}.option:disabled{cursor:default}.option.selected{border-color:var(--lime);background:#283020}.key{height:33px;width:33px;flex:0 0 auto;display:grid;place-items:center;border-radius:9px;background:#56356c;color:#f6dfff;font-size:13px;font-weight:900}.option.selected .key{background:var(--lime);color:#1a180b}.choice-text{font-size:14px;font-weight:750;line-height:1.4}.panel-foot{font-size:12px;color:#8d8296;margin-top:auto;padding-top:24px}.outcome{margin-top:20px;border:1px solid #9d78b955;background:linear-gradient(135deg,#311d3e,#1b1323);padding:19px;border-radius:17px}.outcome-tag{font-size:10px;color:var(--lime);letter-spacing:.17em;font-weight:1000}.outcome h3{margin:9px 0 7px;font-size:21px;letter-spacing:-.02em}.outcome p{font-size:14px;line-height:1.58;color:#d6c8de;margin:0 0 14px}.cta{background:var(--purple);color:#120919;border:0;border-radius:13px;font-weight:1000;letter-spacing:.03em;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px;width:100%;text-decoration:none;transition:background .16s,transform .16s}.cta:hover{background:#d4a3f8;transform:translateY(-1px)}.bonus{font-size:28px;font-weight:1000;color:var(--lime);line-height:1.2}.end-result{margin:auto 0}.rank{font-size:clamp(34px,4vw,50px);letter-spacing:-.055em;line-height:1.02;margin:10px 0 16px}.end-result p{color:#c6bace;line-height:1.6}.total{margin:28px 0;background:#201529;border:1px solid var(--line);border-radius:15px;padding:20px}.total b{font-size:46px;font-variant-numeric:tabular-nums}.total span{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:900}.resultlinks{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resultlinks .cta{font-size:13px;padding:13px 15px}.secondary{background:#291c35;color:#f3defd;border:1px solid #68417a}.secondary:hover{background:#392548}.replay{margin-top:12px}.community-area{margin:28px 0 52px;padding:24px 28px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(120deg,#21152a,#100c16);display:flex;justify-content:space-between;align-items:center;gap:30px}.community-area h2{font-size:21px;letter-spacing:-.03em;margin:7px 0}.community-area p{font-size:13px;line-height:1.6;color:var(--muted);margin:0;max-width:670px}.community-area a{font-size:13px;font-weight:900;flex:0 0 auto;padding:15px 19px;text-decoration:none;background:var(--lime);color:#171515;border-radius:12px}.legal{border-top:1px solid var(--line);color:#766e80;font-size:11px;padding:20px 0 30px;display:flex;justify-content:space-between;gap:15px}.hidden{display:none!important}@media(max-width:900px){.game{grid-template-columns:1fr}.stage{min-height:450px}.artbox{min-height:310px}.stage:after{top:15%}.artbox img{height:330px}.intro-right{display:none}}@media(max-width:570px){.wrap{padding:0 15px}.topbar{padding:16px 0}.brand{font-size:18px}.brand-emblem{width:33px;height:33px;font-size:20px}.navlinks{gap:10px}.navlinks a{font-size:11px}.navlinks a:last-child{padding:9px 10px}.intro{padding:30px 0 22px}.intro h1{font-size:clamp(38px,11vw,65px)}.intro p{font-size:14px}.stage,.panel{border-radius:19px}.stage{min-height:378px}.stage-top{padding:19px}.artbox{min-height:270px}.artbox img{height:295px}.stage-bottom{padding:16px 20px 20px}.panel{padding:22px;min-height:510px}.question{font-size:28px}.progress{margin-bottom:25px}.option{padding:14px;min-height:63px}.community-area{display:block;padding:20px}.community-area a{display:inline-block;margin-top:20px}.legal{display:block}.legal span{display:block;margin-bottom:8px}.resultlinks{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="JOBBY homepage"><span class="brand-emblem">J</span> JOBBY</a>
+    <nav class="navlinks" aria-label="Main navigation"><a href="/">Home</a><a href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">X</a><a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">Community ↗</a></nav>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><div class="eyebrow">THE OFFICIAL COMMUNITY MINI-GAME / EPISODE 001</div><h1 id="page-title">JOBBY <span>CHAOS.</span></h1><p>Nobody knows what JOBBY will do next. This time, you decide. Five strange moments. Fifteen terrible ideas. One purple troublemaker.</p></div>
+      <div class="intro-right"><strong>05 / 05</strong><small>CHAOTIC ROUNDS</small></div>
+    </section>
+    <section class="game" aria-label="JOBBY CHAOS mini-game">
+      <div class="stage">
+        <div class="stage-top"><span class="micro">JOBBY / THE MAIN CHARACTER</span><span class="pill">PRE-LAUNCH</span></div>
+        <div class="artbox"><span class="floating float-one" aria-hidden="true">? ! ?</span><img id="jobby" src="/jobby-official-20261005.png" width="1122" height="1402" alt="The official purple JOBBY character" loading="eager"><span class="floating float-two" aria-hidden="true">CHAOS // 001</span></div>
+        <div class="stage-bottom"><strong id="stage-label">CURRENT MOOD: SUSPICIOUSLY CALM</strong><p id="stage-line">JOBBY hasn't caused any problems. Yet.</p></div>
+      </div>
+      <div class="panel" id="panel" aria-live="polite">
+        <div class="panel-head"><span class="roundnum" id="round-label">ROUND 01 / 05</span><div class="scorebox"><span>YOUR CHAOS SCORE</span><b id="score">000</b></div></div>
+        <div class="progress" role="progressbar" aria-label="Game progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="progress"><span id="progress-fill"></span></div>
+        <div id="question-area">
+          <h2 class="question" id="question">Loading the next disaster...</h2>
+          <p class="desc" id="description"></p>
+          <div class="optionlist" id="options" aria-label="Choose JOBBY's next action"></div>
+          <div id="outcome" class="outcome hidden" role="status">
+            <span class="outcome-tag">AND THEN...</span><h3 id="outcome-title"></h3><p id="outcome-text"></p><div class="bonus" id="bonus"></div>
+            <button class="cta" id="next" type="button"><span id="next-text">NEXT ROUND</span><span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <div class="end-result hidden" id="ending">
+          <div class="eyebrow">YOUR FINAL CHAOS REPORT</div>
+          <h2 class="rank" id="rank">Certified Chaos.</h2>
+          <p id="rank-detail"></p>
+          <div class="total"><b id="final-score">000</b> <span>CHAOS POINTS</span><div class="panel-foot" id="best-score"></div></div>
+          <div class="resultlinks">
+            <a id="telegram-share" class="cta" href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">SHARE ON TELEGRAM <span aria-hidden="true">↗</span></a>
+            <a id="x-share" class="cta secondary" href="https://x.com/JOBBYSOL" target="_blank" rel="noopener noreferrer">POST ON X <span aria-hidden="true">↗</span></a>
+          </div>
+          <button id="restart" class="cta secondary replay" type="button">PLAY AGAIN <span aria-hidden="true">↻</span></button>
+        </div>
+        <div class="panel-foot" id="help-text">Tap an answer to see what JOBBY does. Keys 1, 2, and 3 work too.</div>
+      </div>
+    </section>
+    <aside class="community-area">
+      <div><span class="eyebrow">THE COMMUNITY WRITES THE NEXT CHAPTER</span><h2>Think you can invent a crazier choice?</h2><p>Tell the JOBBY community what should happen in the next episode. The funniest ideas could inspire future scenes. No wallet, payment, or token rewards are required.</p></div>
+      <a href="https://t.me/JOBBYChat" target="_blank" rel="noopener noreferrer">JOIN JOBBY CHAT ↗</a>
+    </aside>
+  </main>
+  <footer class="legal"><span>© JOBBY — A community-driven character and meme project.</span><span>Game progress and personal best are stored on this device only. No live voting is collected.</span></footer>
+</div>
+<script>
+'use strict';
+(() => {
+  const $ = id => document.getElementById(id);
+  const episodes = [
+    { title:'A mysterious red button appears out of nowhere.', subtitle:'A note says: DO NOT PRESS. JOBBY has already read it twice.', choices:[
+      ['Press the button immediately.','THE SKY STARTS APPLAUDING','Every cloud turns into a giant pair of clapping hands. Nobody knows why.',35,'UNREASONABLY PROUD'],
+      ['Put a tiny hat on the button.','THE BUTTON FEELS IMPORTANT','It now demands everyone address it as Supreme Button.',25,'ARTISTICALLY CONFUSED'],
+      ['Stare at it until it gets nervous.','THE BUTTON PRESSES ITSELF','JOBBY wins the staring contest. The button has requested privacy.',30,'TOO POWERFUL'] ] },
+    { title:'A parade of pigeons begins following JOBBY.', subtitle:'They are perfectly synchronized. This cannot be a coincidence.', choices:[
+      ['Challenge the pigeons to a dance-off.','PIGEON DISCO UNLOCKED','JOBBY loses the first round, then invents a dance nobody can copy.',40,'DANGEROUSLY GROOVY'],
+      ['Crown the smallest pigeon.','A VERY TINY KING','The new ruler immediately bans breadcrumbs on Tuesdays.',30,'ROYALLY CHAOTIC'],
+      ['Pretend not to notice them.','THE PIGEONS NOTICE BACK','They begin copying every step JOBBY takes. A new trend is born.',25,'SUSPICIOUSLY FAMOUS'] ] },
+    { title:'A glowing purple portal opens in the street.', subtitle:'It hums a tune that sounds strangely familiar.', choices:[
+      ['Jump into the portal.','THE OTHER SIDE IS WEIRDER','JOBBY arrives in a universe where everyone is already dressed as JOBBY.',40,'INTERDIMENSIONAL'],
+      ['Throw a rubber duck inside.','THE DUCK RETURNS AS MAYOR','It has an excellent speech and absolutely no policies.',35,'ELECTED BY ACCIDENT'],
+      ['Ask the portal for directions.','THE PORTAL GETS LOST','It apologizes and opens another portal directly into a bakery.',20,'SNACK-MOTIVATED'] ] },
+    { title:'The moon sends JOBBY a serious message.', subtitle:'It says: We need to talk. Three dots keep typing.', choices:[
+      ['Reply with a completely unrelated meme.','THE MOON LAUGHS','The entire night sky glitches for twelve seconds. Astronomers are furious.',40,'COSMIC MENACE'],
+      ['Leave the moon on read.','A SECOND MOON APPEARS','It is just here to ask why JOBBY has not replied.',30,'UNBOTHERED'],
+      ['Ask if the moon has seen the pigeons.','PIGEON INVESTIGATION OPENED','The moon admits it knows more than it is telling us.',35,'CONSPIRACY LEVEL MAX'] ] },
+    { title:'The whole internet turns to look at JOBBY.', subtitle:'There is a long silence. The final move is yours.', choices:[
+      ['Start the world's most ridiculous parade.','THE INTERNET JOINS IN','Nobody understands the parade. Everybody follows anyway.',40,'LEGENDARY CHAOS'],
+      ['Disappear in an enormous cloud of glitter.','NOW YOU SEE HIM...','A single purple footprint remains. Nobody knows where he went.',35,'MYSTERY MASTER'],
+      ['Act as if this was the plan all along.','EXACTLY AS PLANNED','JOBBY nods once. The internet politely pretends to believe him.',30,'CERTIFIED TROUBLE'] ] }
+  ];
+  let round = 0, score = 0, locked = false;
+  const highKey = 'jobby-chaos-best-v1';
+  function readBest(){ try { return Number(localStorage.getItem(highKey)) || 0; } catch { return 0; } }
+  function writeBest(value){ try { localStorage.setItem(highKey,String(value)); } catch {} }
+  function showRound(){
+    const scene=episodes[round];locked=false;
+    $('round-label').textContent='ROUND '+String(round+1).padStart(2,'0')+' / 05';
+    $('score').textContent=String(score).padStart(3,'0');
+    $('progress').setAttribute('aria-valuenow',String(round));
+    $('progress-fill').style.width=(round/episodes.length*100)+'%';
+    $('question').textContent=scene.title;$('description').textContent=scene.subtitle;
+    $('outcome').classList.add('hidden');$('question-area').classList.remove('hidden');
+    $('ending').classList.add('hidden');$('help-text').classList.remove('hidden');
+    $('stage-label').textContent='CURRENT MOOD: SUSPICIOUSLY CALM';
+    $('stage-line').textContent='The next strange moment is waiting.';
+    const container=$('options');container.replaceChildren();
+    scene.choices.forEach((choice,index)=>{
+      const b=document.createElement('button');b.type='button';b.className='option';
+      const key=document.createElement('span');key.className='key';key.textContent=String(index+1);
+      const label=document.createElement('span');label.className='choice-text';label.textContent=choice[0];
+      b.append(key,label);b.addEventListener('click',()=>choose(index));container.append(b);
+    });
+  }
+  function choose(index){
+    if(locked)return;
+    const buttons=[...$('options').querySelectorAll('button')];
+    if(index<0||index>=buttons.length)return;
+    locked=true;
+    const data=episodes[round].choices[index];score+=data[3];
+    buttons.forEach((button,n)=>{button.disabled=true;if(n===index)button.classList.add('selected');});
+    $('outcome-title').textContent=data[1];$('outcome-text').textContent=data[2];
+    $('bonus').textContent='+'+data[3]+' CHAOS';
+    $('outcome').classList.remove('hidden');$('score').textContent=String(score).padStart(3,'0');
+    $('stage-label').textContent='CURRENT MOOD: '+data[4];$('stage-line').textContent=data[1]+'.';
+    $('next-text').textContent=round===episodes.length-1?'SEE MY CHAOS REPORT':'NEXT ROUND';
+    const character=$('jobby'); character.classList.remove('bounce');void character.offsetWidth;character.classList.add('bounce');
+    setTimeout(()=>character.classList.remove('bounce'),450);
+    $('next').focus({preventScroll:true});
+    if(window.innerWidth<900) $('outcome').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
+  }
+  function finish(){
+    const previous=readBest();if(score>previous)writeBest(score);
+    $('question-area').classList.add('hidden');$('ending').classList.remove('hidden');
+    $('round-label').textContent='EPISODE COMPLETE';$('progress').setAttribute('aria-valuenow','5');$('progress-fill').style.width='100%';
+    $('final-score').textContent=String(score).padStart(3,'0');
+    const rank=score>=185?['PURPLE CHAOS LEGEND','JOBBY would probably ask you to stop. That is a compliment.']:score>=160?['CERTIFIED CHAOS AGENT','The universe is a little less predictable because of you.']:['CHAOS APPRENTICE','Unusual decisions. Excellent potential. JOBBY approves.'];
+    $('rank').textContent=rank[0];$('rank-detail').textContent=rank[1];
+    $('best-score').textContent='Your personal best on this device: '+Math.max(score,previous)+' points';
+    const message='I scored '+score+' CHAOS points in JOBBY CHAOS and earned '+rank[0]+'. Can you beat me?';
+    const link='https://jobby.lol/play.html';
+    $('telegram-share').href='https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(message);
+    $('x-share').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(message)+'&url='+encodeURIComponent(link)+'&hashtags=JOBBY';
+    $('stage-label').textContent='CURRENT MOOD: LEGENDARY';$('stage-line').textContent='One story ends. The next strange chapter is up to the community.';
+    $('help-text').classList.add('hidden');$('restart').focus({preventScroll:true});
+  }
+  $('next').addEventListener('click',()=>{if(!locked)return;round++;if(round>=episodes.length)finish();else showRound();});
+  $('restart').addEventListener('click',()=>{round=0;score=0;showRound();$('panel').scrollIntoView({block:'nearest'});});
+  document.addEventListener('keydown',event=>{
+    if(event.altKey||event.ctrlKey||event.metaKey||event.repeat||$('ending').classList.contains('hidden')===false)return;
+    if(event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))return;
+    if(!locked&&['1','2','3'].includes(event.key))choose(Number(event.key)-1);
+  });
+  showRound();
+})();
+</script>
+</body>
+</html>
