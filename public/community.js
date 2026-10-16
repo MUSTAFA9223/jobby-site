@@ -1,10 +1,6 @@
 'use strict';
 (() => {
   const $ = selector => document.querySelector(selector);
-  let challenge = { id: 'JOBBY-MEME-2026-10' };
-  document.querySelectorAll('[data-submit-challenge]').forEach(button => button.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('jobby-challenge-entry', { detail: { id: challenge.id } }));
-  }));
   function safeImage(path) { return typeof path === 'string' && /^\/community\/[-a-zA-Z0-9_/.]+\.(png|jpe?g|webp)$/.test(path) && !path.includes('..'); }
   function renderGallery(entries) {
     const gallery = $('#featured-gallery');
@@ -25,15 +21,10 @@
     $('#gallery-empty').hidden = gallery.children.length > 0;
     $('#hall-of-fame').hidden = gallery.children.length === 0;
   }
-  fetch('/community.json?v=20261010-contest-r2', { cache: 'no-cache' }).then(response => {
+  fetch('/community.json?v=20261016-removal', { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('Community content unavailable');
     return response.json();
   }).then(data => {
-    const current = data.challenge;
-    if (current && typeof current.id === 'string' && typeof current.title === 'string' && typeof current.description === 'string') {
-      challenge = current;
-      $('#challenge-description').textContent = current.description;
-    }
     if (Array.isArray(data.featured)) renderGallery(data.featured);
-  }).catch(() => { /* Keep the current contest text and a hidden empty gallery. */ });
+  }).catch(() => { /* Keep the gallery hidden when community content is unavailable. */ });
 })();
