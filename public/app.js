@@ -259,14 +259,6 @@
   }
 
   function closeDialog() { $('#story-dialog').close(); }
-  window.addEventListener('jobby-challenge-entry', () => {
-    openDialog('JOBBY MEME CONTEST', 'Create it. Post it. Share it.', '<p>Create a meme with the official JOBBY character, then publish it on X with @JOBBYSOL and #JOBBY. Share your X post link in the meme-only Telegram group.</p><p>Follow the official X account and Telegram channel. For the complete prize conditions and closing time, read the official contest announcement. Your image is never sent automatically.</p>', [
-      {label:'Open meme group ↗',href:'https://t.me/JOBBYMeme',primary:true},
-      {label:'Official contest rules ↗',href:'https://x.com/JOBBYSOL/status/2108670523039437123'},
-      {label:'Copy X caption',run:()=>copyText(captionText(), 'X caption copied. Add your meme image before posting.')},
-      {label:'Create a meme ↓',run:()=>{closeDialog();openMemeLab();}}
-    ]);
-  });
   $('.dialog-close').addEventListener('click', closeDialog);
   $('#story-dialog').addEventListener('close', () => dialogTrigger?.focus());
   $('#story-dialog').addEventListener('click', event => {
