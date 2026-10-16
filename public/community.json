@@ -1,19 +1,4 @@
 {
-  "challenge": {
-    "id": "JOBBY-MEME-2026-10",
-    "title": "Your meme. Your moment.",
-    "description": "Create an original meme with the official JOBBY character. Post it on X with @JOBBYSOL and #JOBBY, then share your X post link in the dedicated JOBBY Meme Telegram group.",
-    "durationDays": 5,
-    "announcementUrl": "https://x.com/JOBBYSOL/status/2108670523039437123",
-    "submissionGroup": "https://t.me/JOBBYMeme",
-    "prizes": [
-      25,
-      15,
-      10
-    ],
-    "maxFeatured": 10
-  },
   "featured": [],
-  "contributors": [],
-  "archive": []
+  "contributors": []
 }
