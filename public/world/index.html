@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - تجربة أولية ثلاثية الأبعاد بشخصيات أصلية، تحكم باللمس ومتاهة صغيرة">
-  <title>JOBBY WORLD | Alpha 0.3</title>
+  <title>JOBBY WORLD | Alpha 0.4</title>
   <style>
     :root{color-scheme:dark;--bg:#11112c;--deep:#090d26;--line:rgba(203,201,255,.22);--purple:#9974ff;--mint:#60f5c3;--yellow:#ffd76a;--ink:#f5f4ff}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ink)}
@@ -45,6 +45,7 @@
     @media(max-width:400px){.avatars{gap:4px}.avatar{padding:7px 2px;min-height:70px}.panel{padding:14px}.chip{padding:7px 9px}.brand{font-size:16px}#quest{top:63px}}
     @media(max-height:520px){.panel{padding:14px 22px}.headline{font-size:27px}.subtitle{margin:3px 0 6px}.avatar{min-height:63px}.secTitle{margin:8px 0 6px}.mainBtn{padding:10px;margin-top:8px}.notice{font-size:10px;margin-top:6px}#quest{top:59px}.act{width:74px;height:74px}#jump{width:88px;height:88px}}
   </style>
+  <link rel="stylesheet" href="./menu.css?v=5">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 <!-- Character models load individually as GLB. JSZip is no longer needed. -->
 </head>
@@ -56,22 +57,49 @@
   <div class="glass" id="quest">ابحث عن <strong>3 مفاتيح</strong> وافتح باب الخروج</div>
   <div id="toast"></div>
   <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="خريطة المنطقة"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 خلفي</button><button id="cameraZoom" class="cameraButton">🔍 قرب / بعد</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>جري</button><button id="jump" class="act"><span class="emoji">⬆</span>قفز</button></div><div id="hint">اسحب للتدوير 360° · بإصبعين للتقريب</div></div>
+
   <div id="menu">
-    <div class="glass panel">
-      <div class="eyebrow">Mobile 3D prototype · Alpha 0.3</div>
-      <div class="headline">JOBBY <em>WORLD</em></div>
-      <div class="subtitle">اختبر شخصياتك الحقيقية داخل عالم ثلاثي الأبعاد<br>استكشف ساحة أكبر وادخل البيت وابحث عن المفاتيح الثلاثة للهروب</div>
-      <div class="secTitle">اختر شخصيتك <span style="color:#a5a3d6;font-weight:400">— 3 مجانية و2 يمكن فتحهما بالنقاط</span></div>
-      <div class="avatars" id="avatars"></div>
-      <div id="selectedInfo" style="font-size:11px;margin-top:8px;color:#d1c7ff;min-height:18px"></div>
-      <button class="mainBtn" id="startButton">▶ ابدأ تجربة اللعب الفردي</button>
-      <button class="mainBtn secondaryBtn disabled" disabled>👥 اللعب الجماعي — في المرحلة القادمة</button>
+    <div class="glass panel lobby">
+      <div class="lobbyTop"><span class="eyebrow">3D MOBILE ADVENTURE · ALPHA 0.4</span><span class="lobbyWallet">🪙 <b id="lobbyPoints">0</b> نقطة</span></div>
+      <h1 class="headline">JOBBY <em>WORLD</em></h1>
+      <p class="subtitle">اختر بطلك، استكشف العالم، اجمع المفاتيح وافتح بوابة الهروب!</p>
+      <div class="lobbyContent">
+        <div class="lobbyHero" aria-label="معاينة الشخصية المختارة">
+          <span class="heroFlag">✓ الشخصية المختارة</span>
+          <span class="heroFallback" id="heroFallback">⭐</span>
+          <img id="heroPortrait" class="heroPortrait hidden" alt="صورة الشخصية المختارة">
+          <span id="heroLabel" class="heroLabel">JOBBY</span>
+        </div>
+        <section class="lobbyPicker">
+          <div class="secTitle">أبطال JOBBY</div>
+          <p class="subNote">3 شخصيات مجانية، وافتح الشخصيات الباقية بالنقاط.</p>
+          <div class="avatars" id="avatars" aria-label="اختر شخصية"></div>
+          <div id="selectedInfo" aria-live="polite"></div>
+        </section>
+      </div>
+      <div class="lobbyIdentity"><label for="playerName" class="modeLabel">اسم اللاعب</label><input id="playerName" maxlength="18" placeholder="اكتب اسمك" autocomplete="nickname" aria-label="اسم اللاعب"></div>
+      <div class="lobbyBottom">
+        <button class="mainBtn" id="startButton">▶ اللعب الفردي</button>
+        <button class="mainBtn secondaryBtn disabled" id="multiplayerButton" disabled title="غير متوفر في النسخة التجريبية">👥 اللعب الجماعي 🔒</button>
+      </div>
+      <div class="lobbyLinks">
+        <button type="button" id="leaderboardButton">🏆 لوحة الصدارة</button>
+        <a id="viewerButton" target="_blank" rel="noopener noreferrer" href="https://mustafa9223.github.io/JOBBY-3D-Viewer/">🧍 عرض الشخصيات 3D ↗</a>
+      </div>
       <div id="loadBar"><div id="barProgress"></div></div>
-      <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">جاهز — سيتم تحميل شخصيتك فقط (نحو 1 MB)</div>
-      <p class="notice">هذه نسخة <strong>تجريبية فردية</strong> للحركة واللمس وليست اللعبة النهائية. تُحفظ النقاط على هذا الجهاز مؤقتًا فقط، ولا توجد غرف جماعية أو لوحة صدارة عالمية بعد.</p>
+      <div id="loadStatus" role="status" style="font-size:11px;color:#c3d6e4;padding-top:5px">جاهز — صور الشخصيات تُحمّل بالتدريج</div>
+      <p class="notice">نسخة تجريبية: اللعب فردي حاليًا. النقاط ولوحة الصدارة <strong>محليّتان على هذا الجهاز فقط</strong>، وليستا متصلتين بخادم عالمي.</p>
+    </div>
+  </div>
+  <div id="leaderboardOverlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="boardTitle">
+    <div class="boardPanel">
+      <div class="boardHeader"><div class="boardTitle" id="boardTitle">🏆 لوحة الصدارة</div><button type="button" id="boardClose" class="boardExit" aria-label="إغلاق">×</button></div>
+      <p class="boardNote">هذه النتائج محفوظة على جهازك فقط. ستُفعّل اللوحة العالمية عند إضافة خادم اللعب.</p>
+      <div class="boardStats"><div><b id="boardPoints">0</b><small>مجموع نقاطك</small></div><div><b id="boardWins">0</b><small>جولات ناجحة</small></div></div>
+      <div id="boardEntries"></div>
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">نجحت في الهروب!</div><p class="subtitle">وصلت إلى البوابة بعد جمع المفاتيح. ربحت <b style="color:#ffd76a">50 نقطة</b> في التجربة الأولى.</p><button class="mainBtn" id="againButton">↻ إعادة الجولة</button><button class="mainBtn secondaryBtn" id="charactersButton">اختيار شخصية أخرى</button></div></div>
-  <script type="module" src="./main.js?v=4"></script>
+  <script type="module" src="./main.js?v=5"></script>
 </body>
 </html>
