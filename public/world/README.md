@@ -21,8 +21,8 @@
 - Current avatar prices and points are purely prototype/game balancing values and are not real-world rewards.
 
 ## Troubleshooting
-- Open `https://jobby.lol/world/index.html?v=5` on Chrome for Android.
-- If an older page is cached, use the URL with `?v=5`.
+- Open `https://jobby.lol/world/index.html?v=6` on Chrome for Android.
+- If an older page is cached, use the URL with `?v=6`.
 - To test the selected avatar, tap a character portrait to preview, tap Select/Unlock, then tap Play.
 - 3D model loading requires network access to GitHub's public raw file server for JOBBY, and the local static host for other character models.
 
