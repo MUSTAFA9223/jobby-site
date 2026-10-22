@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { generatePortraits } from "./portraits.js?v=5";
 
 // JOBBY WORLD v0.1. Game source in the JOBBY website repo;
 // original user-owned glTF archive remains in JOBBY-3D-Viewer.
@@ -10,15 +9,13 @@ const AVATARS = [
   {id:"Casual_Male",name:"Explorer",icon:"🧑",cost:0},
   {id:"Ninja_Male",name:"Ninja",icon:"🥷",cost:0},
   {id:"Pug",name:"Pug",icon:"🐶",cost:60},
-  {id:"Wizard",name:"Wizard",icon:"🧙",cost:100},
-  {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:140}
+  {id:"Wizard",name:"Wizard",icon:"🧙",cost:80},
+  {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
 const MODEL_BASE="./models/";
 const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
-const modelUrl=id=>id==="JOBBY"?JOBBY_MODEL:MODEL_BASE+encodeURIComponent(id)+".glb";
-const portraitCache=new Map();
 const MODEL_SIZES={JOBBY:1941348,Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
-let saved={points:0,unlocked:[],best:0,selected:"JOBBY",playerName:"Player"};
+let saved={points:0,unlocked:[],best:0,selected:"JOBBY"};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
 const persist=()=>{try{localStorage.setItem("jobby-world-v01",JSON.stringify(saved))}catch(e){}};
 const available = item => !item.cost || (Array.isArray(saved.unlocked)&&saved.unlocked.includes(item.id));
@@ -98,93 +95,28 @@ const collectible=[[-20,-16],[19,14],[12,-20]].map(([x,z])=>{
  group.position.set(x,1.6,z);scene.add(group);return {x,z,group,taken:false};
 });
 function setStatus(s){$("loadStatus").textContent=s}
-function wallet(){$("walletHud").textContent=saved.points;$("keysHud").textContent=count+" / 3";$("lobbyPoints").textContent=saved.points}
+function wallet(){$("walletHud").textContent=saved.points;$("keysHud").textContent=count+" / 3"}
 function toast(s){const t=$("toast");t.textContent=s;t.style.opacity=1;clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.opacity=0,2500)}
-
-function updateSelection(){
- const a=AVATARS.find(item=>item.id===chosen)||AVATARS[0];
- $("selectedInfo").textContent="الشخصية المختارة: "+a.name+" · "+(available(a)?"متاحة":"مقفلة");
- $("heroLabel").textContent=a.name;
- $("heroFallback").textContent=a.icon;
- const image=portraitCache.get(a.id);
- $("heroPortrait").classList.toggle("hidden",!image);
- $("heroFallback").classList.toggle("hidden",!!image);
- if(image){$("heroPortrait").src=image;$("heroPortrait").alt="صورة "+a.name}
-}
-function applyPortrait(id,url){
- portraitCache.set(id,url);
- const img=document.querySelector('[data-portrait="'+id+'"]');
- if(img){
-  img.src=url;img.classList.remove("hidden");
-  const fallback=img.parentElement.querySelector(".avatarFallback");
-  if(fallback)fallback.classList.add("hidden");
- }
- if(chosen===id)updateSelection();
-}
 function roster(){
  $("avatars").replaceChildren();
  for(const a of AVATARS){
-  const b=document.createElement("button");b.type="button";
-  b.className="avatar"+(chosen===a.id?" selected":"")+(available(a)?"":" locked");
-  b.setAttribute("aria-pressed",String(chosen===a.id));
-  b.setAttribute("aria-label",a.name+(available(a)?"":"، مقفلة وتكلف "+a.cost+" نقطة"));
-  const visual=document.createElement("span");visual.className="avatarVisual";
-  const img=document.createElement("img");
-  img.className="portrait"+(portraitCache.has(a.id)?"":" hidden");
-  img.dataset.portrait=a.id;img.alt=a.name;img.loading="lazy";
-  if(portraitCache.has(a.id))img.src=portraitCache.get(a.id);
-  const fallback=document.createElement("span");
-  fallback.className="avatarFallback"+(portraitCache.has(a.id)?" hidden":"");
-  fallback.textContent=a.icon;visual.append(img,fallback);
+  const b=document.createElement("button");
+  b.className="avatar"+(chosen===a.id?" selected":"")+(available(a)?"":" locked");b.type="button";
   const title=document.createElement("small");title.textContent=a.name;
-  const price=document.createElement("span");price.className="price";price.textContent=available(a)?"متاح ✓":a.cost+" 🪙";
-  b.append(visual,title,price);
-  if(!available(a)){
-   const lock=document.createElement("span");lock.className="lockedMark";lock.textContent="🔒";b.append(lock);
-  }
+  const logo=document.createElement("span");logo.className="head";logo.textContent=available(a)?a.icon:"🔒";
+  const price=document.createElement("span");price.className="price";price.textContent=available(a)?"متاح":a.cost+" 🪙";
+  b.append(logo,title,price);
   b.onclick=async()=>{
    if(!available(a)){
-    if(saved.points<a.cost){toast("تحتاج "+(a.cost-saved.points)+" نقطة إضافية لفتح "+a.name);return}
-    if(!window.confirm("فتح "+a.name+" مقابل "+a.cost+" نقطة؟"))return;
+    if(saved.points<a.cost){toast("تحتاج "+(a.cost-saved.points)+" نقطة إضافية");return}
     saved.points-=a.cost;saved.unlocked.push(a.id);persist();wallet();
    }
-   chosen=a.id;saved.selected=chosen;persist();roster();
+   chosen=a.id;saved.selected=chosen;persist();roster();$("selectedInfo").textContent="الشخصية المختارة: "+a.name;
    if(started)await loadCharacter(chosen);
   };
   $("avatars").append(b);
  }
- updateSelection();
 }
-function renderBoard(){
- $("boardPoints").textContent=saved.points;
- let records=[];
- try{const x=JSON.parse(localStorage.getItem("jobby-world-scores-v01")||"[]");if(Array.isArray(x))records=x}catch(e){}
- $("boardWins").textContent=records.length;
- records.sort((a,b)=>(Number(a.seconds)||Infinity)-(Number(b.seconds)||Infinity));
- const area=$("boardEntries");area.replaceChildren();
- if(!records.length){
-  const p=document.createElement("p");p.className="boardNote";
-  p.textContent="لا توجد نتائج حتى الآن. اجمع المفاتيح الثلاثة وأنهِ الجولة لتظهر نتيجتك.";
-  area.append(p);return;
- }
- for(const [i,e] of records.slice(0,10).entries()){
-  const div=document.createElement("div");div.className="boardRow";
-  const player=document.createElement("span");
-  player.textContent=(i+1)+". "+String(e.name||e.character||"Player").slice(0,18);
-  const score=document.createElement("b");
-  const sec=Math.max(1,Math.round(Number(e.seconds)||0));
-  score.textContent=String(e.points||80)+" 🪙 · "+Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");
-  div.append(player,score);area.append(div);
- }
-}
-$("leaderboardButton").onclick=()=>{renderBoard();$("leaderboardOverlay").classList.remove("hidden")};
-$("boardClose").onclick=()=>$("leaderboardOverlay").classList.add("hidden");
-$("leaderboardOverlay").addEventListener("click",event=>{if(event.target===$("leaderboardOverlay"))$("leaderboardOverlay").classList.add("hidden")});
-$("playerName").value=saved.playerName||"Player";
-$("playerName").addEventListener("change",()=>{
- saved.playerName=$("playerName").value.trim().slice(0,18)||"Player";
- $("playerName").value=saved.playerName;persist();
-});
 async function loadCharacter(id){
  loading=true;currentRequested=id;
  const modelSize=MODEL_SIZES[id]||1200000;
@@ -193,7 +125,7 @@ async function loadCharacter(id){
  setStatus("جار تحميل "+modelName+" فقط ("+(modelSize/1048576).toFixed(1)+" MB)…");
  try{
   // Individual self-contained GLB: no 21MB ZIP, no missing external glTF files.
-  const gltf=await loader.loadAsync(modelUrl(id),event=>{
+  const gltf=await loader.loadAsync(id==="JOBBY"?JOBBY_MODEL:MODEL_BASE+encodeURIComponent(id)+".glb",event=>{
    if(id!==currentRequested)return;
    if(event.lengthComputable&&event.total>0){
     const ratio=Math.max(0,Math.min(1,event.loaded/event.total));
@@ -267,8 +199,7 @@ function complete(){
  try{
   const key="jobby-world-scores-v01";
   const old=JSON.parse(localStorage.getItem(key)||"[]");
-  const entry={name:$("playerName").value.trim().slice(0,18)||"Player",character:chosen,points:80,seconds:Math.max(1,(performance.now()-roundStartedAt)/1000),date:Date.now()};
-  saved.playerName=entry.name;
+  const entry={character:chosen,points:80,seconds:Math.max(1,(performance.now()-roundStartedAt)/1000),date:Date.now()};
   localStorage.setItem(key,JSON.stringify([entry,...(Array.isArray(old)?old:[])].slice(0,60)));
  }catch(e){}
  persist();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("فزت بـ 50 نقطة!");
@@ -418,6 +349,5 @@ function frame(){
  renderer.render(scene,camera);
 }
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-roster();wallet();frame();
-setTimeout(()=>generatePortraits(AVATARS,modelUrl,applyPortrait).catch(error=>console.warn("3D portraits:",error)),500);
+roster();wallet();$("selectedInfo").textContent="الشخصية المختارة: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");frame();
 if(new URLSearchParams(location.search).has("autostart"))start();
