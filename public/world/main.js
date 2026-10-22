@@ -43,7 +43,7 @@ const blocks=[];
 function block(x,z,w,d,h,color,solid=true){
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(color));m.position.set(x,h/2,z);
  m.castShadow=true;m.receiveShadow=true;scene.add(m);
- if(solid)blocks.push({x,z,w,d,h,box:new THREE.Box3(new THREE.Vector3(x-w/2-.12,-.1,z-d/2-.12),new THREE.Vector3(x+w/2+.12,h+.12,z+d/2+.12))});return m;
+ if(solid)blocks.push({x,z,w,d,h,mesh:m,box:new THREE.Box3(new THREE.Vector3(x-w/2-.12,-.1,z-d/2-.12),new THREE.Vector3(x+w/2+.12,h+.12,z+d/2+.12))});return m;
 }
 // Alpha 0.3: expanded grounds with a usable open-roof house.
 // Perimeter leaves a gap at the far north EXIT gate.
@@ -268,6 +268,12 @@ function paintMinimap(time){
  c.moveTo((px+28)*s,(pz+28)*s);
  c.lineTo((px+28)*s+Math.sin(heading)*12,(pz+28)*s+Math.cos(heading)*12);c.stroke();
 }
+// If pressed against a wall, fade that wall rather than putting the lens inside the avatar.
+const fadedWalls=new Set();
+function clearFadedWalls(){
+ for(const m of fadedWalls){m.material.transparent=false;m.material.opacity=1;m.material.depthWrite=true;}
+ fadedWalls.clear();
+}
 // Keep third-person camera on the avatar's side of the nearest solid wall.
 function safeCamera(origin,target){
  const delta=target.clone().sub(origin),distance=delta.length();
@@ -277,7 +283,10 @@ function safeCamera(origin,target){
  for(const b of blocks){
   if(ray.intersectBox(b.box,hitPoint)){
    const hitDistance=hitPoint.distanceTo(origin);
-   if(hitDistance<permitted)permitted=Math.max(.65,hitDistance-.22);
+   if(hitDistance<1.35){
+    b.mesh.material.transparent=true;b.mesh.material.opacity=.18;
+    b.mesh.material.depthWrite=false;fadedWalls.add(b.mesh);
+   }else if(hitDistance<permitted)permitted=Math.max(.18,hitDistance-.25);
   }
  }
  return origin.clone().addScaledVector(ray.direction,permitted);
@@ -322,6 +331,7 @@ function frame(){
  if(mixer)mixer.update(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
  const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
+ clearFadedWalls();
  const safeTarget=safeCamera(lookAt,desired);
  camera.position.lerp(safeTarget,Math.min(1,delta*10));
  camera.position.copy(safeCamera(lookAt,camera.position));
