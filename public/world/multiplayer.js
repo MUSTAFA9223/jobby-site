@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 
 const ICON={JOBBY:"JOBBY",Casual_Male:"Explorer",Ninja_Male:"Ninja",Pug:"Pug",Wizard:"Wizard",Pirate_Female:"Pirate"};
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
+const JOBBY_MODEL="./models/JOBBY.glb";
 const loader=new GLTFLoader();
 
 function nameSprite(name){
