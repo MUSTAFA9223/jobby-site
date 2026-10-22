@@ -195,10 +195,10 @@ function play(){
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{showView("leaderboard")}; // informative non-operational feature
+$("multiMode").onclick=()=>{alert("اللعب الجماعي ليس متاحًا في النسخة الحالية. سنفعله بعد تجهيز الخادم والغرف الخاصة.")};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
 window.addEventListener("pageshow",()=>{updateStats();if(activeView==="leaderboard")renderScores()});
 updateStats();
-showView("home");
+showView(location.hash==="#characters"?"characters":"home");
