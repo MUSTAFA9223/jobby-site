@@ -5,7 +5,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 // original user-owned glTF archive remains in JOBBY-3D-Viewer.
 const $ = id => document.getElementById(id);
 const AVATARS = [
-  {id:"JOBBY",name:"JOBBY",icon:"✨",cost:0},
   {id:"Casual_Male",name:"Explorer",icon:"🧑",cost:0},
   {id:"Ninja_Male",name:"Ninja",icon:"🥷",cost:0},
   {id:"Pug",name:"Pug",icon:"🐶",cost:60},
@@ -13,17 +12,17 @@ const AVATARS = [
   {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
 const MODEL_BASE="./models/";
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
-const MODEL_SIZES={JOBBY:1941348,Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
+const MODEL_SIZES={Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
 let saved={points:0,unlocked:[],best:0,selected:"JOBBY"};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
 const persist=()=>{try{localStorage.setItem("jobby-world-v01",JSON.stringify(saved))}catch(e){}};
 const available = item => !item.cost || (Array.isArray(saved.unlocked)&&saved.unlocked.includes(item.id));
-let chosen=AVATARS.find(a=>a.id===saved.selected&&available(a))?.id||"JOBBY", started=false, finished=false, count=0, loading=false, runHeld=false, wantJump=false, roundStartedAt=0;
+let chosen=AVATARS.find(a=>a.id===saved.selected&&available(a))?.id||"Casual_Male", started=false, finished=false, count=0, loading=false, runHeld=false, wantJump=false, roundStartedAt=0;
 let px=0,pz=9,py=0,vy=0,grounded=true,heading=Math.PI;
 let yaw=0,tilt=.38,cameraDistance=7,dragPointer=null,lastDragX=0,lastDragY=0;
 let stickPointer=null,joyX=0,joyY=0;
 let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
+if(saved.selected==="JOBBY"){saved.selected=chosen;persist()}
 const keysDown=new Set(),loader=new GLTFLoader();
 const scene=new THREE.Scene();scene.background=new THREE.Color("#161a38");scene.fog=new THREE.FogExp2("#161a38",.017);
 const camera=new THREE.PerspectiveCamera(63,innerWidth/innerHeight,.1,120);
@@ -125,7 +124,7 @@ async function loadCharacter(id){
  setStatus("جار تحميل "+modelName+" فقط ("+(modelSize/1048576).toFixed(1)+" MB)…");
  try{
   // Individual self-contained GLB: no 21MB ZIP, no missing external glTF files.
-  const gltf=await loader.loadAsync(id==="JOBBY"?JOBBY_MODEL:MODEL_BASE+encodeURIComponent(id)+".glb",event=>{
+  const gltf=await loader.loadAsync(MODEL_BASE+encodeURIComponent(id)+".glb",event=>{
    if(id!==currentRequested)return;
    if(event.lengthComputable&&event.total>0){
     const ratio=Math.max(0,Math.min(1,event.loaded/event.total));
