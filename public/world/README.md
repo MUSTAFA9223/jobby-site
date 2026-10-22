@@ -1,25 +1,29 @@
-# JOBBY WORLD — Alpha 0.5
+# JOBBY WORLD — Alpha 0.6
 
-## Official JOBBY identity
-The intended mascot is the user's approved **white/cream creature with large dark-purple eyes and purple ears, horn and limb tips**. The lobby uses a crop from the user's own JOBBY Escape concept sheet, preserved as `public/world/assets/jobby-original.webp`.
+## Current milestone: JOBBY is playable again
+At the owner's explicit request, the previously withheld JOBBY GLB is restored as the **first, free, playable** character in the main lobby and the solo maze. This is a temporary 3D character study, **not claimed to accurately reproduce the approved white-and-purple JOBBY illustration**.
 
-The older `JOBBY-3D-Viewer/models/JOBBY.glb` is a 3D study and **has not been approved as the accurate official JOBBY**. It is no longer displayed as JOBBY in the new game interface nor offered as a playable character. A faithful 3D rigged model will be needed to add JOBBY to the playable roster. Do not claim the current older GLB is the official avatar.
+- 3D URL: `https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb` (1.9 MB). It is reused from the owner's existing repository, not modified or duplicated.
+- JOBBY appears first in the `AVATARS` collection of `hub.js` and `main.js`.
+- Selecting JOBBY persists to the same-device `jobby-world-v01` localStorage record and is honored by solo play.
+- Tapping the JOBBY card opens a real GLTFLoader/OrbitControls rotatable 3D viewer, and the select button enables playing the maze as JOBBY.
+- The main hero image still shows the owner's approved 2D reference illustration, which may differ from the trial model.
 
 ## Entry points
-- `/world/index.html`: mobile-first character collection / lobby / local leaderboard.
-- `/world/play.html`: existing solo 3D escape proof of concept.
+- Home screen: `/world/index.html?v=8`
+- Escape minigame: `/world/play.html?v=8`
+- Repo paths: `public/world/index.html`, `hub.js`, `play.html`, `main.js`.
+- Main JS cache bump: `hub.js?v=4` and `main.js?v=7`.
 
-## Available
-- Original JOBBY artwork visible on the home page and as the first character card; the card opens the official image and a disclosure that a matching 3D model is not ready.
-- Three free *playable* 3D characters: Explorer, Ninja and Pug, and two prototype unlockables Wizard (80) and Pirate (120) points.
-- Real GLB thumbnail previews generated only for the other playable characters and cached as small WebP images.
-- Touch controls, third-person camera, large map, house, three keys, gate, and a replayable solo challenge.
-- Points, unlocks, and local leaderboard are browser-local prototype data, not global or token-backed.
+## Other playable characters and economy
+Free: JOBBY, Explorer, Ninja, Pug. Prototype point unlocks: Wizard (80), Pirate (120).
+Points, purchases, and the time leaderboard remain local to the browser. Online multiplayer and global leaderboards are not implemented.
 
-## Limitations
-- Matching playable 3D JOBBY, server-based multiplayer, online/global leaderboard, and Telegram token rewards are not yet available.
-- The deployed site at https://jobby.lol/world/index.html?v=7 may update according to the website's deployment pipeline. GitHub source changes alone do not guarantee the live deployment.
-- Never substitute an unrelated human-like character or approximate creature model for official JOBBY.
+## Verification and caveats
+- GitHub source was changed; asset locations and JS syntax can be checked in repository.
+- **The live website and gameplay have NOT been verified in a real browser on the owner's phone after this commit.**
+- JOBBY's asset URL is served by GitHub Raw from the owner's separate 3D Viewer repository. If that repo/file goes away or the network blocks raw.githubusercontent.com, JOBBY won't load. A later release should move or mirror this GLB to first-party static hosting.
+- The 3D model is temporary at the owner's request; future improvements should match the 2D approved mascot.
 
-## Repository isolation
-The main jobby-site homepage and old JOBBY-3D-Viewer files remain unchanged.
+## Safety
+The main website homepage and the older JOBBY-3D-Viewer files are not modified by this update.
