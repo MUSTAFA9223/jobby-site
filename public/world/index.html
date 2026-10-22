@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - تجربة أولية ثلاثية الأبعاد بشخصيات أصلية، تحكم باللمس ومتاهة صغيرة">
-  <title>JOBBY WORLD | Alpha 0.2</title>
+  <title>JOBBY WORLD | Alpha 0.3</title>
   <style>
     :root{color-scheme:dark;--bg:#11112c;--deep:#090d26;--line:rgba(203,201,255,.22);--purple:#9974ff;--mint:#60f5c3;--yellow:#ffd76a;--ink:#f5f4ff}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ink)}
@@ -19,13 +19,17 @@
     #quest strong{color:var(--mint)}
     #toast{position:absolute;left:50%;top:136px;transform:translateX(-50%);padding:10px 18px;border-radius:14px;z-index:8;background:#2c2156e8;border:1px solid #9683f1;font-size:13px;font-weight:850;pointer-events:none;max-width:85vw;text-align:center;opacity:0;transition:opacity .2s}
     #controls{position:absolute;inset:0;pointer-events:none;z-index:5}
-    #stick{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 22px);left:calc(env(safe-area-inset-left) + 25px);width:116px;height:116px;border-radius:100px;border:2px solid #e7e0ff55;background:radial-gradient(circle,#9081dd36,#554c9952);pointer-events:auto;touch-action:none}
-    #knob{position:absolute;left:32px;top:32px;width:50px;height:50px;border-radius:100px;border:2px solid #e3dcff88;background:linear-gradient(135deg,#977bffcc,#644fc3e0);box-shadow:0 4px 20px #07062780}
-    #actions{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 26px);right:calc(env(safe-area-inset-right) + 18px);display:flex;align-items:end;gap:10px;pointer-events:auto;direction:ltr}
-    .act{border:2px solid #ffffff40;border-radius:100px;width:66px;height:66px;color:white;background:linear-gradient(145deg,#7360d7c9,#342564ea);font:800 12px system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:none}
-    #jump{width:82px;height:82px;background:linear-gradient(145deg,#66dfad,#219481);border-color:#a7ffe3a8;color:#052d2d}#run{background:linear-gradient(145deg,#b785ef,#6953b4)}
-    .act .emoji{font-size:21px}
-    #hint{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);pointer-events:none;color:#fff9;font-size:10px;white-space:nowrap}
+    #stick{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 19px);left:calc(env(safe-area-inset-left) + 14px);width:clamp(124px,34vw,166px);height:clamp(124px,34vw,166px);border-radius:100px;border:2px solid #e7e0ff55;background:radial-gradient(circle,#9081dd36,#554c9952);pointer-events:auto;touch-action:none}
+    #knob{position:absolute;left:50%;top:50%;margin-left:-30px;margin-top:-30px;width:60px;height:60px;border-radius:100px;border:2px solid #e3dcff88;background:linear-gradient(135deg,#977bffcc,#644fc3e0);box-shadow:0 4px 20px #07062780}
+    #actions{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 19px);right:calc(env(safe-area-inset-right) + 13px);display:flex;align-items:end;gap:12px;pointer-events:auto;direction:ltr}
+    .act{border:2px solid #ffffff40;border-radius:100px;width:clamp(80px,21vw,104px);height:clamp(80px,21vw,104px);color:white;background:linear-gradient(145deg,#7360d7c9,#342564ea);font:800 15px system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:none}
+    #jump{width:clamp(90px,24vw,116px);height:clamp(90px,24vw,116px);background:linear-gradient(145deg,#66dfad,#219481);border-color:#a7ffe3a8;color:#052d2d}#run{background:linear-gradient(145deg,#b785ef,#6953b4)}
+    .act .emoji{font-size:29px}
+    #cameraActions{position:absolute;right:calc(env(safe-area-inset-right) + 13px);bottom:calc(env(safe-area-inset-bottom) + 145px);display:flex;gap:7px;pointer-events:auto}
+    .cameraButton{border:1px solid #b3b2ed99;border-radius:13px;background:#292b66e8;color:#f8f8ff;font:800 13px system-ui;min-height:44px;padding:7px 11px;touch-action:manipulation}
+    #miniMap{position:absolute;z-index:6;top:110px;right:14px;width:160px;height:160px;border:2px solid #c6b7ff;border-radius:16px;background:#181c3fdf;pointer-events:none;box-shadow:0 7px 30px #06061e99}
+    @media(max-height:560px){#stick{width:112px;height:112px}#actions .act{width:72px;height:72px}#actions #jump{width:82px;height:82px}#cameraActions{bottom:calc(env(safe-area-inset-bottom) + 112px)}}
+    #hint{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);pointer-events:none;color:#fff9;font-size:12px;white-space:nowrap}
     #menu,#endoverlay{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:12px;background:radial-gradient(circle at 48% 35%,#26125b69,#05081cc7)}
     .panel{width:min(520px,96vw);max-height:min(94dvh,720px);overflow-y:auto;border-radius:25px;padding:22px;text-align:center;overscroll-behavior:contain}
     .eyebrow{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--mint);text-transform:uppercase}.headline{font-size:clamp(30px,7vw,44px);line-height:1;margin:10px 0 6px;font-weight:1000;letter-spacing:1px}.headline em{font-style:normal;color:var(--mint)}.subtitle{font-size:13px;color:#c8c9e6;line-height:1.7;margin:8px 0 16px}
@@ -47,16 +51,16 @@
 <body>
   <div id="hud">
     <div class="hudgroup"><span class="brand">JOBBY <span>WORLD</span></span><span class="chip">🪙 <b id="walletHud">0</b></span></div>
-    <div class="hudgroup"><span class="chip">🗝️ <b id="keysHud">0 / 3</b></span><button class="smallbtn" id="menuButton">☰ القائمة</button></div>
+    <div class="hudgroup"><span class="chip">🗝️ <b id="keysHud">0 / 3</b></span><button class="smallbtn" id="mapToggle">🗺️ خريطة</button><button class="smallbtn" id="menuButton">☰ القائمة</button></div>
   </div>
   <div class="glass" id="quest">ابحث عن <strong>3 مفاتيح</strong> وافتح باب الخروج</div>
   <div id="toast"></div>
-  <div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>جري</button><button id="jump" class="act"><span class="emoji">⬆</span>قفز</button></div><div id="hint">اسحب يمين الشاشة لتغيير اتجاه الكاميرا</div></div>
+  <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="خريطة المنطقة"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 خلفي</button><button id="cameraZoom" class="cameraButton">🔍 قرب / بعد</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>جري</button><button id="jump" class="act"><span class="emoji">⬆</span>قفز</button></div><div id="hint">اسحب للتدوير 360° · بإصبعين للتقريب</div></div>
   <div id="menu">
     <div class="glass panel">
-      <div class="eyebrow">Mobile 3D prototype · Alpha 0.2</div>
+      <div class="eyebrow">Mobile 3D prototype · Alpha 0.3</div>
       <div class="headline">JOBBY <em>WORLD</em></div>
-      <div class="subtitle">اختبر شخصياتك الحقيقية داخل عالم ثلاثي الأبعاد<br>تحرّك واقفز واجمع المفاتيح للوصول إلى البوابة</div>
+      <div class="subtitle">اختبر شخصياتك الحقيقية داخل عالم ثلاثي الأبعاد<br>استكشف ساحة أكبر وادخل البيت وابحث عن المفاتيح الثلاثة للهروب</div>
       <div class="secTitle">اختر شخصيتك <span style="color:#a5a3d6;font-weight:400">— 3 مجانية و2 يمكن فتحهما بالنقاط</span></div>
       <div class="avatars" id="avatars"></div>
       <div id="selectedInfo" style="font-size:11px;margin-top:8px;color:#d1c7ff;min-height:18px"></div>
@@ -68,6 +72,6 @@
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">نجحت في الهروب!</div><p class="subtitle">وصلت إلى البوابة بعد جمع المفاتيح. ربحت <b style="color:#ffd76a">50 نقطة</b> في التجربة الأولى.</p><button class="mainBtn" id="againButton">↻ إعادة الجولة</button><button class="mainBtn secondaryBtn" id="charactersButton">اختيار شخصية أخرى</button></div></div>
-  <script type="module" src="./main.js?v=3"></script>
+  <script type="module" src="./main.js?v=4"></script>
 </body>
 </html>
