@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#100f2c">
+  <meta name="description" content="JOBBY WORLD - تجربة أولية ثلاثية الأبعاد بشخصيات أصلية، تحكم باللمس ومتاهة صغيرة">
+  <title>JOBBY WORLD | Alpha 0.1</title>
+  <style>
+    :root{color-scheme:dark;--bg:#11112c;--deep:#090d26;--line:rgba(203,201,255,.22);--purple:#9974ff;--mint:#60f5c3;--yellow:#ffd76a;--ink:#f5f4ff}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ink)}
+    canvas{display:block;position:fixed;inset:0;width:100%;height:100%;touch-action:none}
+    .hidden{display:none!important}.glass{background:rgba(20,18,50,.76);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.2);backdrop-filter:blur(18px)}
+    #hud{position:absolute;z-index:4;top:0;left:0;right:0;padding:max(env(safe-area-inset-top),10px) max(env(safe-area-inset-right),12px) 10px max(env(safe-area-inset-left),12px);display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
+    .brand{font-weight:1000;letter-spacing:.6px;font-size:19px;text-shadow:0 2px 12px #1e1d3c}.brand span{color:var(--mint)}
+    .hudgroup{display:flex;gap:6px;align-items:center}.chip,.smallbtn{border:1px solid var(--line);border-radius:16px;padding:9px 13px;background:rgba(13,12,35,.7);font-size:12px;font-weight:800;color:#fff;white-space:nowrap}.chip b{color:var(--yellow)}.smallbtn{pointer-events:auto;cursor:pointer}
+    .smallbtn:active,.act:active{transform:scale(.97)}
+    #quest{position:absolute;top:72px;left:50%;transform:translateX(-50%);z-index:3;text-align:center;padding:10px 20px;border-radius:16px;font-size:12px;pointer-events:none;min-width:235px;white-space:nowrap}
+    #quest strong{color:var(--mint)}
+    #toast{position:absolute;left:50%;top:136px;transform:translateX(-50%);padding:10px 18px;border-radius:14px;z-index:8;background:#2c2156e8;border:1px solid #9683f1;font-size:13px;font-weight:850;pointer-events:none;max-width:85vw;text-align:center;opacity:0;transition:opacity .2s}
+    #controls{position:absolute;inset:0;pointer-events:none;z-index:5}
+    #stick{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 22px);left:calc(env(safe-area-inset-left) + 25px);width:116px;height:116px;border-radius:100px;border:2px solid #e7e0ff55;background:radial-gradient(circle,#9081dd36,#554c9952);pointer-events:auto;touch-action:none}
+    #knob{position:absolute;left:32px;top:32px;width:50px;height:50px;border-radius:100px;border:2px solid #e3dcff88;background:linear-gradient(135deg,#977bffcc,#644fc3e0);box-shadow:0 4px 20px #07062780}
+    #actions{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 26px);right:calc(env(safe-area-inset-right) + 18px);display:flex;align-items:end;gap:10px;pointer-events:auto;direction:ltr}
+    .act{border:2px solid #ffffff40;border-radius:100px;width:66px;height:66px;color:white;background:linear-gradient(145deg,#7360d7c9,#342564ea);font:800 12px system-ui;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:none}
+    #jump{width:82px;height:82px;background:linear-gradient(145deg,#66dfad,#219481);border-color:#a7ffe3a8;color:#052d2d}#run{background:linear-gradient(145deg,#b785ef,#6953b4)}
+    .act .emoji{font-size:21px}
+    #hint{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);pointer-events:none;color:#fff9;font-size:10px;white-space:nowrap}
+    #menu,#endoverlay{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:12px;background:radial-gradient(circle at 48% 35%,#26125b69,#05081cc7)}
+    .panel{width:min(520px,96vw);max-height:min(94dvh,720px);overflow-y:auto;border-radius:25px;padding:22px;text-align:center;overscroll-behavior:contain}
+    .eyebrow{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--mint);text-transform:uppercase}.headline{font-size:clamp(30px,7vw,44px);line-height:1;margin:10px 0 6px;font-weight:1000;letter-spacing:1px}.headline em{font-style:normal;color:var(--mint)}.subtitle{font-size:13px;color:#c8c9e6;line-height:1.7;margin:8px 0 16px}
+    .secTitle{font-size:12px;margin:16px 0 9px;text-align:right;color:#d6d4f7;font-weight:900}
+    .avatars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;direction:ltr}
+    .avatar{background:#27214a;border:1.5px solid #66638a7f;border-radius:13px;padding:10px 3px;min-height:77px;color:white;cursor:pointer;display:flex;flex-direction:column;gap:5px;justify-content:center;align-items:center}
+    .avatar.selected{border:2px solid var(--mint);background:#334766}.avatar.locked{opacity:.82}.avatar .head{font-size:24px}.avatar small{font-size:9px;line-height:1.25}.avatar .price{color:var(--yellow);font-size:10px}
+    .mainBtn{display:block;width:100%;padding:14px 18px;border-radius:15px;border:0;color:#082821;background:linear-gradient(105deg,var(--mint),#a5ffcb);font:900 16px system-ui;cursor:pointer;margin-top:13px}
+    .secondaryBtn{background:#332c63;color:#fff;border:1px solid #a094df58}.disabled{opacity:.55;cursor:not-allowed}
+    .notice{font-size:11px;color:#c7c6e2;line-height:1.75;margin-top:12px}.notice strong{color:var(--yellow)}
+    #loadBar{height:5px;background:#ffffff26;border-radius:10px;overflow:hidden;margin:13px 0 0}#loadBar>div{width:6%;height:100%;background:var(--mint);transition:width .25s}
+    #endoverlay .panel{max-width:440px}.star{font-size:54px}.endTitle{font-size:29px;font-weight:1000;margin:10px 0}
+    @media(max-width:400px){.avatars{gap:4px}.avatar{padding:7px 2px;min-height:70px}.panel{padding:14px}.chip{padding:7px 9px}.brand{font-size:16px}#quest{top:63px}}
+    @media(max-height:520px){.panel{padding:14px 22px}.headline{font-size:27px}.subtitle{margin:3px 0 6px}.avatar{min-height:63px}.secTitle{margin:8px 0 6px}.mainBtn{padding:10px;margin-top:8px}.notice{font-size:10px;margin-top:6px}#quest{top:59px}.act{width:57px;height:57px}#jump{width:73px;height:73px}}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</head>
+<body>
+  <div id="hud">
+    <div class="hudgroup"><span class="brand">JOBBY <span>WORLD</span></span><span class="chip">🪙 <b id="walletHud">0</b></span></div>
+    <div class="hudgroup"><span class="chip">🗝️ <b id="keysHud">0 / 3</b></span><button class="smallbtn" id="menuButton">☰ القائمة</button></div>
+  </div>
+  <div class="glass" id="quest">ابحث عن <strong>3 مفاتيح</strong> وافتح باب الخروج</div>
+  <div id="toast"></div>
+  <div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>جري</button><button id="jump" class="act"><span class="emoji">⬆</span>قفز</button></div><div id="hint">اسحب يمين الشاشة لتغيير اتجاه الكاميرا</div></div>
+  <div id="menu">
+    <div class="glass panel">
+      <div class="eyebrow">Mobile 3D prototype · Alpha 0.1</div>
+      <div class="headline">JOBBY <em>WORLD</em></div>
+      <div class="subtitle">اختبر شخصياتك الحقيقية داخل عالم ثلاثي الأبعاد<br>تحرّك واقفز واجمع المفاتيح للوصول إلى البوابة</div>
+      <div class="secTitle">اختر شخصيتك <span style="color:#a5a3d6;font-weight:400">— 3 مجانية و2 يمكن فتحهما بالنقاط</span></div>
+      <div class="avatars" id="avatars"></div>
+      <div id="selectedInfo" style="font-size:11px;margin-top:8px;color:#d1c7ff;min-height:18px"></div>
+      <button class="mainBtn" id="startButton">▶ ابدأ تجربة اللعب الفردي</button>
+      <button class="mainBtn secondaryBtn disabled" disabled>👥 اللعب الجماعي — في المرحلة القادمة</button>
+      <div id="loadBar"><div id="barProgress"></div></div>
+      <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">جاهز لتحميل الشخصية</div>
+      <p class="notice">هذه نسخة <strong>تجريبية فردية</strong> للحركة واللمس وليست اللعبة النهائية. تُحفظ النقاط على هذا الجهاز مؤقتًا فقط، ولا توجد غرف جماعية أو لوحة صدارة عالمية بعد.</p>
+    </div>
+  </div>
+  <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">نجحت في الهروب!</div><p class="subtitle">وصلت إلى البوابة بعد جمع المفاتيح. ربحت <b style="color:#ffd76a">50 نقطة</b> في التجربة الأولى.</p><button class="mainBtn" id="againButton">↻ إعادة الجولة</button><button class="mainBtn secondaryBtn" id="charactersButton">اختيار شخصية أخرى</button></div></div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
