@@ -105,14 +105,14 @@ function roster(){
   b.className="avatar"+(chosen===a.id?" selected":"")+(available(a)?"":" locked");b.type="button";
   const title=document.createElement("small");title.textContent=a.name;
   const logo=document.createElement("span");logo.className="head";logo.textContent=available(a)?a.icon:"🔒";
-  const price=document.createElement("span");price.className="price";price.textContent=available(a)?"متاح":a.cost+" 🪙";
+  const price=document.createElement("span");price.className="price";price.textContent=available(a)?"FREE / OWNED":a.cost+" 🪙";
   b.append(logo,title,price);
   b.onclick=async()=>{
    if(!available(a)){
-    if(saved.points<a.cost){toast("تحتاج "+(a.cost-saved.points)+" نقطة إضافية");return}
+    if(saved.points<a.cost){toast("You need "+(a.cost-saved.points)+" more points");return}
     saved.points-=a.cost;saved.unlocked.push(a.id);persist();wallet();
    }
-   chosen=a.id;saved.selected=chosen;persist();roster();$("selectedInfo").textContent="الشخصية المختارة: "+a.name;
+   chosen=a.id;saved.selected=chosen;persist();roster();$("selectedInfo").textContent="Selected hero: "+a.name;
    if(started)await loadCharacter(chosen);
   };
   $("avatars").append(b);
@@ -123,7 +123,7 @@ async function loadCharacter(id){
  const modelSize=MODEL_SIZES[id]||1200000;
  const modelName=AVATARS.find(a=>a.id===id)?.name||id;
  $("barProgress").style.width="5%";
- setStatus("جار تحميل "+modelName+" فقط ("+(modelSize/1048576).toFixed(1)+" MB)…");
+ setStatus("Loading "+modelName+" only ("+(modelSize/1048576).toFixed(1)+" MB)…");
  try{
   // Individual self-contained GLB: no 21MB ZIP, no missing external glTF files.
   const gltf=await loader.loadAsync(id==="JOBBY"?JOBBY_MODEL:MODEL_BASE+encodeURIComponent(id)+".glb",event=>{
@@ -131,16 +131,16 @@ async function loadCharacter(id){
    if(event.lengthComputable&&event.total>0){
     const ratio=Math.max(0,Math.min(1,event.loaded/event.total));
     $("barProgress").style.width=Math.round(7+ratio*78)+"%";
-    setStatus("تحميل "+modelName+": "+Math.round(ratio*100)+"%");
+    setStatus("Loading "+modelName+": "+Math.round(ratio*100)+"%");
    }else if(event.loaded){
     const ratio=Math.min(.92,event.loaded/modelSize);
     $("barProgress").style.width=Math.round(7+ratio*78)+"%";
-    setStatus("تحميل "+modelName+": "+(event.loaded/1048576).toFixed(1)+" MB");
+    setStatus("Loading "+modelName+": "+(event.loaded/1048576).toFixed(1)+" MB");
    }
   });
   if(id!==currentRequested)return false;
   $("barProgress").style.width="92%";
-  setStatus("تحضير الشخصية والحركات…");
+  setStatus("Preparing character and animations…");
   if(avatar){
    playerGroup.remove(avatar);
    avatar.traverse(node=>{
@@ -166,13 +166,13 @@ async function loadCharacter(id){
   for(const clip of gltf.animations)clips[clip.name.split("|").pop()]=mixer.clipAction(clip);
   currentClip="";animate("Idle");
   loading=false;$("barProgress").style.width="100%";
-  setStatus("جاهزة ✓ — "+modelName);
+  setStatus("Ready ✓ — "+modelName);
   return true;
  }catch(e){
   console.error("Character load failed:",id,e);
   loading=false;$("barProgress").style.width="0%";
-  setStatus("تعذر تحميل "+modelName+" — تحقق من الإنترنت واضغط ابدأ للمحاولة مجددًا");
-  toast("تعذر تحميل الشخصية. جرّب مرة أخرى");return false;
+  setStatus("Could not load "+modelName+". Check your connection and tap START to retry.");
+  toast("Could not load character. Please try again.");return false;
  }
 }
 function animate(name){
@@ -182,11 +182,11 @@ function animate(name){
  next.reset().fadeIn(.16).play();currentClip=name;
 }
 function reset(){
- px=0;pz=18;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;
+ px=0;pz=18;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;runHeld=false;wantJump=false;
  playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;
  collectible.forEach(k=>{k.taken=false;k.group.visible=true});
  portalMaterial.color.set("#ff759e");portalMaterial.emissive.set("#ff557e");
- $("quest").innerHTML="ابحث عن <strong>3 مفاتيح</strong> وافتح باب الخروج";wallet();
+ $("quest").innerHTML="Find <strong>3 keys</strong> to open the exit gate";wallet();
 }
 async function start(){
  if(loading)return;
@@ -203,12 +203,12 @@ function complete(){
   const entry={character:chosen,points:80,seconds:Math.max(1,(performance.now()-roundStartedAt)/1000),date:Date.now()};
   localStorage.setItem(key,JSON.stringify([entry,...(Array.isArray(old)?old:[])].slice(0,60)));
  }catch(e){}
- persist();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("فزت بـ 50 نقطة!");
+ persist();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("Escape complete! +50 bonus points (80 total this round).");
 }
 $("startButton").onclick=start;
 $("againButton").onclick=()=>{reset();roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
-$("charactersButton").onclick=()=>{location.href="./index.html?v=6#characters"};
-$("menuButton").onclick=()=>{location.href="./index.html?v=6"};
+$("charactersButton").onclick=()=>{location.href="./index.html?v=9#characters"};
+$("menuButton").onclick=()=>{location.href="./index.html?v=9"};
 const stick=$("stick"),knob=$("knob");
 function onStick(e){
  const rect=stick.getBoundingClientRect();
@@ -256,8 +256,8 @@ renderer.domElement.addEventListener("lostpointercapture",endCameraTouch);
 renderer.domElement.addEventListener("wheel",e=>{
  cameraDistance=THREE.MathUtils.clamp(cameraDistance+Math.sign(e.deltaY)*.65,3.6,10);e.preventDefault()
 },{passive:false});
-$("cameraReset").onclick=()=>{yaw=heading-Math.PI;tilt=.4;cameraDistance=6.8;toast("الكاميرا خلف الشخصية")};
-$("cameraZoom").onclick=()=>{cameraDistance=cameraDistance>7.5?4.4:cameraDistance<5.1?6.5:9.4;toast("بعد الكاميرا: "+cameraDistance.toFixed(1))};
+$("cameraReset").onclick=()=>{yaw=heading-Math.PI;tilt=.4;cameraDistance=6.8;toast("Camera reset behind your hero")};
+$("cameraZoom").onclick=()=>{cameraDistance=cameraDistance>7.5?4.4:cameraDistance<5.1?6.5:9.4;toast("Camera distance: "+cameraDistance.toFixed(1))};
 $("mapToggle").onclick=()=>{$("miniMap").classList.toggle("hidden")};
 const mini=$("miniMap"),mapContext=mini.getContext("2d");
 let nextMapPaint=0;
@@ -277,28 +277,32 @@ function paintMinimap(time){
  c.moveTo((px+28)*s,(pz+28)*s);
  c.lineTo((px+28)*s+Math.sin(heading)*12,(pz+28)*s+Math.cos(heading)*12);c.stroke();
 }
-// If pressed against a wall, fade that wall rather than putting the lens inside the avatar.
+// Alpha 0.7: When a solid obstacle crosses the line of sight,
+// fade it instead of swinging the camera in front of the player.
+// This keeps the entire avatar visible close to house and maze walls.
 const fadedWalls=new Set();
 function clearFadedWalls(){
- for(const m of fadedWalls){m.material.transparent=false;m.material.opacity=1;m.material.depthWrite=true;}
- fadedWalls.clear();
-}
-// Keep third-person camera on the avatar's side of the nearest solid wall.
-function safeCamera(origin,target){
- const delta=target.clone().sub(origin),distance=delta.length();
- if(distance<.001)return target.clone();
- const ray=new THREE.Ray(origin,delta.divideScalar(distance));
- const hitPoint=new THREE.Vector3();let permitted=distance;
- for(const b of blocks){
-  if(ray.intersectBox(b.box,hitPoint)){
-   const hitDistance=hitPoint.distanceTo(origin);
-   if(hitDistance<1.35){
-    b.mesh.material.transparent=true;b.mesh.material.opacity=.18;
-    b.mesh.material.depthWrite=false;fadedWalls.add(b.mesh);
-   }else if(hitDistance<permitted)permitted=Math.max(.18,hitDistance-.25);
+  for(const mesh of fadedWalls){
+    mesh.material.transparent=false;
+    mesh.material.opacity=1;
+    mesh.material.depthWrite=true;
   }
- }
- return origin.clone().addScaledVector(ray.direction,permitted);
+  fadedWalls.clear();
+}
+function safeCamera(origin,target){
+  const segment=target.clone().sub(origin);
+  const distance=segment.length();
+  if(distance<.001)return target.clone();
+  const ray=new THREE.Ray(origin,segment.multiplyScalar(1/distance));
+  for(const b of blocks){
+    const hit=ray.intersectBox(b.box,new THREE.Vector3());
+    if(!hit || hit.distanceTo(origin)>distance)continue;
+    b.mesh.material.transparent=true;
+    b.mesh.material.opacity=.12;
+    b.mesh.material.depthWrite=false;
+    fadedWalls.add(b.mesh);
+  }
+  return target.clone();
 }
 window.addEventListener("keydown",e=>{keysDown.add(e.key.toLowerCase());if(e.code==="Space")wantJump=true});
 window.addEventListener("keyup",e=>keysDown.delete(e.key.toLowerCase()));
@@ -331,8 +335,8 @@ function frame(){
   for(const k of collectible){
    if(!k.taken&&Math.hypot(px-k.x,pz-k.z)<1.1){
     k.taken=true;k.group.visible=false;count++;saved.points+=10;persist();wallet();
-    toast("مفتاح جديد! +10 نقاط");
-    if(count===3){$("quest").innerHTML="<strong>البوابة مفتوحة</strong> — اذهب للخروج";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
+    toast("Key collected! +10 points");
+    if(count===3){$("quest").innerHTML="<strong>GATE UNLOCKED</strong> — Reach the exit!";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
    }
   }
   if(count===3&&pz < -24.8&&Math.abs(px)<3.1)complete();
@@ -350,5 +354,5 @@ function frame(){
  renderer.render(scene,camera);
 }
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-roster();wallet();$("selectedInfo").textContent="الشخصية المختارة: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");frame();
+roster();wallet();$("selectedInfo").textContent="Selected hero: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");frame();
 if(new URLSearchParams(location.search).has("autostart"))start();
