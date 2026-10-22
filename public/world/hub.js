@@ -8,7 +8,7 @@ const AVATARS=[
  {id:"JOBBY",name:"JOBBY الأصلي",cost:0,officialReference:true},
  {id:"Casual_Male",name:"Explorer",cost:0,size:1238384},
  {id:"Ninja_Male",name:"Ninja",cost:0,size:1058660},
- {id:"Pug",name:"Pug",cost:60,size:1045324},
+ {id:"Pug",name:"Pug",cost:0,size:1045324},
  {id:"Wizard",name:"Wizard",cost:80,size:1260568},
  {id:"Pirate_Female",name:"Pirate",cost:120,size:1413296}
 ];
