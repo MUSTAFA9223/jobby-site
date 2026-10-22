@@ -1,6 +1,6 @@
-# JOBBY WORLD — Alpha 0.6
+# JOBBY WORLD — Alpha 0.7
 
-## Current milestone: JOBBY is playable again
+## Current milestone: English-only mobile UI and clearer camera
 At the owner's explicit request, the previously withheld JOBBY GLB is restored as the **first, free, playable** character in the main lobby and the solo maze. This is a temporary 3D character study, **not claimed to accurately reproduce the approved white-and-purple JOBBY illustration**.
 
 - 3D URL: `https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb` (1.9 MB). It is reused from the owner's existing repository, not modified or duplicated.
@@ -9,11 +9,21 @@ At the owner's explicit request, the previously withheld JOBBY GLB is restored a
 - Tapping the JOBBY card opens a real GLTFLoader/OrbitControls rotatable 3D viewer, and the select button enables playing the maze as JOBBY.
 - The main hero image still shows the owner's approved 2D reference illustration, which may differ from the trial model.
 
+## Alpha 0.7 changes
+- All visible home, avatar picker, 3D preview, leaderboard, solo gameplay, HUD, game instructions and notifications are in English (left-to-right, en-US formatting).
+- The existing 3D map, open-roof house, keys, 6 heroes, key collection, local points and unlocks are retained.
+- Character stays visible near walls: any intersecting level block becomes translucent rather than moving the third-person camera against the player.
+- Run and jump buttons remain large for touchscreens; 360-degree camera drag and pinch zoom remain available.
+- Each key adds 10 points and the exit adds 50 bonus points; the leaderboard correctly records **80 total points earned per successful round**, while the win screen describes the 50-point completion bonus.
+- Stored points, unlocked characters and local leaderboard use the existing keys without clearing progress.
+- Online multiplayer, live voice, private rooms, global rankings and token rewards are NOT implemented.
+- Deployment and real-mobile runtime remain to be independently verified.
+
 ## Entry points
-- Home screen: `/world/index.html?v=8`
+- Home screen: `/world/index.html?v=9`
 - Escape minigame: `/world/play.html?v=8`
 - Repo paths: `public/world/index.html`, `hub.js`, `play.html`, `main.js`.
-- Main JS cache bump: `hub.js?v=4` and `main.js?v=7`.
+- Main JS cache bump: `hub.js?v=5` and `main.js?v=8`.
 
 ## Other playable characters and economy
 Free: JOBBY, Explorer, Ninja, Pug. Prototype point unlocks: Wizard (80), Pirate (120).
