@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090d20">
-<meta name="description" content="JOBBY WORLD - اختَر شخصيتك، اجمع النقاط، وافتح شخصيات جديدة.">
-<title>JOBBY WORLD | Alpha 0.6</title>
+<meta name="description" content="JOBBY WORLD - Choose your character, collect keys, earn points, and unlock new heroes.">
+<title>JOBBY WORLD | Alpha 0.7</title>
 <style>
 :root{color-scheme:dark;--bg:#090e22;--panel:#151a36;--text:#fff;--muted:#aab4d4;--stroke:#343957;--mint:#6df6cf;--gold:#ffd978;--pink:#f29cd9;--purple:#ab92ff}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Tahoma,sans-serif}
@@ -40,13 +40,13 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 .linkBtn{background:transparent;color:var(--mint);font-weight:850;font-size:12px;padding:8px}
 .panel{padding:18px;background:linear-gradient(145deg,#19213d,#121831);border:1px solid #333e5d;border-radius:20px}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.mode{padding:17px;border-radius:20px;border:1px solid #504574;background:linear-gradient(125deg,#26204d,#151932);text-align:right;color:white;min-height:138px}
+.mode{padding:17px;border-radius:20px;border:1px solid #504574;background:linear-gradient(125deg,#26204d,#151932);text-align:left;color:white;min-height:138px}
 .mode strong{display:block;font-size:17px;margin:6px 0}.mode p{color:#abb8d4;font-size:12px;line-height:1.5}.mode .emoji{font-size:28px}.mode.disabled{opacity:.75}
 .home-foot{margin-top:16px;padding:14px;border:1px solid #505272;background:#17203b;border-radius:17px;color:#b9c4df;font-size:12px;line-height:1.7}
 .titlebar{display:flex;align-items:flex-start;justify-content:space-between;margin:17px 0 15px;gap:9px}
 .titlebar h1{font-size:28px;margin-bottom:7px}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.avatarCard{border-radius:20px;min-width:0;background:#1a2140;border:1px solid #454366;color:white;padding:9px;text-align:right;position:relative;overflow:hidden}
+.avatarCard{border-radius:20px;min-width:0;background:#1a2140;border:1px solid #454366;color:white;padding:9px;text-align:left;position:relative;overflow:hidden}
 .avatarCard.selected{border:2px solid #74f9d9;background:#243a55}
 .portrait{width:100%;height:clamp(122px,25vw,192px);object-fit:contain;display:block;border-radius:14px;background:radial-gradient(circle at 50% 35%,#554c8f,#242541 68%);padding:5px}
 .avatarCard .name{display:block;font-size:12px;font-weight:950;margin:10px 1px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -77,35 +77,35 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 </head>
 <body>
 <div class="page">
-<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.6</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
+<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.7</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
 <main>
 <section id="home" class="view">
 <div class="hero">
-<div><div class="eyebrow">⚡ مغامرتك تبدأ الآن</div><h1>أهلًا بك في <span class="gradient">JOBBY WORLD</span></h1><p class="soft">اختر شخصيتك، اهرب من المتاهة، اجمع المفاتيح وافتح شخصيات جديدة بالنقاط.</p><div class="actionStack"><button id="playNow" class="primary">▶ العب الآن</button><button id="exploreChars" class="secondary">الشخصيات</button></div></div>
-<div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · مجانية · 3D تجريبية</small></div>
+<div><div class="eyebrow">⚡ YOUR ADVENTURE STARTS HERE</div><h1>Welcome to <span class="gradient">JOBBY WORLD</span></h1><p class="soft">Choose your character, escape the maze, collect keys, and unlock new heroes with points.</p><div class="actionStack"><button id="playNow" class="primary">▶ PLAY NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
+<div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
-<div class="home-foot">هذه صورة JOBBY المرجعية الأصلية. أعدنا أيضًا مجسم JOBBY ثلاثي الأبعاد السابق إلى اللعبة بناءً على اختيارك؛ يمكنك اختياره ولعب المتاهة به، مع بقاء تصميمه مؤقتًا وقابلًا للتحسين.</div><div class="stats"><div class="stat"><b id="myPoints">0</b><span>نقاطك المكتسبة</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>الشخصيات المتاحة للعب</span></div><div class="stat"><b id="myWins">0</b><span>جولات ناجحة</span></div></div>
-<div class="section-head"><h3>أنماط اللعب</h3><button class="linkBtn" data-view="characters">عرض الشخصيات ←</button></div>
+<div class="home-foot">This is the official JOBBY reference artwork. JOBBY is playable with a temporary 3D model, which may differ from the final mascot design.</div><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ESCAPES COMPLETED</span></div></div>
+<div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
-<button id="soloMode" class="mode"><span class="emoji">🗝️</span><strong>هروب فردي</strong><p>استكشف البيت والمتاهة، اجمع 3 مفاتيح، واخرج!</p></button>
-<button id="multiMode" class="mode disabled" type="button"><span class="emoji">👥</span><strong>لعب جماعي</strong><p>غرف خاصة و2–6 لاعبين · قريبًا</p></button>
+<button id="soloMode" class="mode"><span class="emoji">🗝️</span><strong>SOLO ESCAPE</strong><p>Explore the house and maze, find 3 keys, and escape!</p></button>
+<button id="multiMode" class="mode disabled" type="button"><span class="emoji">👥</span><strong>MULTIPLAYER</strong><p>Private rooms for 2–6 players · COMING SOON</p></button>
 </div>
-<div class="home-foot">🏆 اربح النقاط من اللعب، ثم افتح الشخصيات المقفلة. النقاط والصدارة في هذه النسخة تجريبية ومحفوظة على جهازك فقط.</div>
+<div class="home-foot">🏆 Earn points by playing and unlock more characters. Points and rankings are experimental and saved only on this device.</div>
 </section>
 <section id="characters" class="view hidden">
-<div class="titlebar"><div><div class="eyebrow">CHARACTER COLLECTION</div><h1>اختَر شخصيتك</h1><p class="soft">JOBBY أول شخصية مجانية · اضغط أي بطاقة لعرض الشخصية 3D واختيارها</p></div><span class="coin" id="charCounter">6 شخصيات</span></div>
-<div id="characterGrid" class="grid"></div><p id="thumbNote" class="notice">صورة JOBBY المرجعية تظهر مباشرة. افتح بطاقتها لمعاينة المجسم 3D التجريبي. بقية الصور تظهر تدريجيًا.</p>
-<div class="cardActions"><button class="primary" id="playSelected">العب بالشخصية المختارة</button><button class="secondary" data-view="home">العودة</button></div>
+<div class="titlebar"><div><div class="eyebrow">CHARACTER COLLECTION</div><h1>CHOOSE YOUR CHARACTER</h1><p class="soft">JOBBY is the first free hero. Tap any card to inspect its 3D model and select it.</p></div><span class="coin" id="charCounter">6 CHARACTERS</span></div>
+<div id="characterGrid" class="grid"></div><p id="thumbNote" class="notice">The official JOBBY artwork is shown immediately. Open a card to view its playable 3D prototype. Other portraits load on demand.</p>
+<div class="cardActions"><button class="primary" id="playSelected">PLAY SELECTED HERO</button><button class="secondary" data-view="home">BACK</button></div>
 </section>
 <section id="leaderboard" class="view hidden">
-<div class="eyebrow">LEADERBOARD</div><h1>🏆 لوحة الصدارة</h1><p class="soft" style="margin-top:8px">أفضل جولات الهروب على هذا الجهاز. لوحة الصدارة العالمية ستتوفر بعد ربط خادم اللعبة.</p>
-<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>فوز</span></div><div class="stat"><b id="leaderBest">—</b><span>أسرع هروب</span></div><div class="stat"><b id="leaderPoints">0</b><span>رصيد النقاط</span></div></div>
+<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Best escape times on this device. Global leaderboards will require an online game server.</p>
+<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>FASTEST ESCAPE</span></div><div class="stat"><b id="leaderPoints">0</b><span>POINT BALANCE</span></div></div>
 <div id="scoreboard" class="scoreboard"></div>
-<div class="home-foot">🌍 التصنيف العالمي، الحسابات والمكافآت الحقيقية غير مفعّلة بعد. لن نعرض أسماء لاعبين أو نتائج غير حقيقية.</div>
+<div class="home-foot">🌍 Global rankings, user accounts, and real rewards are not enabled. No fake opponents or scores are shown.</div>
 </section>
 </main>
 </div>
-<nav class="nav" aria-label="التنقل"><button class="active" data-view="home"><span>⌂</span>الرئيسية</button><button data-view="characters"><span>🧑‍🚀</span>الشخصيات</button><button data-view="leaderboard"><span>🏆</span>الصدارة</button></nav>
-<div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewName"><div class="modal-card"><div class="modal-top"><div><div class="eyebrow">معاينة 3D</div><h2 id="previewName">JOBBY</h2></div><button id="closePreview" class="circleBtn" aria-label="إغلاق">×</button></div><div id="previewStage"><span id="previewLoading" class="soft">جار تحضير النموذج ثلاثي الأبعاد…</span></div><div id="previewText" class="previewHint">اسحب لتدوير الشخصية</div><button id="previewAction" class="primary" style="width:100%">اختيار الشخصية</button></div></div>
-<script type="module" src="./hub.js?v=4"></script>
+<nav class="nav" aria-label="Navigation"><button class="active" data-view="home"><span>⌂</span>HOME</button><button data-view="characters"><span>🧑‍🚀</span>CHARACTERS</button><button data-view="leaderboard"><span>🏆</span>RANKINGS</button></nav>
+<div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewName"><div class="modal-card"><div class="modal-top"><div><div class="eyebrow">3D PREVIEW</div><h2 id="previewName">JOBBY</h2></div><button id="closePreview" class="circleBtn" aria-label="Close">×</button></div><div id="previewStage"><span id="previewLoading" class="soft">Preparing 3D character…</span></div><div id="previewText" class="previewHint">Drag to rotate your character</div><button id="previewAction" class="primary" style="width:100%">SELECT CHARACTER</button></div></div>
+<script type="module" src="./hub.js?v=5"></script>
 </body></html>
