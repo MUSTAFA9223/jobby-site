@@ -20,6 +20,19 @@ function roomStub(env,code){
 export default {
   async fetch(request,env){
     const url=new URL(request.url),path=url.pathname;
+    // Keep 3D assets and the WebSocket API on the same public domain.
+    if(path==="/world/models/JOBBY.glb"){
+      if(request.method!=="GET" && request.method!=="HEAD")return json({error:"Method not allowed."},405);
+      const response=await fetch("https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb",{
+        cf:{cacheEverything:true,cacheTtl:86400}
+      });
+      if(!response.ok)return new Response("JOBBY model unavailable.",{status:502});
+      return new Response(request.method==="HEAD"?null:response.body,{
+        status:200,
+        headers:{"content-type":"model/gltf-binary","cache-control":"public, max-age=3600",
+        "x-content-type-options":"nosniff"}
+      });
+    }
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){
@@ -150,7 +163,7 @@ export class WorldRoom extends DurableObject {
     const a=ws.deserializeAttachment();
     const room=await this.ctx.storage.get("room");if(!room)return;
     const rest=this.players();
-    if(a?.id===room.hostId){room.hostId=rest[0]?.id||"";await this.ctx.storage.put("room",room)}
+    if(a?.id===room.hostId && !rest.some(p=>p.id===room.hostId)){room.hostId=rest[0]?.id||"";await this.ctx.storage.put("room",room)}
     this.broadcast({type:"roster",hostId:room.hostId,players:rest});
   }
   async webSocketClose(ws){await this.drop(ws)}
