@@ -19,7 +19,7 @@ const persist=()=>{try{localStorage.setItem("jobby-world-v01",JSON.stringify(sav
 const available = item => !item.cost || saved.unlocked.includes(item.id);
 let chosen=AVATARS[0].id, started=false, finished=false, count=0, loading=false, runHeld=false, wantJump=false;
 let px=0,pz=9,py=0,vy=0,grounded=true,heading=Math.PI;
-let yaw=0,tilt=.43,dragPointer=null,lastDragX=0,lastDragY=0;
+let yaw=0,tilt=.38,cameraDistance=7,dragPointer=null,lastDragX=0,lastDragY=0;
 let stickPointer=null,joyX=0,joyY=0;
 let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
 const keysDown=new Set(),loader=new GLTFLoader();
@@ -36,32 +36,56 @@ const sunlight=new THREE.DirectionalLight(0xffe0b7,3.2);sunlight.position.set(-6
 sunlight.castShadow=true;sunlight.shadow.mapSize.set(lowPowerMobile?512:1024,lowPowerMobile?512:1024);
 sunlight.shadow.camera.left=-25;sunlight.shadow.camera.right=25;sunlight.shadow.camera.top=25;sunlight.shadow.camera.bottom=-25;sunlight.shadow.normalBias=.05;scene.add(sunlight);
 const material=c=>new THREE.MeshStandardMaterial({color:c,roughness:.85});
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(36,36),material("#66559c"));
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(56,56),material("#66559c"));
 floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
-const grid=new THREE.GridHelper(36,18,0xa38ee8,0x7c65b6);grid.position.y=.012;scene.add(grid);
+const grid=new THREE.GridHelper(56,28,0xa38ee8,0x7c65b6);grid.position.y=.012;scene.add(grid);
 const blocks=[];
 function block(x,z,w,d,h,color,solid=true){
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(color));m.position.set(x,h/2,z);
  m.castShadow=true;m.receiveShadow=true;scene.add(m);
- if(solid)blocks.push({x,z,w,d});return m;
+ if(solid)blocks.push({x,z,w,d,h,box:new THREE.Box3(new THREE.Vector3(x-w/2-.12,-.1,z-d/2-.12),new THREE.Vector3(x+w/2+.12,h+.12,z+d/2+.12))});return m;
 }
-block(-17.5,0,1,35,3.5,"#514079");block(17.5,0,1,35,3.5,"#514079");
-block(0,17.5,35,1,3.5,"#514079");
-block(-10.25,-17.5,14.5,1,3.5,"#514079");block(10.25,-17.5,14.5,1,3.5,"#514079");
+// Alpha 0.3: expanded grounds with a usable open-roof house.
+// Perimeter leaves a gap at the far north EXIT gate.
+block(-27.5,0,1,55,3.4,"#514079");block(27.5,0,1,55,3.4,"#514079");
+block(0,27.5,55,1,3.4,"#514079");
+block(-15.5,-27.5,24,1,3.4,"#514079");block(15.5,-27.5,24,1,3.4,"#514079");
+const houseFloor=new THREE.Mesh(new THREE.BoxGeometry(13.3,.08,11.3),material("#b09bce"));
+houseFloor.position.set(-16,.02,-13);houseFloor.receiveShadow=true;scene.add(houseFloor);
+// House back, sides, and front with a central entrance (x=-18 to -14).
+block(-16,-19,14,.65,3.4,"#bf7f89");block(-23,-13,.65,12,3.4,"#b17d9a");block(-9,-13,.65,12,3.4,"#b17d9a");
+block(-20.5,-7,5,.65,3.4,"#d7a2a9");block(-11.5,-7,5,.65,3.4,"#d7a2a9");
+// Dividing partition with an internal doorway; one key is at the back.
+block(-20.75,-13,4.5,.55,2.6,"#876eaf");block(-11.25,-13,4.5,.55,2.6,"#876eaf");
+block(-20,-9.5,2.3,1.2,.8,"#665389");block(-11.6,-15.6,2.3,1.4,.9,"#806199");
+// Translucent roof is only a visual guide, so it cannot block the player.
+const houseRoof=new THREE.Mesh(new THREE.BoxGeometry(14.6,.15,12.6),
+ new THREE.MeshBasicMaterial({color:"#f2a4bd",transparent:true,opacity:.10,depthWrite:false,side:THREE.DoubleSide}));
+houseRoof.position.set(-16,3.65,-13);scene.add(houseRoof);
+const pathMat=material("#8271b5");
+for(const [x,z,w,d] of [[0,16,4,18],[0,-3,4,15],[2,-19,5,11],[-8,8,14,3],[12,8,18,3]]){
+ const p=new THREE.Mesh(new THREE.PlaneGeometry(w,d),pathMat);p.rotation.x=-Math.PI/2;p.position.set(x,.03,z);p.receiveShadow=true;scene.add(p);
+}
 [
- [-5,-4,5,1.6], [5,2,1.6,7],[-10,5,3.2,1.5],
- [9,-8,3.7,1.7],[-1,11,1.5,3],[0,-11,4.5,1.4],
- [-11,-11,1.5,2],[10,11,1.8,3]
-].forEach(a=>block(a[0],a[1],a[2],a[3],2.7,"#594783"));
+ [-2,-1,5,1.3],[6,1,1.2,7],[-11,8,3,1.5],
+ [14,-9,4.5,1.4],[8,-15,1.4,5],[-3,12,1.3,3],
+ [21,-2,1.5,5],[15,17,3,1.3]
+].forEach(([x,z,w,d])=>block(x,z,w,d,2.4,"#594783"));
+const leafMat=new THREE.MeshLambertMaterial({color:"#57caa8"});
+for(const [x,z] of [[-22,18],[-15,21],[22,18],[22,-18],[4,23],[-4,23]]){
+ block(x,z,.48,.48,1.25,"#705074");
+ const crown=new THREE.Mesh(new THREE.ConeGeometry(1.45,3,6),leafMat);
+ crown.position.set(x,2.55,z);scene.add(crown);
+}
 const portalMaterial=new THREE.MeshStandardMaterial({color:0xff759e,emissive:0xff557e,emissiveIntensity:1.2,transparent:true,opacity:.8,side:THREE.DoubleSide});
-const portal=new THREE.Mesh(new THREE.PlaneGeometry(5.1,3.1),portalMaterial);portal.position.set(0,1.7,-16.9);scene.add(portal);
-block(-2.8,-16.9,.35,.8,3.5,"#bba7ff",false);block(2.8,-16.9,.35,.8,3.5,"#bba7ff",false);
+const portal=new THREE.Mesh(new THREE.PlaneGeometry(5.1,3.1),portalMaterial);portal.position.set(0,1.7,-26.9);scene.add(portal);
+block(-3.1,-26.9,.35,.8,3.5,"#bba7ff",false);block(3.1,-26.9,.35,.8,3.5,"#bba7ff",false);
 const labelCanvas=document.createElement("canvas");labelCanvas.width=256;labelCanvas.height=80;
 const labelContext=labelCanvas.getContext("2d");labelContext.fillStyle="#fff";labelContext.font="bold 51px sans-serif";labelContext.textAlign="center";labelContext.fillText("EXIT",128,57);
-const label=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(labelCanvas)}));label.scale.set(3.4,1,1);label.position.set(0,4,-16.9);scene.add(label);
+const label=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(labelCanvas)}));label.scale.set(3.4,1,1);label.position.set(0,4,-26.9);scene.add(label);
 const playerGroup=new THREE.Group();scene.add(playerGroup);
 const gemMat=new THREE.MeshStandardMaterial({color:"#ffe080",emissive:"#ffb940",emissiveIntensity:.45,metalness:.4});
-const collectible=[[-12,-9],[12,8],[-12,12]].map(([x,z])=>{
+const collectible=[[-20,-16],[19,14],[12,-20]].map(([x,z])=>{
  const group=new THREE.Group();
  const ring=new THREE.Mesh(new THREE.TorusGeometry(.32,.09,8,18),gemMat);ring.position.y=.1;group.add(ring);
  const stick=new THREE.Mesh(new THREE.BoxGeometry(.13,.62,.13),gemMat);stick.position.y=-.26;group.add(stick);
@@ -155,7 +179,7 @@ function animate(name){
  next.reset().fadeIn(.16).play();currentClip=name;
 }
 function reset(){
- px=0;pz=9;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;
+ px=0;pz=18;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;
  playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;
  collectible.forEach(k=>{k.taken=false;k.group.visible=true});
  portalMaterial.color.set("#ff759e");portalMaterial.emissive.set("#ff557e");
@@ -182,7 +206,7 @@ function onStick(e){
  let x=(e.clientX-rect.left-rect.width/2)/(rect.width*.34);
  let y=(e.clientY-rect.top-rect.height/2)/(rect.height*.34);
  const length=Math.max(1,Math.hypot(x,y));joyX=x/length;joyY=y/length;
- knob.style.transform="translate("+(joyX*32)+"px,"+(joyY*32)+"px)";
+ const knobRadius=Math.max(32,stick.clientWidth/2-31);knob.style.transform="translate("+(joyX*knobRadius)+"px,"+(joyY*knobRadius)+"px)";
 }
 stick.addEventListener("pointerdown",e=>{stickPointer=e.pointerId;stick.setPointerCapture(e.pointerId);onStick(e)});
 stick.addEventListener("pointermove",e=>{if(e.pointerId===stickPointer)onStick(e)});
@@ -191,18 +215,77 @@ stick.addEventListener("pointerup",releaseStick);stick.addEventListener("pointer
 $("run").addEventListener("pointerdown",e=>{runHeld=true;e.currentTarget.setPointerCapture(e.pointerId)});
 $("run").addEventListener("pointerup",()=>runHeld=false);$("run").addEventListener("pointercancel",()=>runHeld=false);
 $("jump").addEventListener("pointerdown",()=>wantJump=true);
-renderer.domElement.addEventListener("pointerdown",e=>{dragPointer=e.pointerId;lastDragX=e.clientX;lastDragY=e.clientY});
-renderer.domElement.addEventListener("pointermove",e=>{
- if(e.pointerId!==dragPointer||!started)return;
- yaw-= (e.clientX-lastDragX)*.006;
- tilt=THREE.MathUtils.clamp(tilt+(e.clientY-lastDragY)*.003,.17,.95);
- lastDragX=e.clientX;lastDragY=e.clientY;
+// Full 360-degree camera rotation with pointer capture and two-finger pinch zoom.
+const cameraTouches=new Map();
+renderer.domElement.addEventListener("pointerdown",e=>{
+ if(!started)return;
+ renderer.domElement.setPointerCapture?.(e.pointerId);
+ cameraTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ dragPointer=e.pointerId;
 });
-window.addEventListener("pointerup",e=>{if(e.pointerId===dragPointer)dragPointer=null});
+renderer.domElement.addEventListener("pointermove",e=>{
+ const previous=cameraTouches.get(e.pointerId);
+ if(!started||!previous)return;
+ const dx=e.clientX-previous.x,dy=e.clientY-previous.y;
+ if(cameraTouches.size===2){
+  const p=[...cameraTouches.entries()].find(([id])=>id!==e.pointerId)?.[1];
+  if(p){
+   const prior=Math.hypot(previous.x-p.x,previous.y-p.y);
+   const current=Math.hypot(e.clientX-p.x,e.clientY-p.y);
+   cameraDistance=THREE.MathUtils.clamp(cameraDistance-(current-prior)*.035,3.6,10);
+  }
+ }else{
+  yaw-=dx*.0085;
+  tilt=THREE.MathUtils.clamp(tilt+dy*.0045,.08,1.16);
+ }
+ cameraTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+});
+function endCameraTouch(e){cameraTouches.delete(e.pointerId);if(e.pointerId===dragPointer)dragPointer=null}
+renderer.domElement.addEventListener("pointerup",endCameraTouch);
+renderer.domElement.addEventListener("pointercancel",endCameraTouch);
+renderer.domElement.addEventListener("lostpointercapture",endCameraTouch);
+renderer.domElement.addEventListener("wheel",e=>{
+ cameraDistance=THREE.MathUtils.clamp(cameraDistance+Math.sign(e.deltaY)*.65,3.6,10);e.preventDefault()
+},{passive:false});
+$("cameraReset").onclick=()=>{yaw=heading-Math.PI;tilt=.4;cameraDistance=6.8;toast("الكاميرا خلف الشخصية")};
+$("cameraZoom").onclick=()=>{cameraDistance=cameraDistance>7.5?4.4:cameraDistance<5.1?6.5:9.4;toast("بعد الكاميرا: "+cameraDistance.toFixed(1))};
+$("mapToggle").onclick=()=>{$("miniMap").classList.toggle("hidden")};
+const mini=$("miniMap"),mapContext=mini.getContext("2d");
+let nextMapPaint=0;
+function paintMinimap(time){
+ if(mini.classList.contains("hidden")||time<nextMapPaint)return;
+ nextMapPaint=time+.18;
+ const c=mapContext,s=180/56;
+ c.clearRect(0,0,180,180);c.fillStyle="#171c3e";c.fillRect(0,0,180,180);
+ c.fillStyle="#ae8b9e";c.fillRect(5*s,9*s,14*s,12*s);
+ c.fillStyle="#594783";
+ for(const b of blocks)c.fillRect((b.x-b.w/2+28)*s,(b.z-b.d/2+28)*s,b.w*s,b.d*s);
+ c.fillStyle="#ffe080";
+ for(const k of collectible){if(!k.taken){c.beginPath();c.arc((k.x+28)*s,(k.z+28)*s,4,0,Math.PI*2);c.fill()}}
+ c.fillStyle="#63ffcc";c.fillRect(28*s-7,1,14,5);
+ c.fillStyle="#ffffff";c.beginPath();c.arc((px+28)*s,(pz+28)*s,5,0,Math.PI*2);c.fill();
+ c.strokeStyle="#ffffff";c.lineWidth=2;c.beginPath();
+ c.moveTo((px+28)*s,(pz+28)*s);
+ c.lineTo((px+28)*s+Math.sin(heading)*12,(pz+28)*s+Math.cos(heading)*12);c.stroke();
+}
+// Keep third-person camera on the avatar's side of the nearest solid wall.
+function safeCamera(origin,target){
+ const delta=target.clone().sub(origin),distance=delta.length();
+ if(distance<.001)return target.clone();
+ const ray=new THREE.Ray(origin,delta.divideScalar(distance));
+ const hitPoint=new THREE.Vector3();let permitted=distance;
+ for(const b of blocks){
+  if(ray.intersectBox(b.box,hitPoint)){
+   const hitDistance=hitPoint.distanceTo(origin);
+   if(hitDistance<permitted)permitted=Math.max(.65,hitDistance-.22);
+  }
+ }
+ return origin.clone().addScaledVector(ray.direction,permitted);
+}
 window.addEventListener("keydown",e=>{keysDown.add(e.key.toLowerCase());if(e.code==="Space")wantJump=true});
 window.addEventListener("keyup",e=>keysDown.delete(e.key.toLowerCase()));
 function collision(x,z){
- const radius=.33;if(Math.abs(x)>16.5-radius||Math.abs(z)>16.5-radius)return true;
+ const radius=.33;if(Math.abs(x)>26.5-radius||Math.abs(z)>26.5-radius)return true;
  return blocks.some(b=>Math.abs(x-b.x)<b.w/2+radius&&Math.abs(z-b.z)<b.d/2+radius);
 }
 const timer=new THREE.Clock();
@@ -234,12 +317,15 @@ function frame(){
     if(count===3){$("quest").innerHTML="<strong>البوابة مفتوحة</strong> — اذهب للخروج";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
    }
   }
-  if(count===3&&pz < -14.8&&Math.abs(px)<3.2)complete();
+  if(count===3&&pz < -24.8&&Math.abs(px)<3.1)complete();
  }
  if(mixer)mixer.update(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
- const desired=new THREE.Vector3(px+Math.sin(yaw)*7*Math.cos(tilt),py+1.3+7*Math.sin(tilt),pz+Math.cos(yaw)*7*Math.cos(tilt));
- camera.position.lerp(desired,Math.min(1,delta*7));camera.lookAt(lookAt);
+ const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
+ const safeTarget=safeCamera(lookAt,desired);
+ camera.position.lerp(safeTarget,Math.min(1,delta*10));
+ camera.position.copy(safeCamera(lookAt,camera.position));
+ camera.lookAt(lookAt);paintMinimap(time);
  collectible.forEach((k,i)=>{k.group.rotation.y+=delta;k.group.position.y=1.6+Math.sin(time*2+i*2)*.15});
  portalMaterial.emissiveIntensity=1.2+Math.sin(time*2)*.25;
  renderer.render(scene,camera);
