@@ -1,31 +1,25 @@
-# JOBBY WORLD — Alpha 0.4
+# JOBBY WORLD — Alpha 0.5
+
+## Official JOBBY identity
+The intended mascot is the user's approved **white/cream creature with large dark-purple eyes and purple ears, horn and limb tips**. The lobby uses a crop from the user's own JOBBY Escape concept sheet, preserved as `public/world/assets/jobby-original.webp`.
+
+The older `JOBBY-3D-Viewer/models/JOBBY.glb` is a 3D study and **has not been approved as the accurate official JOBBY**. It is no longer displayed as JOBBY in the new game interface nor offered as a playable character. A faithful 3D rigged model will be needed to add JOBBY to the playable roster. Do not claim the current older GLB is the official avatar.
 
 ## Entry points
-- Main lobby: `/world/index.html` (modern mobile front page).
-- Solo escape game: `/world/play.html` (existing playable 3D world).
+- `/world/index.html`: mobile-first character collection / lobby / local leaderboard.
+- `/world/play.html`: existing solo 3D escape proof of concept.
 
-## Implemented
-- JOBBY is the first free playable 3D character. The original JOBBY GLB is read from the owner's separate **JOBBY-3D-Viewer** repository; its source was not duplicated or altered.
-- Two other free characters: Explorer and Ninja (three free total including JOBBY). Pug costs 60 demo points, Wizard costs 80, and Pirate costs 120.
-- Modern landing page, moderately sized character cards, separate **Characters** screen with rotating 3D previews, and a selectable character.
-- Avatar-card portraits are generated from the user's genuine GLB files the first time the gallery opens, and cached locally as small still WebP images to reduce repeated model downloads. JOBBY has an immediate official image fallback while its actual 3D thumbnail loads.
-- Points and avatar purchases persist via `localStorage` and are shared between the home screen and game on the same device.
-- Local leaderboard only: real scores recorded from completed escapes on this device; shows run time, avatar, and round point rewards. No fictitious global competitors.
-- Full 3D solo map with enlarged touch joystick, run/jump controls, wall-safe follow camera, camera controls, open-roof house, three keys, and exit.
-- Existing JOBBY site homepage and existing 3D viewer were **not** changed.
+## Available
+- Original JOBBY artwork visible on the home page and as the first character card; the card opens the official image and a disclosure that a matching 3D model is not ready.
+- Three free *playable* 3D characters: Explorer, Ninja and Pug, and two prototype unlockables Wizard (80) and Pirate (120) points.
+- Real GLB thumbnail previews generated only for the other playable characters and cached as small WebP images.
+- Touch controls, third-person camera, large map, house, three keys, gate, and a replayable solo challenge.
+- Points, unlocks, and local leaderboard are browser-local prototype data, not global or token-backed.
 
-## Important limitations
-- The world game, GLB viewer, and caching behavior have not been confirmed in a real phone browser end-to-end.
-- First visit to the character gallery downloads the 3D assets progressively to generate portraits; this may take time on weak mobile networks.
-- Multiplayer rooms, global rankings, fraud-proof server points, Telegram identity syncing, and token rewards are NOT implemented.
-- Current avatar prices and points are purely prototype/game balancing values and are not real-world rewards.
+## Limitations
+- Matching playable 3D JOBBY, server-based multiplayer, online/global leaderboard, and Telegram token rewards are not yet available.
+- The deployed site at https://jobby.lol/world/index.html?v=7 may update according to the website's deployment pipeline. GitHub source changes alone do not guarantee the live deployment.
+- Never substitute an unrelated human-like character or approximate creature model for official JOBBY.
 
-## Troubleshooting
-- Open `https://jobby.lol/world/index.html?v=6` on Chrome for Android.
-- If an older page is cached, use the URL with `?v=6`.
-- To test the selected avatar, tap a character portrait to preview, tap Select/Unlock, then tap Play.
-- 3D model loading requires network access to GitHub's public raw file server for JOBBY, and the local static host for other character models.
-
-## Next
-- Validate the home screen, JOBBY animation playback, and PNG/WebP portrait rendering on phone.
-- Add cooperative maze gameplay server with private room codes, persistence, and authenticated online leaderboard.
+## Repository isolation
+The main jobby-site homepage and old JOBBY-3D-Viewer files remain unchanged.
