@@ -16,7 +16,7 @@ const AVATARS = [
   {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
 const MODEL_BASE="./models/";
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
+const JOBBY_MODEL="./models/JOBBY.glb";
 const MODEL_SIZES={JOBBY:1941348,Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
 let saved={points:0,unlocked:[],best:0,selected:"JOBBY"};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
