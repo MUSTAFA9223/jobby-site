@@ -6,7 +6,7 @@
 
 ## Implemented
 - JOBBY is the first free playable 3D character. The original JOBBY GLB is read from the owner's separate **JOBBY-3D-Viewer** repository; its source was not duplicated or altered.
-- Three other free characters: Explorer, Ninja, Pug. Wizard costs 80 demonstration points and Pirate costs 120.
+- Two other free characters: Explorer and Ninja (three free total including JOBBY). Pug costs 60 demo points, Wizard costs 80, and Pirate costs 120.
 - Modern landing page, moderately sized character cards, separate **Characters** screen with rotating 3D previews, and a selectable character.
 - Avatar-card portraits are generated from the user's genuine GLB files the first time the gallery opens, and cached locally as small still WebP images to reduce repeated model downloads. JOBBY has an immediate official image fallback while its actual 3D thumbnail loads.
 - Points and avatar purchases persist via `localStorage` and are shared between the home screen and game on the same device.
