@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id);
 const OFFICIAL_JOBBY="./assets/jobby-original.webp";
 const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
 const AVATARS=[
- {id:"JOBBY",name:"JOBBY 3D (تجريبي)",cost:0,size:1941348},
+ {id:"JOBBY",name:"JOBBY 3D (Prototype)",cost:0,size:1941348},
  {id:"Casual_Male",name:"Explorer",cost:0,size:1238384},
  {id:"Ninja_Male",name:"Ninja",cost:0,size:1058660},
  {id:"Pug",name:"Pug",cost:0,size:1045324},
@@ -23,7 +23,7 @@ const owned=a=>a.cost===0||state.unlocked.includes(a.id);
 if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
 try{if(!localStorage.getItem("jobby-world-alpha06-default")){if(state.selected==="Casual_Male")state.selected="JOBBY";localStorage.setItem(STORAGE,JSON.stringify(state));localStorage.setItem("jobby-world-alpha06-default","1")}}catch(e){}
 const save=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){}};
-const money=n=>new Intl.NumberFormat("ar").format(n);
+const money=n=>new Intl.NumberFormat("en-US").format(n);
 const latestScores=()=>{try{const values=JSON.parse(localStorage.getItem(HISTORY)||"[]");return Array.isArray(values)?values:[]}catch(e){return []}};
 let activeView="home",currentModel=null,viewer=null,orbit=null,scene=null,camera=null,mixer=null,animationFrame=0,oldTime=0,previewRequest=0,rotTimer=null;
 let portraitsBusy=false;
@@ -36,7 +36,7 @@ function updateStats(){
  $("myWins").textContent=latestScores().length;
  $("leaderWins").textContent=latestScores().length;
  const best=latestScores().sort((a,b)=>Number(a.seconds)-Number(b.seconds))[0];
- $("leaderBest").textContent=best?Math.round(best.seconds)+"ث":"—";
+ $("leaderBest").textContent=best?Math.round(best.seconds)+"s":"—";
  $("leaderPoints").textContent=money(state.points);
 }
 function showView(id){
@@ -51,13 +51,13 @@ function showView(id){
 function renderScores(){
  const root=$("scoreboard");root.replaceChildren();
  const scores=latestScores().sort((a,b)=>Number(a.seconds)-Number(b.seconds)).slice(0,20);
- if(!scores.length){const p=document.createElement("div");p.className="empty";p.textContent="لا توجد جولات مسجلة بعد. العب مرحلة الهروب الأولى، ثم ستظهر نتيجتك هنا.";root.append(p);return}
+ if(!scores.length){const p=document.createElement("div");p.className="empty";p.textContent="No escapes recorded yet. Complete your first solo escape to appear on this leaderboard.";root.append(p);return}
  for(const [i,entry] of scores.entries()){
   const item=document.createElement("div");item.className="score";
   const rank=document.createElement("span");rank.className="rank";rank.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":"#"+(i+1);
   const who=document.createElement("div");who.className="who";
-  const name=document.createElement("b");name.textContent="أنت · "+(entry.character||"JOBBY");
-  const date=document.createElement("small");date.textContent=new Date(Number(entry.date)||Date.now()).toLocaleDateString("ar")+" · "+Math.round(Number(entry.seconds)||0)+" ثانية";
+  const name=document.createElement("b");name.textContent="You · "+(entry.character||"JOBBY");
+  const date=document.createElement("small");date.textContent=new Date(Number(entry.date)||Date.now()).toLocaleDateString("en-US")+" · "+Math.round(Number(entry.seconds)||0)+" sec";
   const points=document.createElement("span");points.className="pts";points.textContent="+"+money(Number(entry.points)||50);
   who.append(name,date);item.append(rank,who,points);root.append(item);
  }
@@ -72,14 +72,14 @@ function renderCards(){
  const root=$("characterGrid");root.replaceChildren();
  for(const a of AVATARS){
   const item=document.createElement("button");item.type="button";item.className="avatarCard"+(state.selected===a.id?" selected":"");item.dataset.id=a.id;
-  const img=document.createElement("img");img.className="portrait";img.alt="صورة "+a.name;
+  const img=document.createElement("img");img.className="portrait";img.alt="Portrait of "+a.name;
   img.src=cachedPortrait(a)||placeholder(a.name);
   img.addEventListener("error",()=>{img.src=placeholder(a.name)},{once:true});
   const name=document.createElement("span");name.className="name";name.textContent=a.name;
-  const meta=document.createElement("span");meta.className="meta";meta.textContent=a.id==="JOBBY"?"✓ مجانية · 3D تجريبي":owned(a)?"✓ متاحة":"🪙 "+money(a.cost)+" نقطة";
+  const meta=document.createElement("span");meta.className="meta";meta.textContent=a.id==="JOBBY"?"✓ FREE · 3D prototype":owned(a)?"✓ AVAILABLE":"🪙 "+money(a.cost)+" points";
   item.append(img,name,meta);
   if(!owned(a)){const lock=document.createElement("span");lock.className="lock";lock.textContent="🔒";item.append(lock)}
-  if(state.selected===a.id){const chosen=document.createElement("span");chosen.className="isSelected";chosen.textContent="المختارة";item.append(chosen)}
+  if(state.selected===a.id){const chosen=document.createElement("span");chosen.className="isSelected";chosen.textContent="SELECTED";item.append(chosen)}
   item.onclick=()=>openPreview(a);root.append(item);
  }
 }
@@ -97,7 +97,7 @@ async function generatePortraits(){
   for(const a of AVATARS){
    if(activeView!=="characters")break;
    if(cachedPortrait(a))continue;
-   $("thumbNote").textContent="إعداد صورة "+a.name+" من المجسم الأصلي… (أول زيارة فقط)";
+   $("thumbNote").textContent="Creating portrait for "+a.name+" from its 3D model… (first visit only)";
    try{
     const gltf=await loader.loadAsync(urlOf(a));
     const rendered=makeScene(gltf.scene,36);
@@ -111,8 +111,8 @@ async function generatePortraits(){
     disposeModel(gltf.scene);
    }catch(e){console.warn("Portrait not available:",a.id,e)}
   }
-  $("thumbNote").textContent="معرض الشخصيات: اضغط أي بطاقة لمشاهدة المجسم الأصلي 3D وتدويره.";
- }catch(e){console.warn("No portrait renderer",e);$("thumbNote").textContent="قد لا يدعم هذا الهاتف إنشاء صور الشخصيات؛ يمكن معاينتها 3D عند الضغط على البطاقة."}
+  $("thumbNote").textContent="CHARACTER GALLERY: Tap a card to view and rotate its 3D model.";
+ }catch(e){console.warn("No portrait renderer",e);$("thumbNote").textContent="Your device may not support portrait rendering. Tap a card to view the 3D model."}
  finally{renderer?.dispose();portraitsBusy=false}
 }
 function makeScene(model,fov=36){
@@ -148,14 +148,14 @@ async function openPreview(a){
  $("previewModal").classList.remove("hidden");
  $("previewName").textContent=a.name;
  $("previewStage").replaceChildren();
- const spinner=document.createElement("span");spinner.id="previewLoading";spinner.className="soft";spinner.textContent="تحميل النموذج 3D ("+(a.size/1048576).toFixed(1)+" MB)…";$("previewStage").append(spinner);
- $("previewText").textContent="اسحب الشخصية لتدويرها · يمكن تغيير زاوية الرؤية";
+ const spinner=document.createElement("span");spinner.id="previewLoading";spinner.className="soft";spinner.textContent="Loading 3D model ("+(a.size/1048576).toFixed(1)+" MB)…";$("previewStage").append(spinner);
+ $("previewText").textContent="Drag to rotate · Pinch to zoom";
  const action=$("previewAction");
  function actionLabel(){
   action.disabled=false;
-  if(owned(a)){action.textContent=state.selected===a.id?"✓ الشخصية المختارة":"اختيار هذه الشخصية"}
-  else if(state.points<a.cost){action.textContent="🔒 تحتاج "+money(a.cost-state.points)+" نقطة إضافية";action.disabled=true}
-  else action.textContent="🔓 فتح الشخصية بـ "+money(a.cost)+" نقطة";
+  if(owned(a)){action.textContent=state.selected===a.id?"✓ SELECTED HERO":"SELECT THIS HERO"}
+  else if(state.points<a.cost){action.textContent="🔒 Need "+money(a.cost-state.points)+" more points";action.disabled=true}
+  else action.textContent="🔓 Unlock for "+money(a.cost)+" points";
  }
  actionLabel();
  action.onclick=()=>{
@@ -187,18 +187,18 @@ async function openPreview(a){
    animationFrame=requestAnimationFrame(frame);
   };
   animationFrame=requestAnimationFrame(frame);
- }catch(e){console.error(e);$("previewStage").textContent="تعذر فتح النموذج. قد يكون الإنترنت ضعيفًا أو النموذج غير متاح."}
+ }catch(e){console.error(e);$("previewStage").textContent="Could not load this 3D model. Check your internet connection and try again."}
 }
 function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./play.html?autostart=1&v=7";
+ location.href="./play.html?autostart=1&v=8";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{alert("اللعب الجماعي ليس متاحًا في النسخة الحالية. سنفعله بعد تجهيز الخادم والغرف الخاصة.")};
+$("multiMode").onclick=()=>{alert("Multiplayer is not available in this build. Private rooms require a real-time game server.")};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
