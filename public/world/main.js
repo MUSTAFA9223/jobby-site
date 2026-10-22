@@ -205,7 +205,7 @@ function complete(){
  persist();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("فزت بـ 50 نقطة!");
 }
 $("startButton").onclick=start;
-$("againButton").onclick=()=>{reset();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
+$("againButton").onclick=()=>{reset();roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
 $("charactersButton").onclick=()=>{location.href="./index.html?v=5#characters"};
 $("menuButton").onclick=()=>{location.href="./index.html?v=5"};
 const stick=$("stick"),knob=$("knob");
