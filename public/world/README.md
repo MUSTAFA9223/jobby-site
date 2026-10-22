@@ -1,28 +1,31 @@
-# JOBBY WORLD — Alpha 0.3
+# JOBBY WORLD — Alpha 0.4
 
-Independent browser-based 3D exploration prototype hosted in the JOBBY website repository at `public/world/`.
-Changes to this directory do not overwrite the website home page or the older 3D character viewer.
+## Entry points
+- Main lobby: `/world/index.html` (modern mobile front page).
+- Solo escape game: `/world/play.html` (existing playable 3D world).
 
 ## Implemented
-- Five self-contained, ~1–1.4 MB GLB character models loaded individually (no 21 MB ZIP download).
-- Original Idle, Walk, Run, and Jump animations; touch joystick and mobile run/jump actions.
-- 56 × 56 courtyard, walk-in open-roof house with an internal passage, paths, props, trees, and three collectible keys.
-- Enlarged mobile joystick and run/jump buttons, unrestricted 360° horizontal camera, pinch zoom, reset camera and zoom controls.
-- Third-person camera checks the walls before moving behind them. Nearby occluding walls turn semi-transparent.
-- Toggleable overhead minimap showing house, obstacles, keys, player, direction and EXIT.
-- Finish the round by collecting all three keys and reaching the north gate; test points and avatar unlocks stay in localStorage.
+- JOBBY is the first free playable 3D character. The original JOBBY GLB is read from the owner's separate **JOBBY-3D-Viewer** repository; its source was not duplicated or altered.
+- Three other free characters: Explorer, Ninja, Pug. Wizard costs 80 demonstration points and Pirate costs 120.
+- Modern landing page, moderately sized character cards, separate **Characters** screen with rotating 3D previews, and a selectable character.
+- Avatar-card portraits are generated from the user's genuine GLB files the first time the gallery opens, and cached locally as small still WebP images to reduce repeated model downloads. JOBBY has an immediate official image fallback while its actual 3D thumbnail loads.
+- Points and avatar purchases persist via `localStorage` and are shared between the home screen and game on the same device.
+- Local leaderboard only: real scores recorded from completed escapes on this device; shows run time, avatar, and round point rewards. No fictitious global competitors.
+- Full 3D solo map with enlarged touch joystick, run/jump controls, wall-safe follow camera, camera controls, open-roof house, three keys, and exit.
+- Existing JOBBY site homepage and existing 3D viewer were **not** changed.
 
 ## Important limitations
-- Alpha version. The full experience has **not** been manually tested on the user's specific phone.
-- Online multiplayer, monster AI, secure points/leaderboard, account synchronization, other game modes and Telegram account authentication are **not yet implemented**.
-- Browser cached versions can be bypassed via `/world/index.html?v=4`.
-- The house is a basic playable blockout, not final environment art.
+- The world game, GLB viewer, and caching behavior have not been confirmed in a real phone browser end-to-end.
+- First visit to the character gallery downloads the 3D assets progressively to generate portraits; this may take time on weak mobile networks.
+- Multiplayer rooms, global rankings, fraud-proof server points, Telegram identity syncing, and token rewards are NOT implemented.
+- Current avatar prices and points are purely prototype/game balancing values and are not real-world rewards.
 
-## Technical
-- Three.js 0.169.0 (ES module import map), GLTFLoader, standalone static assets.
-- Individual models are in `public/world/models/*.glb`.
-- Files: `index.html` for UI and touch controls, `main.js` for game logic.
-- This code is maintained by the repository owner. Character pack licensing should be independently checked before commercial use.
+## Troubleshooting
+- Open `https://jobby.lol/world/index.html?v=5` on Chrome for Android.
+- If an older page is cached, use the URL with `?v=5`.
+- To test the selected avatar, tap a character portrait to preview, tap Select/Unlock, then tap Play.
+- 3D model loading requires network access to GitHub's public raw file server for JOBBY, and the local static host for other character models.
 
-## Next proposed milestone
-Build a lightweight indoor puzzle (switches or keys), proper exit-door interaction, a patrolling monster, and then a server-authoritative online co-op proof of concept for two players before scaling to six.
+## Next
+- Validate the home screen, JOBBY animation playback, and PNG/WebP portrait rendering on phone.
+- Add cooperative maze gameplay server with private room codes, persistence, and authenticated online leaderboard.
