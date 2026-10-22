@@ -4,7 +4,7 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 const $=id=>document.getElementById(id);
 const OFFICIAL_JOBBY="./assets/jobby-original.webp";
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
+const JOBBY_MODEL="./models/JOBBY.glb";
 const AVATARS=[
  {id:"JOBBY",name:"JOBBY 3D (Prototype)",cost:0,size:1941348},
  {id:"Casual_Male",name:"Explorer",cost:0,size:1238384},
