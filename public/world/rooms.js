@@ -39,6 +39,7 @@ function connect(){
   $("code").textContent=code;status("Connecting to "+code+"…");
   const params=new URLSearchParams({id,name:$("name").value.trim().slice(0,18)||"Player",avatar:$("avatar").value});
   localStorage.setItem("jobby-world-display-name",$("name").value.trim().slice(0,18)||"Player");
+  sessionStorage.setItem("jobby-world-room-avatar",$("avatar").value);
   const protocol=location.protocol==="https:"?"wss:":"ws:";
   ws=new WebSocket(protocol+"//"+location.host+"/api/world/rooms/"+code+"/socket?"+params);
   ws.onmessage=ev=>{
