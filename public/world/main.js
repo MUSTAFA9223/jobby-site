@@ -206,8 +206,8 @@ function complete(){
 }
 $("startButton").onclick=start;
 $("againButton").onclick=()=>{reset();roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
-$("charactersButton").onclick=()=>{location.href="./index.html?v=5#characters"};
-$("menuButton").onclick=()=>{location.href="./index.html?v=5"};
+$("charactersButton").onclick=()=>{location.href="./index.html?v=6#characters"};
+$("menuButton").onclick=()=>{location.href="./index.html?v=6"};
 const stick=$("stick"),knob=$("knob");
 function onStick(e){
  const rect=stick.getBoundingClientRect();
