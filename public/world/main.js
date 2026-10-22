@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 const AVATARS = [
   {id:"Casual_Male",name:"Explorer",icon:"🧑",cost:0},
   {id:"Ninja_Male",name:"Ninja",icon:"🥷",cost:0},
-  {id:"Pug",name:"Pug",icon:"🐶",cost:60},
+  {id:"Pug",name:"Pug",icon:"🐶",cost:0},
   {id:"Wizard",name:"Wizard",icon:"🧙",cost:80},
   {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
@@ -348,5 +348,5 @@ function frame(){
  renderer.render(scene,camera);
 }
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-roster();wallet();$("selectedInfo").textContent="الشخصية المختارة: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");frame();
+roster();wallet();$("selectedInfo").textContent="الشخصية المختارة: "+(AVATARS.find(a=>a.id===chosen)?.name||"Explorer");frame();
 if(new URLSearchParams(location.search).has("autostart"))start();
