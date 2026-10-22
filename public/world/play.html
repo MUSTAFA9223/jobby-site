@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - تجربة أولية ثلاثية الأبعاد بشخصيات أصلية، تحكم باللمس ومتاهة صغيرة">
-  <title>JOBBY WORLD | Alpha 0.5</title>
+  <title>JOBBY WORLD | Alpha 0.6</title>
   <style>
     :root{color-scheme:dark;--bg:#11112c;--deep:#090d26;--line:rgba(203,201,255,.22);--purple:#9974ff;--mint:#60f5c3;--yellow:#ffd76a;--ink:#f5f4ff}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ink)}
@@ -58,20 +58,20 @@
   <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="خريطة المنطقة"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 خلفي</button><button id="cameraZoom" class="cameraButton">🔍 قرب / بعد</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>جري</button><button id="jump" class="act"><span class="emoji">⬆</span>قفز</button></div><div id="hint">اسحب للتدوير 360° · بإصبعين للتقريب</div></div>
   <div id="menu">
     <div class="glass panel">
-      <div class="eyebrow">Mobile 3D prototype · Alpha 0.5</div>
+      <div class="eyebrow">Mobile 3D prototype · Alpha 0.6</div>
       <div class="headline">JOBBY <em>WORLD</em></div>
       <div class="subtitle">اختبر شخصياتك الحقيقية داخل عالم ثلاثي الأبعاد<br>استكشف ساحة أكبر وادخل البيت وابحث عن المفاتيح الثلاثة للهروب</div>
-      <div class="secTitle">اختر شخصيتك <span style="color:#a5a3d6;font-weight:400">— 3 مجانية و2 يمكن فتحهما بالنقاط</span></div>
+      <div class="secTitle">اختر شخصيتك <span style="color:#a5a3d6;font-weight:400">— 4 مجانية و2 يمكن فتحهما بالنقاط</span></div>
       <div class="avatars" id="avatars"></div>
       <div id="selectedInfo" style="font-size:11px;margin-top:8px;color:#d1c7ff;min-height:18px"></div>
       <button class="mainBtn" id="startButton">▶ ابدأ تجربة اللعب الفردي</button>
       <button class="mainBtn secondaryBtn disabled" disabled>👥 اللعب الجماعي — في المرحلة القادمة</button>
       <div id="loadBar"><div id="barProgress"></div></div>
-      <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">جاهز — سيتم تحميل شخصيتك فقط (نحو 1 MB)</div>
+      <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">جاهز — سيتم تحميل الشخصية المختارة فقط (JOBBY نحو 1.9 MB)</div>
       <p class="notice">هذه نسخة <strong>تجريبية فردية</strong> للحركة واللمس وليست اللعبة النهائية. تُحفظ النقاط على هذا الجهاز مؤقتًا فقط، ولا توجد غرف جماعية أو لوحة صدارة عالمية بعد.</p>
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">نجحت في الهروب!</div><p class="subtitle">وصلت إلى البوابة بعد جمع المفاتيح. ربحت <b style="color:#ffd76a">50 نقطة</b> في التجربة الأولى.</p><button class="mainBtn" id="againButton">↻ إعادة الجولة</button><button class="mainBtn secondaryBtn" id="charactersButton">اختيار شخصية أخرى</button></div></div>
-  <script type="module" src="./main.js?v=6"></script>
+  <script type="module" src="./main.js?v=7"></script>
 </body>
 </html>
