@@ -1,4 +1,4 @@
-# JOBBY WORLD — Alpha 0.1
+# JOBBY WORLD — Alpha 0.2
 
 This folder is an independent JOBBY WORLD prototype. It does not replace the JOBBY website, the viewer, or any previous game.
 
@@ -9,11 +9,13 @@ This folder is an independent JOBBY WORLD prototype. It does not replace the JOB
 - Three free characters and two unlocked with temporary points.
 - Solo gameplay and local points using localStorage (not a secure economy).
 
-## Character loading
-Models are loaded on demand from the user-owned archive at:
-https://github.com/MUSTAFA9223/JOBBY-3D-Viewer/blob/main/characters.zip
+## Faster character loading (v0.2)
+Each of the five animated models is now stored as an independent, self-contained binary GLB in `public/world/models/` (1.0–1.4 MB each). The initial character selection downloads only that model, not the original 21 MB ZIP. This also fixes the former glTF-loader issue when external resources in the ZIP were unavailable to the loader.
 
-This keeps the prototype in one directory without duplicating the 21MB archive, but **the first visit downloads about 21MB**, and requires the archive's URL to remain available. In a future optimization, publish individual compressed GLB models to avoid downloading all 52 characters.
+- Models: Casual_Male.glb, Ninja_Male.glb, Pug.glb, Wizard.glb, Pirate_Female.glb.
+- Loading progress is shown while downloading.
+- Models use normal browser HTTP caching.
+- The source `characters.zip` remains in the separate JOBBY-3D-Viewer repository and is not deleted.
 
 ## Not yet available
 Online multiplayer, global leaderboard, real-world rewards, server-backed character ownership, maze levels, monster AI and Telegram Mini App authentication.

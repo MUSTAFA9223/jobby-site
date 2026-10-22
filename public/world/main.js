@@ -11,8 +11,8 @@ const AVATARS = [
   {id:"Wizard",name:"Wizard",icon:"🧙",cost:80},
   {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
-const ZIP_URL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/characters.zip";
-let archivePromise;
+const MODEL_BASE="./models/";
+const MODEL_SIZES={Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
 let saved={points:0,unlocked:[],best:0};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
 const persist=()=>{try{localStorage.setItem("jobby-world-v01",JSON.stringify(saved))}catch(e){}};
@@ -91,25 +91,44 @@ function roster(){
  }
 }
 async function loadCharacter(id){
- loading=true;currentRequested=id;setStatus("تحميل حزمة الشخصيات لأول مرة (21 MB تقريبًا)…");
- $("barProgress").style.width="12%";
+ loading=true;currentRequested=id;
+ const modelSize=MODEL_SIZES[id]||1200000;
+ const modelName=AVATARS.find(a=>a.id===id)?.name||id;
+ $("barProgress").style.width="5%";
+ setStatus("جار تحميل "+modelName+" فقط ("+(modelSize/1048576).toFixed(1)+" MB)…");
  try{
-  if(!window.JSZip)throw new Error("JSZip not loaded");
-  if(!archivePromise)archivePromise=fetch(ZIP_URL,{mode:"cors"}).then(r=>{
-   if(!r.ok)throw new Error("Cannot fetch character archive HTTP "+r.status);
-   return r.arrayBuffer();
-  }).then(bytes=>window.JSZip.loadAsync(bytes)).catch(err=>{archivePromise=null;throw err});
-  const zip=await archivePromise;
-  $("barProgress").style.width="64%";
-  const entry=zip.file("glTF/"+id+".gltf");
-  if(!entry)throw new Error("Character missing: "+id);
-  const gltfText=await entry.async("string");
-  const gltf=await new Promise((resolve,reject)=>loader.parse(gltfText,"",resolve,reject));
+  // Individual self-contained GLB: no 21MB ZIP, no missing external glTF files.
+  const gltf=await loader.loadAsync(MODEL_BASE+encodeURIComponent(id)+".glb",event=>{
+   if(id!==currentRequested)return;
+   if(event.lengthComputable&&event.total>0){
+    const ratio=Math.max(0,Math.min(1,event.loaded/event.total));
+    $("barProgress").style.width=Math.round(7+ratio*78)+"%";
+    setStatus("تحميل "+modelName+": "+Math.round(ratio*100)+"%");
+   }else if(event.loaded){
+    const ratio=Math.min(.92,event.loaded/modelSize);
+    $("barProgress").style.width=Math.round(7+ratio*78)+"%";
+    setStatus("تحميل "+modelName+": "+(event.loaded/1048576).toFixed(1)+" MB");
+   }
+  });
   if(id!==currentRequested)return false;
-  if(avatar)playerGroup.remove(avatar);
+  $("barProgress").style.width="92%";
+  setStatus("تحضير الشخصية والحركات…");
+  if(avatar){
+   playerGroup.remove(avatar);
+   avatar.traverse(node=>{
+    if(node.isMesh){
+     node.geometry?.dispose();
+     const mats=Array.isArray(node.material)?node.material:[node.material];
+     for(const mat of mats){
+      if(!mat)continue;
+      mat.map?.dispose();mat.normalMap?.dispose();mat.dispose();
+     }
+    }
+   });
+  }
   if(mixer)mixer.stopAllAction();
   avatar=gltf.scene;
-  avatar.traverse(n=>{if(n.isMesh){n.castShadow=true;n.receiveShadow=true}});
+  avatar.traverse(n=>{if(n.isMesh){n.castShadow=true;n.receiveShadow=false;if(n.isSkinnedMesh)n.frustumCulled=false}});
   const bbox=new THREE.Box3().setFromObject(avatar);
   const size=bbox.getSize(new THREE.Vector3());
   const scale=1.75/Math.max(.01,size.y);
@@ -118,8 +137,15 @@ async function loadCharacter(id){
   mixer=new THREE.AnimationMixer(avatar);clips={};
   for(const clip of gltf.animations)clips[clip.name]=mixer.clipAction(clip);
   currentClip="";animate("Idle");
-  loading=false;$("barProgress").style.width="100%";setStatus("الشخصية جاهزة ✓");return true;
- }catch(e){console.error(e);loading=false;setStatus("تعذر تحميل الشخصيات، حاول مجددًا");$("barProgress").style.width="8%";toast("مشكلة اتصال أو تحميل");return false}
+  loading=false;$("barProgress").style.width="100%";
+  setStatus("جاهزة ✓ — "+modelName);
+  return true;
+ }catch(e){
+  console.error("Character load failed:",id,e);
+  loading=false;$("barProgress").style.width="0%";
+  setStatus("تعذر تحميل "+modelName+" — تحقق من الإنترنت واضغط ابدأ للمحاولة مجددًا");
+  toast("تعذر تحميل الشخصية. جرّب مرة أخرى");return false;
+ }
 }
 function animate(name){
  if(!mixer||!clips[name]||currentClip===name)return;
