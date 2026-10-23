@@ -10,6 +10,7 @@ on:
     paths:
       - 'worker.js'
       - 'player-store.js'
+      - 'warehouse-room.js'
       - 'wrangler.toml'
       - 'public/world/**'
       - 'tests/**'
@@ -33,6 +34,12 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: |
+          node --check warehouse-room.js
+          node --check public/world/warehouse-layout.js
+          node --check public/world/warehouse-rules.js
+          node --check public/world/warehouse-scene.js
+          node --check public/world/warehouse-game.js
+          node --check public/world/warehouse-plan.js
           node --check player-store.js
           node --check public/world/player-profile.js
           node --check worker.js
@@ -56,3 +63,6 @@ jobs:
 
       - name: Test persistent player profiles and leaderboard
         run: node tests/world-players-runtime.mjs .build/world/worker.js
+
+      - name: Test warehouse puzzles and saved co-op rewards with twelve players
+        run: node tests/world-warehouse-runtime.mjs .build/world/worker.js

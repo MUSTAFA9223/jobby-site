@@ -1,7 +1,7 @@
-import {saveSelection,beginPlayerRun,recordPlayerTask,finishPlayerRun,syncProfile} from "./player-profile.js?v=1";
+import {saveSelection,beginPlayerRun,recordPlayerTask,finishPlayerRun,syncProfile} from "./player-profile.js?v=2";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { connectCoop } from "./multiplayer.js?v=5";
+import { connectCoop } from "./multiplayer.js?v=6";
 import { safeCameraPosition } from "./camera-occlusion.js?v=2";
 import * as house from "./house-layout.js";
 import {buildHouse} from "./house-scene.js";

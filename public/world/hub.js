@@ -1,4 +1,4 @@
-import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=1";
+import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=2";
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -222,12 +222,12 @@ function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./house.html?autostart=1&v=1";
+ location.href="./warehouse.html?autostart=1&v=1";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{location.href="./rooms.html?v=4"};
+$("multiMode").onclick=()=>{location.href="./rooms.html?map=warehouse-v1"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape"){closePreview();if(!$("playerModal").classList.contains("hidden"))closePlayer()}});

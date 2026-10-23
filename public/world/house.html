@@ -84,7 +84,7 @@
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">ESCAPE COMPLETE!</div><p class="subtitle">You completed an exit task and escaped the Big House. You earned <b style="color:#ffd76a">50 points</b> for escaping.</p><button class="mainBtn" id="againButton">↻ PLAY AGAIN</button><button class="mainBtn secondaryBtn" id="charactersButton">CHOOSE ANOTHER HERO</button></div></div>
   <script type="module">
-    import("./house-game.js?v=3").catch(error=>{
+    import("./house-game.js?v=4").catch(error=>{
       console.error(error);document.getElementById("loadStatus").textContent="3D could not start in this browser. Try Chrome with graphics enabled.";
       const a=document.createElement("a");a.href="./house-plan.html";a.className="mainBtn secondaryBtn";a.textContent="VIEW THE BIG HOUSE MAP";document.querySelector("#menu .panel").append(a);
     });

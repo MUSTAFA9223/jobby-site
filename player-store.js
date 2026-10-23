@@ -22,6 +22,12 @@ export async function playerApi(request,env){
   headers.set("x-player-key",await digest("JOBBY:PLAYER:"+token));
  }
  headers.delete("authorization");
+ if(url.pathname==="/api/world/profile/link"&&request.method==="POST"){
+  let body;try{body=await request.json();}catch{return reply({error:"Invalid JSON."},400);}
+  if(!/^[a-zA-Z0-9_-]{12,64}$/.test(body?.session||""))return reply({error:"Invalid room session."},400);
+  headers.delete("content-length");
+  return env.WORLD_PLAYERS.get(env.WORLD_PLAYERS.idFromName("players-v1")).fetch(new Request(internal,{method:"POST",headers,body:JSON.stringify({session:(await digest("JOBBY-WORLD:SESSION:"+body.session)).slice(0,32)})}));
+ }
  return env.WORLD_PLAYERS.get(env.WORLD_PLAYERS.idFromName("players-v1")).fetch(new Request(internal,{method:request.method,headers,body:request.method==="POST"?request.body:undefined}));
 }
 
@@ -29,6 +35,8 @@ export class WorldPlayers extends DurableObject{
  constructor(ctx,env){
   super(ctx,env);this.sql=ctx.storage.sql;
   this.sql.exec(`CREATE TABLE IF NOT EXISTS players (key TEXT PRIMARY KEY,id TEXT UNIQUE,name TEXT,state TEXT,earned INTEGER DEFAULT 0,wins INTEGER DEFAULT 0,best REAL,created INTEGER)`);
+  this.sql.exec("CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,player TEXT,created INTEGER)");
+  this.sql.exec("CREATE TABLE IF NOT EXISTS coop_awards(player TEXT,round TEXT,PRIMARY KEY(player,round))");
   this.sql.exec("CREATE INDEX IF NOT EXISTS player_rank ON players(earned DESC,wins DESC,best ASC,id ASC)");
   this.sql.exec(`CREATE TABLE IF NOT EXISTS runs (player TEXT,id TEXT,map TEXT,started INTEGER,tasks TEXT DEFAULT '[]',finished INTEGER DEFAULT 0,ranked INTEGER DEFAULT 1,PRIMARY KEY(player,id))`);
  }
@@ -37,6 +45,22 @@ export class WorldPlayers extends DurableObject{
  async fetch(request){
   const path=new URL(request.url).pathname,key=request.headers.get("x-player-key");
   if(path==="/api/world/leaderboard"&&request.method==="GET")return reply({players:this.sql.exec("SELECT id,name,earned,wins,best FROM players WHERE earned>0 ORDER BY earned DESC,wins DESC,best ASC,id ASC LIMIT 50").toArray()});
+  if(path==="/_room_reward"&&request.method==="POST"){
+   const body=await request.json();
+   if(body.map!=="warehouse-v1"||!Array.isArray(body.players)||body.players.length>12||!/^[a-f0-9-]{36}$/.test(body.round))return reply({error:"Invalid round."},400);
+   return this.ctx.storage.transactionSync(()=>{
+    for(const a of body.players){
+     const session=this.sql.exec("SELECT player FROM sessions WHERE id=?",a.session).toArray()[0];if(!session)continue;
+     const p=this.get(session.player);if(!p)continue;
+     if(this.sql.exec("SELECT round FROM coop_awards WHERE player=? AND round=?",p.key,body.round).toArray().length)continue;
+     const points=50+bounded(a.tasks,3)*10+bounded(a.rescues,3)*5,state=JSON.parse(p.state),seconds=Math.max(1,(Date.now()-body.started)/1000);
+     state.points+=points;state.history=[{character:state.selected,map:body.map,coop:true,points,seconds,date:Date.now()},...(state.history||[])].slice(0,60);
+     this.sql.exec("INSERT INTO coop_awards(player,round) VALUES(?,?)",p.key,body.round);
+     this.sql.exec("UPDATE players SET state=?,earned=?,wins=?,best=? WHERE key=?",JSON.stringify(state),p.earned+points,p.wins+1,p.best===null?seconds:Math.min(p.best,seconds),p.key);
+    }
+    return reply({ok:true});
+   });
+  }
   if(!key)return reply({error:"Unauthorized."},401);
   if(request.method==="GET"){
    const p=this.get(key);return p?reply(this.view(p)):reply({error:"Player not found. Check your recovery code."},404);
@@ -57,6 +81,12 @@ export class WorldPlayers extends DurableObject{
     return reply(this.view(p));
    }
    if(!p)return reply({error:"Player not found."},404);
+   if(path==="/api/world/profile/link"){
+    if(!/^[a-f0-9]{32}$/.test(data.session||""))return reply({error:"Invalid session."},400);
+    this.sql.exec("INSERT OR REPLACE INTO sessions(id,player,created) VALUES(?,?,?)",data.session,key,Date.now());
+    this.sql.exec("DELETE FROM sessions WHERE created<?",Date.now()-2*86400000);
+    return reply({ok:true});
+   }
    if(path!=="/api/world/profile/sync")return reply({error:"Not found."},404);
    const actions=data.actions;if(!Array.isArray(actions)||actions.length>50)return reply({error:"Invalid action batch."},400);
    const state=JSON.parse(p.state),errors=[];
@@ -76,7 +106,7 @@ export class WorldPlayers extends DurableObject{
      // One active solo run per profile; repeat delivery never resets a round.
      if(!this.sql.exec("SELECT id FROM runs WHERE player=? AND id=?",key,a.run).toArray().length){
       this.sql.exec("DELETE FROM runs WHERE player=? AND finished=0",key);
-      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,a.map==="big-house-v1"?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
+      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,["big-house-v1","warehouse-v1"].includes(a.map)?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
      }
      continue;
     }
@@ -86,7 +116,7 @@ export class WorldPlayers extends DurableObject{
     if(a.type==="task"&&Number.isInteger(a.index)&&a.index>=0&&a.index<3&&!tasks.includes(a.index)){
      tasks.push(a.index);state.points+=10;p.earned+=10;this.sql.exec("UPDATE runs SET tasks=? WHERE player=? AND id=?",JSON.stringify(tasks),key,a.run);
     }
-    if(a.type==="finish"&&tasks.length>=(run.map==="classic"?3:1)){
+    if(a.type==="finish"&&tasks.length>=(run.map==="big-house-v1"?1:3)){
      // Server timestamps prevent a client from choosing a fake leaderboard time.
      const seconds=Math.max(1,(Date.now()-run.started)/1000);
      state.points+=50;p.earned+=50;p.wins++;if(run.ranked)p.best=p.best===null?seconds:Math.min(p.best,seconds);

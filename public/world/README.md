@@ -1,7 +1,14 @@
-# JOBBY WORLD — Alpha 0.11
+# JOBBY WORLD — Alpha 0.13
 
 One repository (`MUSTAFA9223/jobby-site`) and one official website (`jobby.lol`).
 The existing homepage, solo game, points and character unlocks are retained.
+
+## Warehouse Escape
+- `/world/warehouse.html`: default solo / 2–12 player level. `/world/warehouse-plan.html`: overview, puzzle routes and rules.
+- Decode a shuffled symbol sequence, retrieve and install a fuse using a timed shutter, then dispatch the matching cargo crate. Solve all three tasks and reach the east loading gate within six minutes.
+- The server validates co-op proximity, held interactions, inventory, rescue and completion. Wrong symbols, running and machines attract the chef. Caught players can be rescued or automatically leave the rescue bay after twelve seconds; solo catches return to the yard without clearing solved tasks.
+- Active or contributing warehouse teammates earn saved profile points once per round: 50 for escaping, 10 per puzzle contribution, and 5 per rescue (maximum three). Other maps keep their prior rewards.
+- Kenney Building Kit and Factory Kit assets are CC0; their licenses and separate textures are bundled in `models/warehouse`. Static meshes are batched for mobile. Solo, character selection, existing maps, private room codes, named-player recovery and compact voice controls remain available.
 
 ## Big House escape and chase
 - `/world/house.html`: new solo/co-op house map; `/world/house-plan.html`: interactive floor plan and routes.
@@ -10,7 +17,7 @@ The existing homepage, solo game, points and character unlocks are retained.
 - Cloudflare owns co-op task completion, hiding and chef state; all clients receive the same updates. The chef advances when gameplay poses arrive, and resumes patrol if a room instance wakes from hibernation. No extra server or subscription is used.
 - House furnishings and the chef are built from code-native low-poly meshes; no extra art pack download is required. Models, touch controls, voice and solo points keep the existing system.
 - Classic solo remains at `/world/play.html`; classic rooms can be created at `/world/rooms.html?map=classic`. Existing rooms keep classic behavior.
-- Solo task points are +10 each; an escape adds +50. Co-op still grants no points or real tokens.
+- Solo task points are +10 each; an escape adds +50. Big House co-op grants no points or real tokens.
 
 ## Play
 - `/world/`: character selection, solo escape and private co-op.
