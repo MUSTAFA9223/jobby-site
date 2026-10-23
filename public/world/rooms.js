@@ -6,7 +6,14 @@ if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",state="lobby",roster=[];
 let selected="JOBBY";
 try{selected=JSON.parse(localStorage.getItem("jobby-world-v01")||"{}").selected||"JOBBY"}catch{}
-$("avatar").value=Array.from($("avatar").options).some(o=>o.value===selected)?selected:"JOBBY";
+const progress=(()=>{try{return JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}catch{return {}}})();
+for(const option of $("avatar").options){
+ const costs={Wizard:80,Pirate_Female:120};
+ const price=costs[option.value]||0;
+ option.disabled=!!price && !(Array.isArray(progress.unlocked)&&progress.unlocked.includes(option.value));
+ if(option.disabled)option.textContent+=" (LOCKED)";
+}
+$("avatar").value=Array.from($("avatar").options).some(o=>o.value===selected&&!o.disabled)?selected:"JOBBY";
 $("name").value=localStorage.getItem("jobby-world-display-name")||"Player";
 const invite=()=>location.origin+"/world/rooms.html?code="+code;
 const showStatus=(s,err=false)=>{$("setupStatus").classList.remove("hidden");$("setupStatus").textContent=s;$("setupStatus").style.color=err?"#ffaaa9":"#bdebdc"};
