@@ -9,18 +9,21 @@ const send=(client,data)=>client.ws.send(typeof data==="object"&&!(data instance
 const audio=client=>client.messages.filter(m=>m instanceof ArrayBuffer);
 let result=0;
 try{
- const health=await(await mf.dispatchFetch(base+"/api/world/health")).json();assert.equal(health.version,"0.9");
+ const health=await(await mf.dispatchFetch(base+"/api/world/health")).json();assert.equal(health.version,"0.10");
  const response=await mf.dispatchFetch(base+"/api/world/rooms",{method:"POST",headers:{origin:base,"content-type":"application/json"},body:JSON.stringify({token:"voice-runtime-player-0-secret"})});
  assert.equal(response.status,201);const {code}=await response.json();
- for(let i=0;i<6;i++){
+ for(let i=0;i<12;i++){
   const response=await mf.dispatchFetch(`${base}/api/world/rooms/${code}/socket?token=voice-runtime-player-${i}-secret&avatar=JOBBY`,{headers:{upgrade:"websocket",origin:base}});
   assert.equal(response.status,101);const c={ws:response.webSocket,messages:[]};c.ws.accept();c.ws.addEventListener("message",e=>c.messages.push(typeof e.data==="string"?JSON.parse(e.data):e.data));clients.push(c);
   await wait(()=>c.messages.some(m=>m.type==="welcome"));
  }
+ const full=await mf.dispatchFetch(`${base}/api/world/rooms/${code}/socket?token=thirteenth-player-private-token&avatar=JOBBY`,{headers:{upgrade:"websocket",origin:base}});
+ assert.equal(full.status,409,"the thirteenth connection is refused");
+ assert.equal(clients[11].messages.find(m=>m.type==="welcome").maxPlayers,12);
  const frame=clientFrame(new Int16Array(VOICE_SAMPLES).fill(4096),7);
  send(clients[0],frame);await pause(100);assert.equal(audio(clients[1]).length,0);
  for(const c of clients)send(c,{type:"voice",joined:true,muted:false});
- await wait(()=>clients.every(c=>c.messages.filter(m=>m.type==="voice_state").length===6));
+ await wait(()=>clients.every(c=>c.messages.filter(m=>m.type==="voice_state").length===12));
  send(clients[0],frame);await wait(()=>clients.slice(1).every(c=>audio(c).length===1));
  const id=clients[0].messages.find(m=>m.type==="welcome").selfId;
  for(const c of clients.slice(1)){const packet=readFrame(audio(c)[0]);assert.equal(packet.id,id);assert.equal(packet.samples[0],.125);}
@@ -29,7 +32,7 @@ try{
  send(clients[0],frame);await pause(100);assert.equal(audio(clients[1]).length,1,"server enforces mute");
  send(clients[0],{type:"start"});await wait(()=>clients.every(c=>c.messages.some(m=>m.type==="start")));
  send(clients[0],{type:"pose",x:2,z:18,y:0,h:0,anim:"Walk"});await wait(()=>clients[1].messages.some(m=>m.type==="pose"&&m.x===2));
- console.log("PASS: workerd, six real WebSockets, opt-in audio relay, authenticated sender, exact received PCM, no self echo, server-side mute and gameplay messages coexist.");
+ console.log("PASS: workerd, twelve real WebSockets, opt-in audio relay, authenticated sender, exact received PCM, no self echo, server-side mute and gameplay messages coexist.");
 }catch(error){console.error(error);result=1;}
 finally{for(const c of clients)c.ws.close(1000,"Test complete");await Promise.race([mf.dispose(),pause(1000)]);}
 process.exit(result);

@@ -193,12 +193,12 @@ function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./play.html?autostart=1&v=11";
+ location.href="./play.html?autostart=1&v=12";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{location.href="./rooms.html?v=2"};
+$("multiMode").onclick=()=>{location.href="./rooms.html?v=3"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});

@@ -5,7 +5,7 @@ const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
 const AVATARS = new Set(["JOBBY","Casual_Male","Ninja_Male","Pug","Wizard","Pirate_Female"]);
 const KEYS = [[-20,-16],[19,14],[12,-20]];
-const MAX_PLAYERS = 6;
+const MAX_PLAYERS = 12;
 const TTL = 24*60*60*1000;
 // Public IDs are derived from private browser secrets. Never broadcast the secret itself.
 async function publicPlayerId(secret){
@@ -40,7 +40,7 @@ export default {
         "x-content-type-options":"nosniff"}
       });
     }
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.9",voice:"room-audio"},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.10",voice:"room-audio"},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){
@@ -111,12 +111,12 @@ export class WorldRoom extends DurableObject {
     const current=this.sockets();
     // Reconnecting in the same tab supersedes the old socket.
     const replacing=current.find(ws=>ws.deserializeAttachment()?.id===id);
-    if(!replacing && current.length>=MAX_PLAYERS)return json({error:"Room is full (6 players)."},409);
+    if(!replacing && current.length>=MAX_PLAYERS)return json({error:"Room is full (12 players)."},409);
     if(replacing)try{replacing.close(4001,"Reconnected from another tab")}catch{}
     const pair=new WebSocketPair(),[client,server]=Object.values(pair);
     this.ctx.acceptWebSocket(server);
-    const slot=Math.max(0,current.length%6);
-    const info={id,name,avatar,x:(slot%3-1)*1.5,z:18+Math.floor(slot/3)*1.5,y:0,h:0,anim:"Idle",last:0,voice:false,muted:true,expiresAt:room.createdAt+TTL};
+    const slot=Math.max(0,current.length%MAX_PLAYERS);
+    const info={id,name,avatar,x:(slot%4-1.5)*1.5,z:18+Math.floor(slot/4)*1.5,y:0,h:0,anim:"Idle",last:0,voice:false,muted:true,expiresAt:room.createdAt+TTL};
     server.serializeAttachment(info);
     if(!this.sockets().some(ws=>ws!==server && ws.deserializeAttachment()?.id===room.hostId)){
       room.hostId=id;await this.ctx.storage.put("room",room);

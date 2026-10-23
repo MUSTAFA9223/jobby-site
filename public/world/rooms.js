@@ -1,10 +1,10 @@
-import {createRoomVoice} from "./voice.js?v=1";
+import {createRoomVoice} from "./voice.js?v=2";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
 const KEY="jobby-world-room-peer";
 let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
-let code="",ws=null,host="",publicId="",state="lobby",roster=[];
+let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
  send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
@@ -25,7 +25,7 @@ const showStatus=(s,err=false)=>{$("setupStatus").classList.remove("hidden");$("
 const status=s=>{$("lobbyStatus").textContent=s};
 const emoji=id=>({JOBBY:"✨",Casual_Male:"🧑",Ninja_Male:"🥷",Pug:"🐶",Wizard:"🧙",Pirate_Female:"🏴‍☠️"})[id]||"🧑";
 function render(){
-  $("count").textContent=roster.length+" / 6";
+  $("count").textContent=roster.length+" / "+maxPlayers;
   $("people").replaceChildren();
   for(const p of roster){
     const box=document.createElement("div");box.className="person";
@@ -43,7 +43,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href="./play.html?room="+encodeURIComponent(code)+"&v=11";
+  voice.close();location.href="./play.html?room="+encodeURIComponent(code)+"&v=12";
 }
 function connect(){
   if(ws){ws.onclose=null;ws.close()}
@@ -59,7 +59,7 @@ function connect(){
     if(ev.data instanceof ArrayBuffer){voice.audio(ev.data);return;}
     let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==="welcome"){
-      publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
+      maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
       if(state==="finished")status("Match finished. Create a new room for another escape.");
     }
@@ -89,7 +89,7 @@ async function join(){
   try{
     const res=await fetch("/api/world/rooms/"+code);
     const data=await res.json();if(!res.ok)throw Error(data.error||"Room not found.");
-    if((data.players||[]).length>=6)throw Error("This room is full.");
+    if((data.players||[]).length>=(data.maxPlayers||12))throw Error("This room is full.");
     history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not join room.",true)}
   finally{$("join").disabled=false}
@@ -102,6 +102,6 @@ $("create").onclick=create;$("join").onclick=join;
 $("roomInput").addEventListener("keydown",e=>{if(e.key==="Enter")join()});
 $("copyCode").onclick=()=>copy(code);$("copyInvite").onclick=()=>copy(invite());
 $("start").onclick=()=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"start"}))};
-$("leave").onclick=()=>{voice.close();ws?.close();location.href="./index.html?v=10"};
+$("leave").onclick=()=>{voice.close();ws?.close();location.href="./index.html?v=11"};
 const incoming=new URLSearchParams(location.search).get("code")?.toUpperCase()||"";
 if(re.test(incoming)){$("roomInput").value=incoming;showStatus("Invite code detected. Tap JOIN ROOM to connect.")}
