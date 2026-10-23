@@ -2,11 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
+import * as house from "../public/world/house-layout.js";
 import {clientFrame,relayFrame,readFrame,VOICE_SAMPLES} from "../public/world/voice-protocol.js";
 
 const code=readFileSync(new URL("../worker.js",import.meta.url),"utf8")
  .replace(/^import \{ DurableObject \} from "cloudflare:workers";/m,"")
  .replace(/^import \{ relayFrame \} from .*;$/m,"")
+ .replace(/^import \* as house from .*;$/m,"")
  .replace(/^export default/m,"const api =")
  .replace(/^export class WorldRoom/m,"class WorldRoom");
 class MockResponse {
@@ -27,8 +29,8 @@ class WebSocketPairMock {
 class Base {
  constructor(ctx){this.ctx=ctx}
 }
-const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame",code+"\nreturn {WorldRoom,publicPlayerId};");
-const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame);
+const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame","house",code+"\nreturn {WorldRoom,publicPlayerId};");
+const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame,house);
 const storage=new Map(),sockets=[];
 const ctx={
  storage:{get:async key=>storage.get(key),put:async(key,value)=>storage.set(key,structuredClone(value))},
@@ -78,6 +80,38 @@ test("Room voice requires opt-in, enforces mute, isolates rooms and authenticate
 });
 const hostSecret="host-session-random-secret-12345";
 const guestSecret="guest-session-random-secret-1234";
+
+test("House rooms enforce task distance/hold/cancel, independent exits, shared hiding and chef catches",async()=>{
+ for(const index of [0,1,2]){
+  const data=new Map(),peers=[];
+  const room=new WorldRoom({storage:{get:async k=>data.get(k),put:async(k,v)=>data.set(k,structuredClone(v))},getWebSockets:()=>peers,acceptWebSocket:ws=>peers.push(ws)},{});
+  await room.fetch(req("/_create","POST",JSON.stringify({code:"GHJ234",ownerId:await publicPlayerId(hostSecret),map:house.MAP_ID})));
+  for(const token of [hostSecret,guestSecret])await room.fetch(req("/_socket?token="+token,"GET",null,true));
+  const [host,guest]=peers,send=(socket,m)=>room.webSocketMessage(socket,JSON.stringify(m));
+  const place=(socket,p)=>socket.serializeAttachment({...socket.deserializeAttachment(),...p});
+  assert.equal(host.messages.find(m=>m.type==="welcome").map,house.MAP_ID);
+  await send(host,{type:"start"});
+  await send(host,{type:"task_start",index});await send(host,{type:"task_finish",index});
+  assert.deepEqual(data.get("room").tasks,[],"remote task claims are rejected");
+  place(host,house.TASKS[index]);await send(host,{type:"task_start",index});await send(host,{type:"task_finish",index});
+  assert.deepEqual(data.get("room").tasks,[],"instant completion is rejected");
+  await send(host,{type:"task_cancel"});await send(host,{type:"task_finish",index});assert.deepEqual(data.get("room").tasks,[]);
+  await send(host,{type:"task_start",index});place(host,{taskStarted:Date.now()-house.TASK_MS});
+  await send(host,{type:"task_finish",index});assert.deepEqual(data.get("room").tasks,[index]);
+  assert.ok(guest.messages.some(m=>m.type==="house_tasks"&&m.tasks.includes(index)));
+  place(guest,house.HIDES[0]);await send(guest,{type:"hide",hidden:true});assert.equal(guest.deserializeAttachment().hidden,true);
+  assert.ok(host.messages.some(m=>m.type==="hide"&&m.hidden));
+  await send(guest,{type:"pose",x:0,z:18,y:0,h:0});assert.equal(guest.deserializeAttachment().x,house.HIDES[0].x,"hidden players stay put");
+  await send(guest,{type:"hide",hidden:false});
+  place(guest,{x:0,z:-15,safeUntil:0,last:0});room.houseGuard=house.newGuard();room.houseGuard.z=-15.5;room.guardAt=Date.now()-200;
+  await send(guest,{type:"pose",x:0,z:-15,y:0,h:0});
+  assert.ok(guest.messages.some(m=>m.type==="caught"));assert.equal(guest.deserializeAttachment().z,house.SPAWN.z);
+  assert.deepEqual(data.get("room").tasks,[index],"catch preserves team progress");
+  place(host,house.EXITS[(index+1)%3]);await send(host,{type:"finish"});assert.equal(data.get("room").status,"playing","wrong exit stays locked");
+  place(host,house.EXITS[index]);await send(host,{type:"finish"});assert.equal(data.get("room").status,"finished");
+  assert.ok(guest.messages.some(m=>m.type==="complete"&&m.exit===house.EXITS[index].name));
+ }
+});
 
 test("Private co-op room lifecycle and identity security",async()=>{
  let response=await r.fetch(req("/_status"));

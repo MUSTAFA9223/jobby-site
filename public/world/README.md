@@ -1,15 +1,24 @@
-# JOBBY WORLD — Alpha 0.10
+# JOBBY WORLD — Alpha 0.11
 
 One repository (`MUSTAFA9223/jobby-site`) and one official website (`jobby.lol`).
 The existing homepage, solo game, points and character unlocks are retained.
 
+## Big House escape and chase
+- `/world/house.html`: new solo/co-op house map; `/world/house-plan.html`: interactive floor plan and routes.
+- Nine interconnected rooms, four hiding spots and three independent task/exit pairs. Hold the action button for 1.6 seconds to take the library key, fix laundry power or take pantry tools.
+- Any unlocked matching exit completes the round (for the whole squad in co-op). The chef patrols and chases visible players through the shared walkable grid. Hiding excludes a player from targeting; being caught returns them to the yard with a six-second grace period and preserves completed tasks.
+- Cloudflare owns co-op task completion, hiding and chef state; all clients receive the same updates. The chef advances when gameplay poses arrive, and resumes patrol if a room instance wakes from hibernation. No extra server or subscription is used.
+- House furnishings and the chef are built from code-native low-poly meshes; no extra art pack download is required. Models, touch controls, voice and solo points keep the existing system.
+- Classic solo remains at `/world/play.html`; classic rooms can be created at `/world/rooms.html?map=classic`. Existing rooms keep classic behavior.
+- Solo task points are +10 each; an escape adds +50. Co-op still grants no points or real tokens.
+
 ## Play
 - `/world/`: character selection, solo escape and private co-op.
 - `/world/rooms.html`: create a room or join by six-character code, 2–12 players.
-- `/world/play.html?room=ABC234`: cooperative arena with independent characters and shared keys.
+- `/world/play.html?room=ABC234`: classic cooperative arena with independent characters and shared keys.
 - `/api/world/health`: Worker health and release version.
 
-## Alpha 0.10
+## Alpha 0.11
 - Room voice is available in the lobby and during co-op gameplay.
 - Tap **JOIN VOICE** and grant microphone permission on each device.
 - **MUTE MIC**, **SOUND ON/OFF** and **LEAVE VOICE** control capture and playback independently.
@@ -30,8 +39,8 @@ The JOBBY model is served at `/world/models/JOBBY.glb` through the existing user
 
 ## Validation
 ```sh
-node --test tests/*.test.mjs
 npm install --no-audit --no-fund
+node --test tests/*.test.mjs
 npx wrangler deploy --dry-run --outdir .build/world
 node tests/world-voice-runtime.mjs .build/world/worker.js
 ```

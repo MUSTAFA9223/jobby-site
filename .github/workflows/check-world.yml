@@ -5,6 +5,7 @@ on:
       - feature/world-coop-rooms
       - feature/world-voice-walls
       - feature/world-12-echo
+      - feature/big-house-escape
   pull_request:
     paths:
       - 'worker.js'
@@ -25,6 +26,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install build and scene-test tooling
+        run: npm install --no-audit --no-fund
       - name: Test private co-op room state
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
@@ -35,12 +38,14 @@ jobs:
           node --check public/world/rooms.js
           node --check public/world/multiplayer.js
           node --check public/world/avatar-cache.js
+          node --check public/world/house-layout.js
+          node --check public/world/house-scene.js
+          node --check public/world/house-game.js
+          node --check public/world/house-plan.js
           node --check public/world/voice.js
           node --check public/world/voice-capture.js
           node --check public/world/voice-protocol.js
           node --check public/world/camera-occlusion.js
-      - name: Install Wrangler tooling
-        run: npm install --no-audit --no-fund
       - name: Build Cloudflare Worker without deployment
         run: npx wrangler deploy --dry-run --outdir .build/world
       - name: Test real WebSocket voice relay with twelve clients

@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { relayFrame } from "./public/world/voice-protocol.js";
+import * as house from "./public/world/house-layout.js";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
@@ -40,7 +41,7 @@ export default {
         "x-content-type-options":"nosniff"}
       });
     }
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.10",voice:"room-audio"},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.11",map:house.MAP_ID,voice:"room-audio"},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){
@@ -51,7 +52,7 @@ export default {
       if(!ownerId)return json({error:"Invalid session."},400);
       for(let attempt=0;attempt<5;attempt++){
         const code=roomCode(),stub=roomStub(env,code);
-        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId})});
+        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId,map:data.map===house.MAP_ID?house.MAP_ID:"classic"})});
         if(response.status===201)return json({code,maxPlayers:MAX_PLAYERS},201);
       }
       return json({error:"Could not create a unique room. Retry."},503);
@@ -82,7 +83,7 @@ export class WorldRoom extends DurableObject {
   players(){
     return this.sockets().map(ws=>{
       const a=ws.deserializeAttachment()||{};
-      return {id:a.id,name:a.name,avatar:a.avatar,x:a.x??0,z:a.z??18,y:a.y??0,h:a.h??0,anim:a.anim||"Idle",voice:a.voice===true,muted:a.muted!==false};
+      return {id:a.id,name:a.name,avatar:a.avatar,x:a.x??0,z:a.z??18,y:a.y??0,h:a.h??0,anim:a.anim||"Idle",voice:a.voice===true,muted:a.muted!==false,hidden:a.hidden===true};
     });
   }
   broadcast(message,exclude=null){
@@ -95,13 +96,13 @@ export class WorldRoom extends DurableObject {
       let data;try{data=await request.json()}catch{return json({error:"Invalid body."},400)}
       const existing=await this.ctx.storage.get("room");
       if(existing && Date.now()-existing.createdAt<TTL)return json({error:"Code collision."},409);
-      const room={code:data.code,hostId:data.ownerId,createdAt:Date.now(),status:"lobby",keys:[]};
+      const room={code:data.code,hostId:data.ownerId,createdAt:Date.now(),status:"lobby",keys:[],...(data.map===house.MAP_ID?{map:house.MAP_ID,tasks:[]}: {})};
       await this.ctx.storage.put("room",room);
       return json({ok:true},201);
     }
     const room=await this.ctx.storage.get("room");
     if(!room || Date.now()-room.createdAt>TTL)return json({error:"Room expired or not found."},404);
-    if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:MAX_PLAYERS});
+    if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic"});
     if(url.pathname!=="/_socket")return json({error:"Not found."},404);
     if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return json({error:"Upgrade required."},426);
     const id=await publicPlayerId(url.searchParams.get("token"));
@@ -116,12 +117,12 @@ export class WorldRoom extends DurableObject {
     const pair=new WebSocketPair(),[client,server]=Object.values(pair);
     this.ctx.acceptWebSocket(server);
     const slot=Math.max(0,current.length%MAX_PLAYERS);
-    const info={id,name,avatar,x:(slot%4-1.5)*1.5,z:18+Math.floor(slot/4)*1.5,y:0,h:0,anim:"Idle",last:0,voice:false,muted:true,expiresAt:room.createdAt+TTL};
+    const info={id,name,avatar,x:(slot%4-1.5)*1.5,z:18+Math.floor(slot/4)*1.5,y:0,h:0,anim:"Idle",last:0,hidden:false,safeUntil:Date.now()+8000,voice:false,muted:true,expiresAt:room.createdAt+TTL};
     server.serializeAttachment(info);
     if(!this.sockets().some(ws=>ws!==server && ws.deserializeAttachment()?.id===room.hostId)){
       room.hostId=id;await this.ctx.storage.put("room",room);
     }
-    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:MAX_PLAYERS}));
+    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic",tasks:room.tasks||[],guard:house.guardView(this.houseGuard||house.newGuard())}));
     this.broadcast({type:"roster",hostId:room.hostId,players:this.players()});
     return new Response(null,{status:101,webSocket:client});
   }
@@ -156,19 +157,42 @@ export class WorldRoom extends DurableObject {
       const now=Date.now();
       if(now-a.last<65)return;
       a.last=now;
-      a.x=Math.max(-26.2,Math.min(26.2,m.x));a.z=Math.max(-26.2,Math.min(26.2,m.z));
+      if(!a.hidden&&now>=(a.respawnUntil||0)){a.x=Math.max(-26.2,Math.min(26.2,m.x));a.z=Math.max(-26.2,Math.min(26.2,m.z));}
       a.y=Math.max(0,Math.min(3,m.y));a.h=m.h%(Math.PI*2);
       a.anim=["Idle","Walk","Run","Jump"].includes(m.anim)?m.anim:"Idle";
       ws.serializeAttachment(a);
-      this.broadcast({type:"pose",id:a.id,x:a.x,z:a.z,y:a.y,h:a.h,anim:a.anim},ws);
-      return;
+      this.broadcast({type:"pose",id:a.id,x:a.x,z:a.z,y:a.y,h:a.h,anim:a.anim,hidden:a.hidden===true},ws);
+      await this.tickHouse();return;
     }
     const room=await this.ctx.storage.get("room");
     if(!room)return;
     if(m.type==="start" && room.hostId===a.id && room.status!=="playing"){
       if(this.sockets().length<2){ws.send(JSON.stringify({type:"error",message:"At least 2 players are required."}));return}
-      room.status="playing";room.keys=[];await this.ctx.storage.put("room",room);
-      this.broadcast({type:"start",keys:[]});
+      room.status="playing";room.keys=[];if(room.map===house.MAP_ID){room.tasks=[];this.houseGuard=house.newGuard();this.guardAt=Date.now();for(const peer of this.sockets()){const p=peer.deserializeAttachment();p.hidden=false;p.safeUntil=Date.now()+8000;peer.serializeAttachment(p);}}await this.ctx.storage.put("room",room);
+      this.broadcast({type:"start",keys:[],tasks:[]});
+      return;
+    }
+    if(room.map===house.MAP_ID&&room.status==="playing"){
+      if(m.type==="hide"){
+        if(typeof m.hidden!=="boolean"||m.hidden===!!a.hidden)return;
+        if(m.hidden&&(house.hideAt(a)<0||a.y>.2))return;
+        a.hidden=m.hidden;a.taskIndex=null;a.taskStarted=0;
+        if(!a.hidden)a.safeUntil=Date.now()+900;
+        ws.serializeAttachment(a);this.broadcast({type:"hide",id:a.id,hidden:a.hidden});return;
+      }
+      if(m.type==="task_cancel"){a.taskIndex=null;a.taskStarted=0;ws.serializeAttachment(a);return;}
+      if(m.type==="task_start"||m.type==="task_finish"){
+        const index=m.index,task=house.TASKS[index];
+        if(!Number.isInteger(index)||!task||a.hidden||a.y>.3||!house.near(a,task)||room.tasks.includes(index))return;
+        if(m.type==="task_start"){a.taskIndex=index;a.taskStarted=Date.now();ws.serializeAttachment(a);return;}
+        if(a.taskIndex!==index||Date.now()-a.taskStarted<house.TASK_MS-100)return;
+        room.tasks.push(index);a.taskIndex=null;a.taskStarted=0;ws.serializeAttachment(a);await this.ctx.storage.put("room",room);
+        this.broadcast({type:"house_tasks",tasks:room.tasks,by:a.id});return;
+      }
+      if(m.type==="finish"){
+        const exit=house.exitAt(a,room.tasks);if(exit<0||a.hidden)return;
+        room.status="finished";await this.ctx.storage.put("room",room);this.broadcast({type:"complete",by:a.id,exit:house.EXITS[exit].name});return;
+      }
       return;
     }
     if(m.type==="key" && room.status==="playing"){
@@ -186,6 +210,20 @@ export class WorldRoom extends DurableObject {
       room.status="finished";await this.ctx.storage.put("room",room);
       this.broadcast({type:"complete",by:a.id});
     }
+  }
+  async tickHouse(){
+    const now=Date.now();if(now-(this.guardAt||0)<125)return;
+    const last=this.guardAt||now;this.guardAt=now;
+    const room=await this.ctx.storage.get("room");if(room?.map!==house.MAP_ID||room.status!=="playing")return;
+    this.houseGuard??=house.newGuard();
+    const peers=this.sockets(),players=peers.map(ws=>ws.deserializeAttachment());
+    const caught=house.advanceGuard(this.houseGuard,players,(now-last)/1000,now);
+    for(const peer of peers){
+      const p=peer.deserializeAttachment();if(!caught.includes(p.id))continue;
+      p.x=house.SPAWN.x;p.z=house.SPAWN.z;p.y=0;p.hidden=false;p.taskIndex=null;p.taskStarted=0;p.safeUntil=now+6000;p.respawnUntil=now+500;
+      peer.serializeAttachment(p);this.broadcast({type:"caught",id:p.id,x:p.x,z:p.z});
+    }
+    this.broadcast({type:"guard",guard:house.guardView(this.houseGuard)});
   }
   async drop(ws){
     const a=ws.deserializeAttachment();
