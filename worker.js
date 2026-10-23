@@ -6,6 +6,12 @@ const AVATARS = new Set(["JOBBY","Casual_Male","Ninja_Male","Pug","Wizard","Pira
 const KEYS = [[-20,-16],[19,14],[12,-20]];
 const MAX_PLAYERS = 6;
 const TTL = 24*60*60*1000;
+// Public IDs are derived from private browser secrets. Never broadcast the secret itself.
+async function publicPlayerId(secret){
+  if(typeof secret!=="string" || !/^[a-zA-Z0-9_-]{12,64}$/.test(secret))return null;
+  const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("JOBBY-WORLD:SESSION:"+secret));
+  return [...new Uint8Array(digest).slice(0,16)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
 const json = (data,status=200)=>new Response(JSON.stringify(data),{
   status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"}
 });
@@ -40,8 +46,8 @@ export default {
       if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin requests only."},403);
       if(!(request.headers.get("content-type")||"").includes("application/json"))return json({error:"JSON required."},415);
       let data;try{data=await request.json()}catch{return json({error:"Invalid JSON."},400)}
-      const ownerId=String(data?.id||"");
-      if(!/^[a-zA-Z0-9_-]{12,64}$/.test(ownerId))return json({error:"Invalid session."},400);
+      const ownerId=await publicPlayerId(data?.token);
+      if(!ownerId)return json({error:"Invalid session."},400);
       for(let attempt=0;attempt<5;attempt++){
         const code=roomCode(),stub=roomStub(env,code);
         const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId})});
@@ -57,7 +63,7 @@ export default {
       const origin=request.headers.get("origin");
       if(origin && origin!==url.origin)return json({error:"Origin not allowed."},403);
       const internal=new URL("https://room.internal/_socket");
-      for(const key of ["id","name","avatar"])internal.searchParams.set(key,url.searchParams.get(key)||"");
+      for(const key of ["token","name","avatar"])internal.searchParams.set(key,url.searchParams.get(key)||"");
       return stub.fetch(new Request(internal,{headers:request.headers}));
     }
     if(request.method==="GET" && !match[2])return stub.fetch("https://room.internal/_status");
@@ -97,10 +103,10 @@ export class WorldRoom extends DurableObject {
     if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:MAX_PLAYERS});
     if(url.pathname!=="/_socket")return json({error:"Not found."},404);
     if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return json({error:"Upgrade required."},426);
-    const id=url.searchParams.get("id")||"";
+    const id=await publicPlayerId(url.searchParams.get("token"));
     const name=(url.searchParams.get("name")||"Player").trim().slice(0,18).replace(/[<>\x00-\x1f]/g,"")||"Player";
     const avatar=url.searchParams.get("avatar")||"JOBBY";
-    if(!/^[a-zA-Z0-9_-]{12,64}$/.test(id) || !AVATARS.has(avatar))return json({error:"Invalid player."},400);
+    if(!id || !AVATARS.has(avatar))return json({error:"Invalid player."},400);
     const current=this.sockets();
     // Reconnecting in the same tab supersedes the old socket.
     const replacing=current.find(ws=>ws.deserializeAttachment()?.id===id);
