@@ -3,7 +3,7 @@ const re=/^[A-HJ-NP-Z2-9]{6}$/;
 const KEY="jobby-world-room-peer";
 let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
-let code="",ws=null,host="",state="lobby",roster=[];
+let code="",ws=null,host="",publicId="",state="lobby",roster=[];
 let selected="JOBBY";
 try{selected=JSON.parse(localStorage.getItem("jobby-world-v01")||"{}").selected||"JOBBY"}catch{}
 const progress=(()=>{try{return JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}catch{return {}}})();
@@ -26,11 +26,11 @@ function render(){
     const box=document.createElement("div");box.className="person";
     const face=document.createElement("span");face.className="face";face.textContent=emoji(p.avatar);
     const who=document.createElement("div");who.className="who";
-    const label=document.createElement("b");label.textContent=p.name+(p.id===id?" (You)":"");
+    const label=document.createElement("b");label.textContent=p.name+(p.id===publicId?" (You)":"");
     const sub=document.createElement("small");sub.textContent=p.id===host?"HOST · "+p.avatar:p.avatar;
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
-  const iamHost=id===host,waiting=state==="lobby";
+  const iamHost=publicId===host,waiting=state==="lobby";
   $("start").classList.toggle("hidden",!waiting);
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
   $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":"▶ START CO-OP ESCAPE"):"WAITING FOR HOST…";
@@ -44,7 +44,7 @@ function connect(){
   if(ws){ws.onclose=null;ws.close()}
   $("setup").classList.add("hidden");$("lobby").classList.remove("hidden");
   $("code").textContent=code;status("Connecting to "+code+"…");
-  const params=new URLSearchParams({id,name:$("name").value.trim().slice(0,18)||"Player",avatar:$("avatar").value});
+  const params=new URLSearchParams({token:id,name:$("name").value.trim().slice(0,18)||"Player",avatar:$("avatar").value});
   localStorage.setItem("jobby-world-display-name",$("name").value.trim().slice(0,18)||"Player");
   sessionStorage.setItem("jobby-world-room-avatar",$("avatar").value);
   const protocol=location.protocol==="https:"?"wss:":"ws:";
@@ -52,7 +52,7 @@ function connect(){
   ws.onmessage=ev=>{
     let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==="welcome"){
-      host=m.hostId;state=m.status;roster=m.players||[];render();
+      publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];render();
       if(state==="playing")beginGame();
       if(state==="finished")status("Match finished. Create a new room for another escape.");
     }
@@ -68,7 +68,7 @@ function connect(){
 async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id})});
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}
