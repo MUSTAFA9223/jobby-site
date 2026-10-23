@@ -1,7 +1,8 @@
 import * as THREE from "three";
-import {ROOMS,WALLS,PROPS,TASKS,EXITS,HIDES} from "./house-layout.js";
+import * as defaultLayout from "./house-layout.js";
 
-export function buildHouse(scene){
+export function buildHouse(scene,layout=defaultLayout){
+ const {ROOMS,WALLS,PROPS,TASKS,EXITS,HIDES}=layout;const propsMeshes=[];
  const mats=new Map(),unit=new THREE.BoxGeometry(1,1,1),blocks=[];
  const mat=color=>{if(!mats.has(color))mats.set(color,new THREE.MeshStandardMaterial({color,roughness:.82}));return mats.get(color);};
  function box(x,y,z,w,h,d,color,shadow=true){const m=new THREE.Mesh(unit,mat(color));m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=shadow;m.receiveShadow=true;scene.add(m);return m;}
@@ -28,7 +29,7 @@ export function buildHouse(scene){
   box(wall.x,wall.h,wall.z,wall.w+.04,.12,wall.d+.04,"#fff1df",false);solid(wall);
  }
  for(const p of PROPS){
-  solid(p);const {x,z,w,d,h,kind}=p;
+  solid(p);const first=scene.children.length;const {x,z,w,d,h,kind}=p;
   if(kind==="table"||kind==="desk"||kind==="workbench"){
    box(x,h,z,w,.18,d,"#855b4d");
    for(const a of [-1,1])for(const b of [-1,1])box(x+a*(w/2-.2),h/2,z+b*(d/2-.2),.18,h,.18,"#544454");
@@ -57,6 +58,7 @@ export function buildHouse(scene){
    box(x,h/2,z,w,h,d,color);if(kind==="counter"||kind==="island")box(x,h,z,w+.12,.16,d+.12,"#e5dac1");
    if(kind==="crate"){box(x,h/2,z-d/2-.02,w,.13,.06,"#d4aa75");box(x,h/2,z-d/2-.05,.13,h,.07,"#d4aa75");}
   }
+  propsMeshes.push({prop:p,objects:scene.children.slice(first)});
  }
  // Simple garden beds, stepping stones and trees without extra asset downloads.
  for(const x of [-24,24])for(const z of [-24,22]){
@@ -65,7 +67,7 @@ export function buildHouse(scene){
  }
  const collectibles=TASKS.map((task,index)=>{
   const group=new THREE.Group(),m=new THREE.Mesh(new THREE.OctahedronGeometry(.35),mat(task.color));group.add(m);group.position.set(task.x,1.1,task.z);scene.add(group);
-  disk(task.x,task.z,.8,task.color);text(["KEY","POWER","TOOLS"][index],task.x,task.z+.9,task.color,2);
+  disk(task.x,task.z,.8,task.color);text(task.short||["KEY","POWER","TOOLS"][index],task.x,task.z+.9,task.color,2);
   return {x:task.x,z:task.z,group,taken:false};
  });
  const exits=EXITS.map(exit=>{
@@ -85,7 +87,7 @@ export function buildHouse(scene){
  const arms=[-.55,.55].map(x=>part(new THREE.CapsuleGeometry(.12,.5,3,6),"#f0c29d",x,1.2,0));
  const alert=part(new THREE.TorusGeometry(.65,.045,6,24),"#ffd369",0,.08,0);alert.rotation.x=Math.PI/2;
  scene.add(guard);
- return {blocks,collectibles,guard,
+ return {blocks,collectibles,guard,propsMeshes,
   updateTasks(tasks){for(const [i,c] of collectibles.entries()){c.taken=tasks.includes(i);c.group.visible=!c.taken;}for(const [i,e] of exits.entries()){const open=tasks.includes(EXITS[i].task);e.material.color.set(open?"#6fffc9":"#c56f80");e.material.emissive.set(open?"#33ad8c":"#8b2f46");e.material.opacity=open?.2:.64;}},
   animate(time,chasing){guard.position.y=Math.abs(Math.sin(time*(chasing?12:6)))*.07;for(const [i,arm] of arms.entries())arm.rotation.x=Math.sin(time*(chasing?12:6)+i*Math.PI)*.45;alert.material.color.set(chasing?"#ff7585":"#ffd369");},
  };

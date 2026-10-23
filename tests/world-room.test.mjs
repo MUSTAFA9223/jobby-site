@@ -1,3 +1,4 @@
+import * as warehouse from "../warehouse-room.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -6,6 +7,7 @@ import * as house from "../public/world/house-layout.js";
 import {clientFrame,relayFrame,readFrame,VOICE_SAMPLES} from "../public/world/voice-protocol.js";
 
 const code=readFileSync(new URL("../worker.js",import.meta.url),"utf8")
+ .replace(/^import \* as warehouse from .*;$/m,"")
  .replace(/^import \{playerApi\}.*\n/m, "").replace(/^export \{WorldPlayers\}.*\n/m, "").replace(/^import \{ DurableObject \} from "cloudflare:workers";/m,"")
  .replace(/^import \{ relayFrame \} from .*;$/m,"")
  .replace(/^import \* as house from .*;$/m,"")
@@ -29,8 +31,8 @@ class WebSocketPairMock {
 class Base {
  constructor(ctx){this.ctx=ctx}
 }
-const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame","house",code+"\nreturn {WorldRoom,publicPlayerId};");
-const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame,house);
+const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame","house","warehouse",code+"\nreturn {WorldRoom,publicPlayerId};");
+const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame,house,warehouse);
 const storage=new Map(),sockets=[];
 const ctx={
  storage:{get:async key=>storage.get(key),put:async(key,value)=>storage.set(key,structuredClone(value))},

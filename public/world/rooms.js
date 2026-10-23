@@ -1,4 +1,4 @@
-import {renamePlayer} from "./player-profile.js?v=1";
+import {renamePlayer,linkRoomSession} from "./player-profile.js?v=2";
 import {createRoomVoice} from "./voice.js?v=3";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
@@ -7,6 +7,7 @@ let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let roomMap="classic";
+$("mapChoice").value=["warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"warehouse-v1";
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
  send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
@@ -37,7 +38,7 @@ function render(){
     const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+p.avatar+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
-  const iamHost=publicId===host,waiting=state==="lobby";
+  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&roomMap==="warehouse-v1");
   $("start").classList.toggle("hidden",!waiting);
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
   $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":"▶ START CO-OP ESCAPE"):"WAITING FOR HOST…";
@@ -45,9 +46,10 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href=(roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=13";
+  voice.close();location.href=(roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=13";
 }
-function connect(){
+async function connect(){
+  try{await linkRoomSession(id);}catch(e){showStatus(e.message,true);return;}
   if(ws){ws.onclose=null;ws.close()}
   $("setup").classList.add("hidden");$("lobby").classList.remove("hidden");
   $("code").textContent=code;status("Connecting to "+code+"…");
@@ -79,7 +81,7 @@ function connect(){
 async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:new URLSearchParams(location.search).get("map")==="classic"?"classic":"big-house-v1"})});
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}
