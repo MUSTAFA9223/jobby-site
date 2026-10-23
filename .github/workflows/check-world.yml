@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'worker.js'
+      - 'player-store.js'
       - 'wrangler.toml'
       - 'public/world/**'
       - 'tests/**'
@@ -32,6 +33,8 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: |
+          node --check player-store.js
+          node --check public/world/player-profile.js
           node --check worker.js
           node --check public/world/main.js
           node --check public/world/hub.js
@@ -50,3 +53,6 @@ jobs:
         run: npx wrangler deploy --dry-run --outdir .build/world
       - name: Test real WebSocket voice relay with twelve clients
         run: node tests/world-voice-runtime.mjs .build/world/worker.js
+
+      - name: Test persistent player profiles and leaderboard
+        run: node tests/world-players-runtime.mjs .build/world/worker.js

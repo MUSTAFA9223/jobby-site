@@ -6,7 +6,7 @@ import * as house from "../public/world/house-layout.js";
 import {clientFrame,relayFrame,readFrame,VOICE_SAMPLES} from "../public/world/voice-protocol.js";
 
 const code=readFileSync(new URL("../worker.js",import.meta.url),"utf8")
- .replace(/^import \{ DurableObject \} from "cloudflare:workers";/m,"")
+ .replace(/^import \{playerApi\}.*\n/m, "").replace(/^export \{WorldPlayers\}.*\n/m, "").replace(/^import \{ DurableObject \} from "cloudflare:workers";/m,"")
  .replace(/^import \{ relayFrame \} from .*;$/m,"")
  .replace(/^import \* as house from .*;$/m,"")
  .replace(/^export default/m,"const api =")

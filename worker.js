@@ -1,3 +1,5 @@
+import {playerApi} from "./player-store.js";
+export {WorldPlayers} from "./player-store.js";
 import { DurableObject } from "cloudflare:workers";
 import { relayFrame } from "./public/world/voice-protocol.js";
 import * as house from "./public/world/house-layout.js";
@@ -41,7 +43,8 @@ export default {
         "x-content-type-options":"nosniff"}
       });
     }
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.11",map:house.MAP_ID,voice:"room-audio"},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/leaderboard"||path.startsWith("/api/world/profile"))return playerApi(request,env);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.12",playerSaves:!!env.WORLD_PLAYERS,map:house.MAP_ID,voice:"room-audio"},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){

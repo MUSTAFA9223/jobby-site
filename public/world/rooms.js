@@ -1,3 +1,4 @@
+import {renamePlayer} from "./player-profile.js?v=1";
 import {createRoomVoice} from "./voice.js?v=3";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
@@ -52,6 +53,7 @@ function connect(){
   $("code").textContent=code;status("Connecting to "+code+"…");
   const params=new URLSearchParams({token:id,name:$("name").value.trim().slice(0,18)||"Player",avatar:$("avatar").value});
   localStorage.setItem("jobby-world-display-name",$("name").value.trim().slice(0,18)||"Player");
+  void renamePlayer($("name").value.trim().slice(0,18)||"Player");
   sessionStorage.setItem("jobby-world-room-avatar",$("avatar").value);
   const protocol=location.protocol==="https:"?"wss:":"ws:";
   ws=new WebSocket(protocol+"//"+location.host+"/api/world/rooms/"+code+"/socket?"+params);

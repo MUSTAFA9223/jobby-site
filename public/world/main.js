@@ -1,3 +1,4 @@
+import {saveSelection,beginPlayerRun,recordPlayerTask,finishPlayerRun,syncProfile} from "./player-profile.js?v=1";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { connectCoop } from "./multiplayer.js?v=5";
@@ -21,7 +22,8 @@ const JOBBY_MODEL="./models/JOBBY.glb";
 const MODEL_SIZES={JOBBY:1941348,Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
 let saved={points:0,unlocked:[],best:0,selected:"JOBBY"};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
-const persist=()=>{try{localStorage.setItem("jobby-world-v01",JSON.stringify(saved))}catch(e){}};
+const persist=()=>{try{saveSelection(saved)}catch(e){}};
+window.addEventListener("jobby-profile-change",()=>{try{saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")};wallet()}catch{}});
 const available = item => !item.cost || (Array.isArray(saved.unlocked)&&saved.unlocked.includes(item.id));
 let chosen=AVATARS.find(a=>a.id===saved.selected&&available(a))?.id||"JOBBY", started=false, finished=false, count=0, loading=false, runHeld=false, wantJump=false, roundStartedAt=0;
 let px=0,pz=9,py=0,vy=0,grounded=true,heading=Math.PI;
@@ -199,7 +201,7 @@ async function start(){
  $("startButton").disabled=true;
  const loaded=await loadCharacter(chosen);$("startButton").disabled=false;
  if(!loaded)return;
- reset();roundStartedAt=performance.now();started=true;$("menu").classList.add("hidden");$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden");
+ reset();beginPlayerRun("classic");roundStartedAt=performance.now();started=true;$("menu").classList.add("hidden");$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden");
 }
 function applySharedKeys(keys){
  sharedKeys=Array.isArray(keys)?keys.filter(i=>Number.isInteger(i)&&i>=0&&i<3):[];
@@ -243,10 +245,10 @@ function complete(){
   const entry={character:chosen,points:80,seconds:Math.max(1,(performance.now()-roundStartedAt)/1000),date:Date.now()};
   localStorage.setItem(key,JSON.stringify([entry,...(Array.isArray(old)?old:[])].slice(0,60)));
  }catch(e){}
- persist();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("Escape complete! +50 bonus points (80 total this round).");
+ persist();finishPlayerRun();wallet();$("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");toast("Escape complete! +50 bonus points (80 total this round).");
 }
 $("startButton").onclick=start;
-$("againButton").onclick=()=>{reset();roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
+$("againButton").onclick=()=>{reset();beginPlayerRun("classic");roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
 $("charactersButton").onclick=()=>{location.href="./index.html?v=11#characters"};
 $("menuButton").onclick=()=>{location.href="./index.html?v=11"};
 const stick=$("stick"),knob=$("knob");
@@ -351,7 +353,7 @@ function frame(){
    if(!k.taken&&Math.hypot(px-k.x,pz-k.z)<1.1){
     if(isCoop){coop?.sendKey(index)}
     else{
-     k.taken=true;k.group.visible=false;count++;saved.points+=10;persist();wallet();
+     k.taken=true;k.group.visible=false;count++;saved.points+=10;persist();recordPlayerTask(collectible.indexOf(k));wallet();
      toast("Key collected! +10 points");
      if(count===3){$("quest").innerHTML="<strong>GATE UNLOCKED</strong> — Reach the exit!";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
     }

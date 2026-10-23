@@ -19,9 +19,17 @@ not_found_handling = "single-page-application"
 name = "WORLD_ROOM"
 class_name = "WorldRoom"
 
+[[durable_objects.bindings]]
+name = "WORLD_PLAYERS"
+class_name = "WorldPlayers"
+
 [[migrations]]
 tag = "world-rooms-v1"
 new_sqlite_classes = ["WorldRoom"]
+
+[[migrations]]
+tag = "world-players-v1"
+new_sqlite_classes = ["WorldPlayers"]
 
 [previews]
 
@@ -29,3 +37,7 @@ new_sqlite_classes = ["WorldRoom"]
 [[previews.durable_objects.bindings]]
 name = "WORLD_ROOM"
 class_name = "WorldRoom"
+
+[[previews.durable_objects.bindings]]
+name = "WORLD_PLAYERS"
+class_name = "WorldPlayers"
