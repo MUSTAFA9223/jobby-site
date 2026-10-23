@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
-import {createRoomVoice} from "./voice.js?v=1";
+import {clone as cloneSkeleton} from "three/addons/utils/SkeletonUtils.js";
+import {createAssetCache} from "./avatar-cache.js";
+import {createRoomVoice} from "./voice.js?v=2";
 
 const ICON={JOBBY:"JOBBY",Casual_Male:"Explorer",Ninja_Male:"Ninja",Pug:"Pug",Wizard:"Wizard",Pirate_Female:"Pirate"};
 const JOBBY_MODEL="./models/JOBBY.glb";
@@ -18,8 +20,9 @@ const urlOf=avatar=>avatar==="JOBBY"?JOBBY_MODEL:"./models/"+encodeURIComponent(
 function dispose(root){
   root.traverse(obj=>{if(!obj.isMesh)return;obj.geometry?.dispose();for(const m of Array.isArray(obj.material)?obj.material:[obj.material]){if(!m)continue;m.map?.dispose();m.dispose()}});
 }
-export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,onComplete,onError}){
+export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcome,onStart,onKeys,onComplete,onError}){
   const remotes=new Map();
+  const models=createAssetCache(url=>loader.loadAsync(url),gltf=>dispose(gltf.scene));
   let publicId=null;
   let ws=null,lastPose=0,closed=false,lastKey=new Map(),lastFinish=0,attempts=0;
   const voice=createRoomVoice({mount:document.getElementById("voiceHud"),
@@ -30,7 +33,7 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
     const r=remotes.get(id);if(!r)return;
     remotes.delete(id);scene.remove(r.group);
     if(r.mixer)r.mixer.stopAllAction();
-    if(r.model)dispose(r.model);
+    if(r.model){const skeletons=new Set();r.model.traverse(node=>{if(node.isSkinnedMesh)skeletons.add(node.skeleton)});for(const skeleton of skeletons)skeleton.dispose();}
     r.label.material.map.dispose();r.label.material.dispose();
     r.fallback.geometry.dispose();r.fallback.material.dispose();
   }
@@ -40,15 +43,15 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
     const fallback=new THREE.Mesh(new THREE.CapsuleGeometry(.35,.8,5,8),new THREE.MeshStandardMaterial({color:0x71e8d2}));
     fallback.position.y=.95;group.add(fallback);
     const label=nameSprite(p.name||"Player");group.add(label);
-    const r={id:p.id,avatar:p.avatar,group,label,fallback,model:null,mixer:null,clips:{},clip:"",x:p.x??0,z:p.z??18,y:p.y??0,h:p.h||0,anim:p.anim||"Idle"};
+    const r={id:p.id,avatar:p.avatar,group,label,fallback,model:null,mixer:null,clips:{},clip:"",x:p.x??0,z:p.z??18,y:p.y??0,h:p.h||0,anim:p.anim||"Idle",animationTime:0};
     remotes.set(p.id,r);
     const modelId=p.avatar;
-    loader.loadAsync(urlOf(modelId)).then(gltf=>{
-      if(remotes.get(p.id)!==r){dispose(gltf.scene);return}
-      const model=gltf.scene,bounds=new THREE.Box3().setFromObject(model);
+    models.get(urlOf(modelId)).then(gltf=>{
+      if(closed||remotes.get(p.id)!==r)return
+      const model=cloneSkeleton(gltf.scene),bounds=new THREE.Box3().setFromObject(model);
       const size=bounds.getSize(new THREE.Vector3()),scale=1.75/Math.max(.01,size.y);
       model.scale.setScalar(scale);model.position.y=-bounds.min.y*scale;
-      model.traverse(node=>{if(node.isMesh){node.castShadow=true;if(node.isSkinnedMesh)node.frustumCulled=false}});
+      model.traverse(node=>{if(node.isMesh){node.castShadow=false;if(node.isSkinnedMesh)node.frustumCulled=false}});
       group.add(model);r.model=model;fallback.visible=false;
       if(gltf.animations.length){
         r.mixer=new THREE.AnimationMixer(model);
@@ -130,9 +133,12 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
         r.group.position.lerp(new THREE.Vector3(r.x,r.y,r.z),alpha);
         const offset=Math.atan2(Math.sin(r.h-r.group.rotation.y),Math.cos(r.h-r.group.rotation.y));
         r.group.rotation.y+=offset*alpha;
-        selectAnimation(r,r.anim);r.mixer?.update(dt);
+        r.animationTime+=dt;
+        const local=getLocalPosition?.();
+        const interval=local&&r.group.position.distanceToSquared(local)>900?.1:.05;
+        if(r.animationTime>=interval){selectAnimation(r,r.anim);r.mixer?.update(r.animationTime);r.animationTime=0;}
       }
     },
-    close(){closed=true;voice.close();ws?.close();for(const key of [...remotes.keys()])removeRemote(key)}
+    close(){closed=true;voice.close();ws?.close();for(const key of [...remotes.keys()])removeRemote(key);models.close()}
   };
 }

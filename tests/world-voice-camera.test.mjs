@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {VoiceFramer,VOICE_SAMPLES,clientFrame,relayFrame,readFrame} from "../public/world/voice-protocol.js";
-import {segmentHitsBox,wallHidesAvatar} from "../public/world/camera-occlusion.js";
+import {cameraClearance,safeCameraPosition} from "../public/world/camera-occlusion.js";
 
 test("Microphone frame sizes, sample timing and PCM survive native audio sample rates",()=>{
  for(const rate of [16000,44100,48000,96000]){
@@ -24,17 +24,19 @@ test("Voice protocol clips invalid microphone samples and rejects malformed pack
 });
 
 const box=(x1,y1,z1,x2,y2,z2)=>({min:{x:x1,y:y1,z:z1},max:{x:x2,y:y2,z:z2}});
-test("Walls covering feet/head/side fade even when the center sight line is clear",()=>{
- const player={x:0,y:0,z:0},camera={x:0,y:2,z:7};
- const footWall=box(-1,0,1,1,.5,1.1);
- assert.equal(segmentHitsBox(camera,{x:0,y:1.3,z:0},footWall,0),false,"old middle-only test misses this obstacle");
- assert.equal(wallHidesAvatar(camera,player,footWall),true);
- assert.equal(wallHidesAvatar(camera,player,box(.5,.3,.5,.7,2,.7)),true,"partial silhouette obstruction");
- assert.equal(wallHidesAvatar(camera,player,box(-1,1.7,1,1,2.1,1.1)),true,"head obstruction");
- assert.equal(wallHidesAvatar(camera,player,box(-1,0,-4,1,4,-3)),false,"wall behind player stays opaque");
- assert.equal(wallHidesAvatar(camera,player,box(-1,0,8,1,4,9)),false,"wall beyond camera stays opaque");
- assert.equal(wallHidesAvatar(camera,player,box(-.2,0,6.8,.2,4,7.2)),true,"camera inside or touching wall");
- for(const [x,z] of [[7,0],[-7,0],[0,-7],[5,5]]){
-  assert.equal(wallHidesAvatar({x,y:2,z},player,box(x*.45-.3,0,z*.45-.3,x*.45+.3,3,z*.45+.3)),true,"camera orbit stays protected");
+test("Camera stays clear of walls at every orbit angle without changing wall opacity",()=>{
+ const focus={x:0,y:1.3,z:0};
+ for(const [x,z] of [[7,0],[-7,0],[0,7],[0,-7],[5,5]]){
+  const wall=box(x*.5-.4,0,z*.5-.4,x*.5+.4,5,z*.5+.4);
+  const desired={x,y:3,z},safe=cameraClearance(focus,desired,[wall]);
+  assert.ok(Math.hypot(safe.x,safe.z)<Math.hypot(x,z)*.5);
+  assert.deepEqual(cameraClearance(focus,safe,[wall]),safe,"smoothing cannot cross a wall");
  }
+ const clear={x:0,y:3,z:7};assert.deepEqual(safeCameraPosition(focus,clear,[]),clear);
+ const near=box(-2,0,.4,2,5,.6);
+ const overhead=safeCameraPosition(focus,clear,[{box:near}]);
+ assert.ok(overhead.y>6);assert.ok(overhead.z<.01,"tight corner switches overhead");
+ const inside=cameraClearance(focus,{x:0,y:2,z:3},[box(-2,0,2,2,5,4)]);
+ assert.ok(inside.z<1.82,"camera goal inside a wall is clipped before its surface");
+ assert.deepEqual(cameraClearance(focus,clear,[box(4,0,0,6,5,8)]),clear,"parallel wall away from camera does not block");
 });

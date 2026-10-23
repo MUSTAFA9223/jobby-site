@@ -4,3 +4,5 @@
 #voiceHud{position:absolute;z-index:11;top:108px;left:max(env(safe-area-inset-left),10px);width:min(310px,calc(100vw - 20px));pointer-events:auto}
 #voiceHud .room-voice{margin:0;box-shadow:0 5px 18px #080a2066}#voiceHud .voice-buttons button{padding:7px 8px;min-height:42px;font-size:10px}#voiceHud .voice-status{font-size:10px}
 @media(max-height:560px){#voiceHud{top:98px;width:270px}#voiceHud .room-voice{padding:6px}#voiceHud .voice-status{margin-top:4px}}
+
+.voice-buttons button:last-child{touch-action:none;user-select:none;-webkit-user-select:none}.voice-buttons button[aria-pressed="true"]:last-child{background:#74f0cd;color:#103b32}

@@ -14,7 +14,7 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  class AudioContext{
   constructor(){this.state="suspended";this.currentTime=1;this.played=[];this.audioWorklet={addModule:async()=>{}};contexts.push(this);}
   async resume(){this.state="running";}async close(){this.state="closed";}
-  createGain(){return {gain:{value:1},connect(){}};}
+  createGain(){return this.output={gain:{value:1},connect(){}};}
   createMediaStreamSource(){return {connect(){},disconnect(){}};}
   createBuffer(channels,length,rate){return {duration:length/rate,copyToChannel(data){this.samples=data.slice();}};}
   createBufferSource(){const self=this;return {connect(){},disconnect(){},start(time){self.played.push({time,buffer:this.buffer});},stop(){}};}
@@ -26,10 +26,11 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
   const track={enabled:true,stopped:false,stop(){this.stopped=true;}};tracks.push(track);
   return {getTracks:()=>[track],getAudioTracks:()=>[track]};
  }};
- const env={window:{AudioContext,addEventListener(){},removeEventListener(){}},document:{createElement:()=>new Element()},navigator:{mediaDevices:media},isSecureContext:true,AudioWorkletNode:class{constructor(){this.port={onmessage:null};captures.push(this);}connect(){}disconnect(){}}};
+ const events=new Map();
+ const env={window:{AudioContext,addEventListener:(key,fn)=>events.set(key,fn),removeEventListener:key=>events.delete(key)},document:{createElement:()=>new Element()},navigator:{mediaDevices:media},isSecureContext:true,AudioWorkletNode:class{constructor(){this.port={onmessage:null};captures.push(this);}connect(){}disconnect(){}}};
  for(const [key,value] of Object.entries(env))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
  const mount=new Element(),voice=createRoomVoice({mount,send:m=>sent.push(m),sendAudio:data=>packets.push(data)});
- const controls=mount.children[0].children[0].children,[mic,speaker,leave]=controls;
+ const controls=mount.children[0].children[0].children,[mic,speaker,leave,mode,talk]=controls;
  const self="11".repeat(16),peer="22".repeat(16),roster=[{id:self,voice:false},{id:peer,voice:true,muted:false}];
  const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(micRequests,0,"loading the page must not request microphone permission");
@@ -39,6 +40,18 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  mic.onclick();assert.equal(tracks[0].enabled,false);captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,1,"muting also blocks outgoing audio messages");
  mic.onclick();assert.equal(tracks[0].enabled,true);
  voice.audio(relayFrame(clientFrame(new Int16Array(VOICE_SAMPLES).fill(8192),9),peer));
+ captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,1,"playback guard prevents room audio being echoed back");
+ contexts[0].currentTime+=1;
+ captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,2,"capture resumes after acoustic tail");
+ mode.onclick();assert.equal(tracks[0].enabled,false);assert.equal(sent.at(-1).muted,true);
+ const press=()=>talk.onpointerdown({preventDefault(){},pointerId:1});
+ press();assert.equal(tracks[0].enabled,true);assert.equal(contexts[0].output.gain.value,0);
+ captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,3);
+ talk.onpointercancel();assert.equal(tracks[0].enabled,false);assert.equal(sent.at(-1).muted,true);
+ press();events.get("blur")();assert.equal(tracks[0].enabled,false,"focus loss releases hold-to-talk");
+ press();talk.onpointerup();assert.equal(tracks[0].enabled,false);
+ mic.onclick();press();assert.equal(tracks[0].enabled,false,"mute overrides held button");mic.onclick();
+ mode.onclick();assert.equal(tracks[0].enabled,true);
  assert.equal(contexts[0].played.length,1);assert.ok(Math.abs(contexts[0].played[0].buffer.samples[0]-.25)<.0001,"received PCM reaches the audio output");
  voice.audio(relayFrame(clientFrame(new Int16Array(VOICE_SAMPLES),9),peer));assert.equal(contexts[0].played.length,1,"duplicate audio is dropped");
  voice.state({id:peer,joined:false,muted:true});voice.audio(relayFrame(clientFrame(new Int16Array(VOICE_SAMPLES),10),peer));assert.equal(contexts[0].played.length,1,"audio from a player who left voice is discarded");

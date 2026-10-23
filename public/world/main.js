@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { connectCoop } from "./multiplayer.js?v=2";
-import { wallHidesAvatar } from "./camera-occlusion.js";
+import { connectCoop } from "./multiplayer.js?v=3";
+import { safeCameraPosition } from "./camera-occlusion.js?v=2";
 
 // JOBBY WORLD v0.1. Game source in the JOBBY website repo;
 // original user-owned glTF archive remains in JOBBY-3D-Viewer.
@@ -247,8 +247,8 @@ function complete(){
 }
 $("startButton").onclick=start;
 $("againButton").onclick=()=>{reset();roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
-$("charactersButton").onclick=()=>{location.href="./index.html?v=9#characters"};
-$("menuButton").onclick=()=>{location.href="./index.html?v=9"};
+$("charactersButton").onclick=()=>{location.href="./index.html?v=11#characters"};
+$("menuButton").onclick=()=>{location.href="./index.html?v=11"};
 const stick=$("stick"),knob=$("knob");
 function onStick(e){
  const rect=stick.getBoundingClientRect();
@@ -317,21 +317,8 @@ function paintMinimap(time){
  c.moveTo((px+28)*s,(pz+28)*s);
  c.lineTo((px+28)*s+Math.sin(heading)*12,(pz+28)*s+Math.cos(heading)*12);c.stroke();
 }
-// Check the whole avatar silhouette against the final interpolated camera.
-// A center-only ray misses walls covering the feet/head or the camera near plane.
-const fadedWalls=new Set();
-function updateWallVisibility(delta){
-  for(const b of blocks){
-    const mesh=b.mesh,mat=mesh.material,hidden=wallHidesAvatar(camera.position,playerGroup.position,b.box);
-    if(hidden){
-      if(!mat.transparent){mat.transparent=true;mat.needsUpdate=true;}
-      mat.opacity=.06;mat.depthWrite=false;mesh.castShadow=false;fadedWalls.add(mesh);
-    }else if(fadedWalls.has(mesh)){
-      mat.opacity=Math.min(1,mat.opacity+delta*5);
-      if(mat.opacity>=1){mat.transparent=false;mat.depthWrite=true;mat.needsUpdate=true;mesh.castShadow=true;fadedWalls.delete(mesh);}
-    }
-  }
-}
+// Walls remain fully opaque. Resolve both the goal and the interpolated camera
+// against padded wall bounds so orbit smoothing cannot pass through buildings.
 window.addEventListener("keydown",e=>{keysDown.add(e.key.toLowerCase());if(e.code==="Space")wantJump=true});
 window.addEventListener("keyup",e=>keysDown.delete(e.key.toLowerCase()));
 function collision(x,z){
@@ -379,8 +366,10 @@ function frame(){
  coop?.tick(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
  const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
- camera.position.lerp(desired,Math.min(1,delta*10));
- updateWallVisibility(delta);
+ const goal=safeCameraPosition(lookAt,desired,blocks);
+ camera.position.lerp(new THREE.Vector3(goal.x,goal.y,goal.z),Math.min(1,delta*10));
+ const safe=safeCameraPosition(lookAt,camera.position,blocks);
+ camera.position.set(safe.x,safe.y,safe.z);
  camera.lookAt(lookAt);paintMinimap(time);
  collectible.forEach((k,i)=>{k.group.rotation.y+=delta;k.group.position.y=1.6+Math.sin(time*2+i*2)*.15});
  portalMaterial.emissiveIntensity=1.2+Math.sin(time*2)*.25;
@@ -402,7 +391,7 @@ if(isCoop){
  }else{
   const playerName=localStorage.getItem("jobby-world-display-name")||"Player";
   coop=connectCoop({
-   code:roomCode,id:peerId,avatar:chosen,name:playerName,scene,
+   code:roomCode,id:peerId,avatar:chosen,name:playerName,scene,getLocalPosition:()=>playerGroup.position,
    onWelcome:m=>{if(m.status==="lobby")setStatus("Waiting for host to start…")},
    onStart:()=>{void launchCoop()},
    onKeys:keys=>{sharedKeys=keys;if(started)applySharedKeys(keys)},

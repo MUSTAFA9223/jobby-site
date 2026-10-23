@@ -3,11 +3,12 @@ import {VOICE_RATE,clientFrame,readFrame} from "./voice-protocol.js";
 export function createRoomVoice({mount,send,sendAudio}){
   let selfId="",players=[],connected=false,joining=false,joined=false,muted=false,silent=false;
   let context=null,stream=null,capture=null,source=null,output=null,sequence=0,generation=0,closed=false;
+  let pushMode=false,talkHeld=false,remoteUntil=0;
   const queues=new Map(),playing=new Set();
   const panel=document.createElement("section");panel.className="room-voice";panel.setAttribute("aria-label","Room voice chat");
   const controls=document.createElement("div");controls.className="voice-buttons";
-  const mic=document.createElement("button"),speaker=document.createElement("button"),leave=document.createElement("button");
-  for(const button of [mic,speaker,leave]){button.type="button";controls.append(button);}
+  const mic=document.createElement("button"),speaker=document.createElement("button"),leave=document.createElement("button"),mode=document.createElement("button"),talk=document.createElement("button");
+  for(const button of [mic,speaker,leave,mode,talk]){button.type="button";controls.append(button);}
   mic.textContent="🎙 JOIN VOICE";speaker.textContent="🔊 SOUND ON";leave.textContent="LEAVE VOICE";
   const status=document.createElement("p");status.className="voice-status";status.setAttribute("role","status");
   panel.append(controls,status);mount.append(panel);
@@ -15,12 +16,16 @@ export function createRoomVoice({mount,send,sendAudio}){
     const count=players.filter(p=>p.voice&&p.id!==selfId).length+(joined?1:0);
     mic.disabled=!connected||joining;mic.textContent=joining?"CONNECTING…":!joined?"🎙 JOIN VOICE":muted?"🔇 UNMUTE MIC":"🎙 MUTE MIC";
     mic.setAttribute("aria-pressed",String(joined&&!muted));
-    speaker.hidden=leave.hidden=!joined;speaker.textContent=silent?"🔇 SOUND OFF":"🔊 SOUND ON";
-    status.textContent=note||(!connected?"Voice reconnects when the room connects.":!joined?`${count} in voice · Tap JOIN VOICE to enable your microphone.`:`${count} in voice · ${muted?"Your mic is muted.":"Your mic is on."}`);
+    speaker.hidden=leave.hidden=mode.hidden=!joined;speaker.textContent=silent?"🔇 SOUND OFF":"🔊 SOUND ON";
+    mode.textContent=pushMode?"MODE: HOLD TO TALK":"MODE: OPEN MIC";
+    talk.hidden=!joined||!pushMode;talk.disabled=muted;talk.textContent=talkHeld?"🎙 TALKING…":"🎙 HOLD TO TALK";talk.setAttribute("aria-pressed",String(talkHeld));
+    status.textContent=note||(!connected?"Voice reconnects when the room connects.":!joined?`${count} in voice · Tap JOIN VOICE to enable your microphone.`:`${count} in voice · ${muted?"Your mic is muted.":pushMode?"Hold the talk button to speak.":"Echo guard active. Use HOLD TO TALK near other phones."}`);
   }
-  function announce(){send({type:"voice",joined,muted:joined&&muted});}
+  const transmitting=()=>joined&&!muted&&(!pushMode||talkHeld);
+  function announce(){send({type:"voice",joined,muted:!transmitting()});}
+  function updateMic(){stream?.getAudioTracks().forEach(track=>track.enabled=transmitting());if(output)output.gain.value=silent||(pushMode&&talkHeld)?0:.85;announce();paint();}
   function stop(note){
-    generation++;joining=false;joined=false;muted=false;
+    generation++;joining=false;joined=false;muted=false;talkHeld=false;remoteUntil=0;
     if(capture){capture.port.onmessage=null;capture.disconnect();capture=null;}
     source?.disconnect();source=null;
     stream?.getTracks().forEach(track=>track.stop());stream=null;
@@ -38,20 +43,26 @@ export function createRoomVoice({mount,send,sendAudio}){
       await current.resume();
       if(attempt!==generation||closed)return;
       if(!current.audioWorklet)throw Error("unsupported");
-      const obtained=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1},video:false});
+      const obtained=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false,channelCount:1},video:false});
       if(attempt!==generation||closed){obtained.getTracks().forEach(t=>t.stop());return;}
       stream=obtained;
-      await current.audioWorklet.addModule(new URL("./voice-capture.js",import.meta.url));
+      await current.audioWorklet.addModule(new URL("./voice-capture.js?v=2",import.meta.url));
       if(attempt!==generation||closed)return;
       output=current.createGain();output.gain.value=silent?0:1;output.connect(current.destination);
       source=current.createMediaStreamSource(stream);
       capture=new AudioWorkletNode(current,"jobby-voice-capture",{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[1]});
-      capture.port.onmessage=event=>{if(joined&&!muted&&connected&&event.data instanceof ArrayBuffer)sendAudio(clientFrame(new Int16Array(event.data),sequence++));};
+      capture.port.onmessage=event=>{
+        if(!transmitting()||!connected||!(event.data instanceof ArrayBuffer))return;
+        // Native AEC is not enough for every speakerphone. Do not send room
+        // playback straight back while it is audible (plus a short acoustic tail).
+        if(!pushMode&&!silent&&current.currentTime<remoteUntil)return;
+        sendAudio(clientFrame(new Int16Array(event.data),sequence++));
+      };
       // The processor outputs silence: your own microphone is never monitored.
       source.connect(capture);capture.connect(current.destination);
       joined=true;joining=false;muted=false;
       for(const track of stream.getAudioTracks())track.onended=()=>{if(joined)stop("Microphone stopped. Tap JOIN VOICE to reconnect.");};
-      announce();paint();
+      updateMic();
     }catch(error){
       if(attempt!==generation||closed)return;
       const message=error.name==="NotAllowedError"?"Microphone access was denied. Allow it in browser site settings, then tap JOIN VOICE.":error.name==="NotFoundError"?"No microphone was found.":"Could not start voice. Open this page in Chrome or Safari and try again.";
@@ -60,13 +71,18 @@ export function createRoomVoice({mount,send,sendAudio}){
   }
   mic.onclick=()=>{
     if(!joined){void join();return;}
-    muted=!muted;stream?.getAudioTracks().forEach(track=>track.enabled=!muted);announce();paint();
+    muted=!muted;talkHeld=false;updateMic();
     if(context?.state==="suspended")void context.resume().catch(()=>{});
   };
-  speaker.onclick=()=>{if(context&&context.state!=="running"){void context.resume().then(()=>paint()).catch(()=>paint("Audio is paused. Tap SOUND ON to resume."));return;}silent=!silent;if(output)output.gain.value=silent?0:1;paint();};
+  speaker.onclick=()=>{if(context&&context.state!=="running"){void context.resume().then(()=>paint()).catch(()=>paint("Audio is paused. Tap SOUND ON to resume."));return;}silent=!silent;updateMic();};
+  mode.onclick=()=>{pushMode=!pushMode;talkHeld=false;updateMic();};
+  const releaseTalk=()=>{if(talkHeld){talkHeld=false;updateMic();}};
+  talk.onpointerdown=event=>{if(!joined||muted||!pushMode)return;event.preventDefault();talk.setPointerCapture?.(event.pointerId);talkHeld=true;updateMic();};
+  talk.onpointerup=talk.onpointercancel=talk.onlostpointercapture=releaseTalk;
+  window.addEventListener("blur",releaseTalk);
   leave.onclick=()=>stop("You left voice. Tap JOIN VOICE to reconnect.");
   function audio(buffer){
-    if(!joined||!context||!output||context.state!=="running")return;
+    if(!joined||!context||!output||context.state!=="running"||(pushMode&&talkHeld))return;
     const frame=readFrame(buffer);if(!frame||frame.id===selfId||!players.some(p=>p.id===frame.id&&p.voice&&!p.muted))return;
     const old=queues.get(frame.id);
     // Reject duplicate/out-of-order packets, including sequence wraparound.
@@ -78,6 +94,7 @@ export function createRoomVoice({mount,send,sendAudio}){
     const bufferNode=context.createBuffer(1,frame.samples.length,VOICE_RATE);bufferNode.copyToChannel(frame.samples,0);
     const node=context.createBufferSource();node.buffer=bufferNode;node.connect(output);playing.add(node);
     node.onended=()=>{playing.delete(node);node.disconnect();};node.start(next);
+    if(!silent)remoteUntil=Math.max(remoteUntil,next+bufferNode.duration+.18);
     queues.set(frame.id,{next:next+bufferNode.duration,sequence:frame.sequence});
   }
   const unload=()=>stop();window.addEventListener("pagehide",unload);
@@ -87,6 +104,6 @@ export function createRoomVoice({mount,send,sendAudio}){
     state(message){players=players.map(p=>p.id===message.id?{...p,voice:message.joined===true,muted:message.muted===true}:p);paint();},
     audio,
     disconnected(){connected=false;stop("Room disconnected. Rejoin voice after reconnecting.");},
-    close(){closed=true;connected=false;stop();window.removeEventListener("pagehide",unload);panel.remove();}
+    close(){closed=true;connected=false;stop();window.removeEventListener("pagehide",unload);window.removeEventListener("blur",releaseTalk);panel.remove();}
   };
 }

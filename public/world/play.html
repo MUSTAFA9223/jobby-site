@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - Mobile 3D adventure with original characters, touch controls, a house, a maze, and an escape challenge">
-  <title>JOBBY WORLD | Alpha 0.9</title>
-  <link rel="stylesheet" href="./voice.css?v=1">
+  <title>JOBBY WORLD | Alpha 0.10</title>
+  <link rel="stylesheet" href="./voice.css?v=2">
   <style>
     :root{color-scheme:dark;--bg:#11112c;--deep:#090d26;--line:rgba(203,201,255,.22);--purple:#9974ff;--mint:#60f5c3;--yellow:#ffd76a;--ink:#f5f4ff}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);font-family:system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ink)}
@@ -60,7 +60,7 @@
   <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="Area minimap"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 RESET</button><button id="cameraZoom" class="cameraButton">🔍 ZOOM</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>RUN</button><button id="jump" class="act"><span class="emoji">⬆</span>JUMP</button></div><div id="hint">Drag to rotate 360° · Pinch with two fingers to zoom</div></div>
   <div id="menu">
     <div class="glass panel">
-      <div class="eyebrow">Mobile 3D prototype · Alpha 0.9</div>
+      <div class="eyebrow">Mobile 3D prototype · Alpha 0.10</div>
       <div class="headline">JOBBY <em>WORLD</em></div>
       <div class="subtitle">Play as your favorite hero in a full 3D world.<br>Explore the grounds, enter the house, find all three keys, and escape.</div>
       <div class="secTitle">CHOOSE YOUR HERO <span style="color:#a5a3d6;font-weight:400">— 4 free · 2 unlockable with points</span></div>
@@ -70,10 +70,10 @@
       <a class="mainBtn secondaryBtn" href="./rooms.html" style="box-sizing:border-box;text-decoration:none">👥 PRIVATE CO-OP + VOICE</a>
       <div id="loadBar"><div id="barProgress"></div></div>
       <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">Ready — only your selected character will load (JOBBY ~1.9 MB)</div>
-      <p class="notice">Solo points are saved on this device. Private co-op supports 2–6 players with optional room voice. After entering the game, tap JOIN VOICE to enable your mic.</p>
+      <p class="notice">Solo points are saved on this device. Private co-op supports 2–12 players with optional room voice. After entering the game, tap JOIN VOICE to enable your mic.</p>
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">ESCAPE COMPLETE!</div><p class="subtitle">You collected all three keys and reached the gate. You earned <b style="color:#ffd76a">50 points</b> for escaping.</p><button class="mainBtn" id="againButton">↻ PLAY AGAIN</button><button class="mainBtn secondaryBtn" id="charactersButton">CHOOSE ANOTHER HERO</button></div></div>
-  <script type="module" src="./main.js?v=10"></script>
+  <script type="module" src="./main.js?v=11"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ on:
     branches:
       - feature/world-coop-rooms
       - feature/world-voice-walls
+      - feature/world-12-echo
   pull_request:
     paths:
       - 'worker.js'
@@ -33,6 +34,7 @@ jobs:
           node --check public/world/hub.js
           node --check public/world/rooms.js
           node --check public/world/multiplayer.js
+          node --check public/world/avatar-cache.js
           node --check public/world/voice.js
           node --check public/world/voice-capture.js
           node --check public/world/voice-protocol.js
@@ -41,5 +43,5 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Build Cloudflare Worker without deployment
         run: npx wrangler deploy --dry-run --outdir .build/world
-      - name: Test real WebSocket voice relay with six clients
+      - name: Test real WebSocket voice relay with twelve clients
         run: node tests/world-voice-runtime.mjs .build/world/worker.js
