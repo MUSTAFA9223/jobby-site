@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
+import {clientFrame,relayFrame,readFrame,VOICE_SAMPLES} from "../public/world/voice-protocol.js";
 
 const code=readFileSync(new URL("../worker.js",import.meta.url),"utf8")
  .replace(/^import \{ DurableObject \} from "cloudflare:workers";/m,"")
+ .replace(/^import \{ relayFrame \} from .*;$/m,"")
  .replace(/^export default/m,"const api =")
  .replace(/^export class WorldRoom/m,"class WorldRoom");
 class MockResponse {
@@ -14,7 +16,7 @@ class MockResponse {
 const socketPairs=[];
 class Socket {
  constructor(){this.readyState=1;this.messages=[];this.attachment=null}
- send(message){this.messages.push(JSON.parse(message))}
+ send(message){this.messages.push(typeof message==="string"?JSON.parse(message):message.slice(0))}
  close(){this.readyState=3}
  deserializeAttachment(){return this.attachment}
  serializeAttachment(obj){this.attachment=structuredClone(obj)}
@@ -25,8 +27,8 @@ class WebSocketPairMock {
 class Base {
  constructor(ctx){this.ctx=ctx}
 }
-const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL",code+"\nreturn {WorldRoom,publicPlayerId};");
-const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL);
+const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame",code+"\nreturn {WorldRoom,publicPlayerId};");
+const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame);
 const storage=new Map(),sockets=[];
 const ctx={
  storage:{get:async key=>storage.get(key),put:async(key,value)=>storage.set(key,structuredClone(value))},
@@ -39,6 +41,40 @@ const req=(path,method="GET",body=null,upgrade=false)=>({
  method,
  headers:{get:key=>key.toLowerCase()==="upgrade"&&upgrade?"websocket":null},
  json:async()=>JSON.parse(body||"null")
+});
+
+test("Room voice requires opt-in, enforces mute, isolates rooms and authenticates sender",async()=>{
+ const makeRoom=async()=>{
+  const data=new Map(),peers=[];
+  const room=new WorldRoom({storage:{get:async k=>data.get(k),put:async(k,v)=>data.set(k,structuredClone(v))},getWebSockets:()=>peers,acceptWebSocket:ws=>peers.push(ws)},{});
+  await room.fetch(req("/_create","POST",JSON.stringify({code:"DEF234",ownerId:await publicPlayerId(hostSecret)})));
+  for(const token of [hostSecret,guestSecret,"third-player-random-secret-1234"])await room.fetch(req("/_socket?token="+token+"&avatar=JOBBY","GET",null,true));
+  return {room,peers,data};
+ };
+ const {room,peers,data}=await makeRoom(),other=await makeRoom();
+ const [host,guest,bystander]=peers;
+ const frame=clientFrame(new Int16Array(VOICE_SAMPLES).fill(500),42);
+ const audioCount=ws=>ws.messages.filter(m=>m instanceof ArrayBuffer).length;
+ await room.webSocketMessage(host,frame);assert.equal(audioCount(guest),0,"mic off by default");
+ const voice=(ws,joined,muted)=>room.webSocketMessage(ws,JSON.stringify({type:"voice",joined,muted,id:"spoofed"}));
+ await voice(host,true,false);await voice(guest,true,true);
+ await room.webSocketMessage(host,frame);
+ assert.equal(audioCount(host),0,"no self echo");assert.equal(audioCount(guest),1,"muted receiver can still hear");
+ assert.equal(audioCount(bystander),0,"nonparticipants do not receive audio");
+ assert.equal(audioCount(other.peers[1]),0,"audio never crosses room instances");
+ const received=readFrame(guest.messages.find(m=>m instanceof ArrayBuffer));
+ assert.equal(received.id,await publicPlayerId(hostSecret));assert.equal(received.sequence,42);
+ assert.ok(guest.messages.some(m=>m.type==="voice_state"&&m.id===received.id),"identity derived from socket");
+ await voice(host,true,true);await room.webSocketMessage(host,frame);assert.equal(audioCount(guest),1,"muted sender cannot transmit");
+ await voice(host,true,false);await voice(guest,false,false);await room.webSocketMessage(host,frame);assert.equal(audioCount(guest),1,"leaving stops receipt");
+ await voice(guest,true,false);
+ for(const value of [new ArrayBuffer(40000),new ArrayBuffer(12),new Uint8Array(frame.byteLength).buffer])await room.webSocketMessage(host,value);
+ assert.equal(audioCount(guest),1,"oversized, truncated and unknown protocol frames rejected");
+ let info=host.deserializeAttachment();info.audioWindow=Date.now();info.audioCount=18;host.serializeAttachment(info);
+ await room.webSocketMessage(host,frame);assert.equal(audioCount(guest),1,"audio flood is bounded");
+ info=host.deserializeAttachment();info.audioWindow=0;info.expiresAt=Date.now()-1;host.serializeAttachment(info);
+ await room.webSocketMessage(host,frame);assert.equal(audioCount(guest),1,"expired room cannot relay audio");
+ assert.deepEqual(Object.keys(await data.get("room")).sort(),["code","createdAt","hostId","keys","status"],"audio is not stored in room storage");
 });
 const hostSecret="host-session-random-secret-12345";
 const guestSecret="guest-session-random-secret-1234";

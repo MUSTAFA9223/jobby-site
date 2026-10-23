@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { relayFrame } from "./public/world/voice-protocol.js";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const ROOM_PATTERN = /^[A-HJ-NP-Z2-9]{6}$/;
@@ -39,7 +40,7 @@ export default {
         "x-content-type-options":"nosniff"}
       });
     }
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.8"},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.9",voice:"room-audio"},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){
@@ -81,7 +82,7 @@ export class WorldRoom extends DurableObject {
   players(){
     return this.sockets().map(ws=>{
       const a=ws.deserializeAttachment()||{};
-      return {id:a.id,name:a.name,avatar:a.avatar,x:a.x??0,z:a.z??18,y:a.y??0,h:a.h??0,anim:a.anim||"Idle"};
+      return {id:a.id,name:a.name,avatar:a.avatar,x:a.x??0,z:a.z??18,y:a.y??0,h:a.h??0,anim:a.anim||"Idle",voice:a.voice===true,muted:a.muted!==false};
     });
   }
   broadcast(message,exclude=null){
@@ -115,7 +116,7 @@ export class WorldRoom extends DurableObject {
     const pair=new WebSocketPair(),[client,server]=Object.values(pair);
     this.ctx.acceptWebSocket(server);
     const slot=Math.max(0,current.length%6);
-    const info={id,name,avatar,x:(slot%3-1)*1.5,z:18+Math.floor(slot/3)*1.5,y:0,h:0,anim:"Idle",last:0};
+    const info={id,name,avatar,x:(slot%3-1)*1.5,z:18+Math.floor(slot/3)*1.5,y:0,h:0,anim:"Idle",last:0,voice:false,muted:true,expiresAt:room.createdAt+TTL};
     server.serializeAttachment(info);
     if(!this.sockets().some(ws=>ws!==server && ws.deserializeAttachment()?.id===room.hostId)){
       room.hostId=id;await this.ctx.storage.put("room",room);
@@ -125,10 +126,30 @@ export class WorldRoom extends DurableObject {
     return new Response(null,{status:101,webSocket:client});
   }
   async webSocketMessage(ws,message){
+    const a=ws.deserializeAttachment();if(!a||ws.readyState!==1)return;
+    if(message instanceof ArrayBuffer){
+      if(!a.voice||a.muted||Date.now()>(a.expiresAt||0))return;
+      const data=relayFrame(message,a.id);if(!data)return;
+      const now=Date.now();
+      if(!a.audioWindow||now-a.audioWindow>=1000){a.audioWindow=now;a.audioCount=0;}
+      if((a.audioCount||0)>=18)return;
+      a.audioCount=(a.audioCount||0)+1;ws.serializeAttachment(a);
+      // Relay only within this room and only to people who explicitly joined voice.
+      // Sender identity comes from the authenticated socket, never the audio payload.
+      for(const target of this.sockets()){
+        if(target===ws||!target.deserializeAttachment()?.voice||(target.bufferedAmount||0)>65536)continue;
+        try{target.send(data)}catch{}
+      }
+      return;
+    }
     if(typeof message!=="string" || message.length>600)return;
-    const a=ws.deserializeAttachment();if(!a)return;
     let m;try{m=JSON.parse(message)}catch{return}
     if(!m || typeof m!=="object")return;
+    if(m.type==="voice"){
+      if(typeof m.joined!=="boolean"||typeof m.muted!=="boolean"||Date.now()>(a.expiresAt||0))return;
+      a.voice=m.joined;a.muted=!m.joined||m.muted;ws.serializeAttachment(a);
+      this.broadcast({type:"voice_state",id:a.id,joined:a.voice,muted:a.muted});return;
+    }
     if(m.type==="pose"){
       const nums=[m.x,m.z,m.y,m.h];
       if(nums.some(n=>typeof n!=="number"||!Number.isFinite(n)))return;

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+import {createRoomVoice} from "./voice.js?v=1";
 
 const ICON={JOBBY:"JOBBY",Casual_Male:"Explorer",Ninja_Male:"Ninja",Pug:"Pug",Wizard:"Wizard",Pirate_Female:"Pirate"};
 const JOBBY_MODEL="./models/JOBBY.glb";
@@ -21,6 +22,10 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
   const remotes=new Map();
   let publicId=null;
   let ws=null,lastPose=0,closed=false,lastKey=new Map(),lastFinish=0,attempts=0;
+  const voice=createRoomVoice({mount:document.getElementById("voiceHud"),
+    send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
+    sendAudio:data=>{if(ws?.readyState===WebSocket.OPEN&&ws.bufferedAmount<16384)ws.send(data);}
+  });
   function removeRemote(id){
     const r=remotes.get(id);if(!r)return;
     remotes.delete(id);scene.remove(r.group);
@@ -73,16 +78,20 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
     const q=new URLSearchParams({token:id,avatar,name});
     const proto=location.protocol==="https:"?"wss:":"ws:";
     ws=new WebSocket(proto+"//"+location.host+"/api/world/rooms/"+code+"/socket?"+q);
+    ws.binaryType="arraybuffer";
     ws.onopen=()=>{attempts=0};
     ws.onmessage=event=>{
+      if(event.data instanceof ArrayBuffer){voice.audio(event.data);return;}
       let m;try{m=JSON.parse(event.data)}catch{return}
       if(m.type==="welcome"){
         publicId=m.selfId;
+        voice.roster(m.players,publicId);
         syncRoster(m.players||[]);onKeys(m.keys||[]);
         onWelcome(m);
         if(m.status==="playing")onStart();
         if(m.status==="finished")onComplete(m);
-      }else if(m.type==="roster"){syncRoster(m.players||[])}
+      }else if(m.type==="roster"){syncRoster(m.players||[]);voice.roster(m.players,publicId);}
+      else if(m.type==="voice_state"){voice.state(m);}
       else if(m.type==="pose"){
         const r=remotes.get(m.id);if(r)Object.assign(r,{x:m.x,z:m.z,y:m.y,h:m.h,anim:m.anim});
       }else if(m.type==="start"){onKeys([]);onStart()}
@@ -93,6 +102,7 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
     };
     ws.onerror=()=>onError("Connection issue. Check your internet.");
     ws.onclose=e=>{
+      voice.disconnected();
       if(closed)return;
       if(e.code===4001){onError("Another tab connected with this player session.");return}
       if(attempts++<4){onError("Reconnecting to room…");setTimeout(open,Math.min(5000,500*Math.pow(2,attempts)))}
@@ -123,6 +133,6 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
         selectAnimation(r,r.anim);r.mixer?.update(dt);
       }
     },
-    close(){closed=true;ws?.close();for(const key of [...remotes.keys()])removeRemote(key)}
+    close(){closed=true;voice.close();ws?.close();for(const key of [...remotes.keys()])removeRemote(key)}
   };
 }
