@@ -10,6 +10,7 @@ This release is currently on `feature/world-coop-rooms` and **is not deployed or
 - `/world/play.html`: solo adventure preserved.
 - `/world/rooms.html`: create private room, join with a six-character code, copy shareable invite link, view live player list.
 - `/world/play.html?room=ABC234`: the same 3D arena with multiple independent player avatars.
+- `GET /api/world/health`: reports Worker room binding readiness.
 - `POST /api/world/rooms`: creates an unlisted code (needs same-origin JSON, a random session ID).
 - `GET /api/world/rooms/{CODE}`: retrieves room status.
 - `GET /api/world/rooms/{CODE}/socket`: upgraded WebSocket for presence, 3D movement and shared objectives.
