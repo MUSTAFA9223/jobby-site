@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { connectCoop } from "./multiplayer.js";
+import { connectCoop } from "./multiplayer.js?v=2";
+import { wallHidesAvatar } from "./camera-occlusion.js";
 
 // JOBBY WORLD v0.1. Game source in the JOBBY website repo;
 // original user-owned glTF archive remains in JOBBY-3D-Viewer.
@@ -316,32 +317,20 @@ function paintMinimap(time){
  c.moveTo((px+28)*s,(pz+28)*s);
  c.lineTo((px+28)*s+Math.sin(heading)*12,(pz+28)*s+Math.cos(heading)*12);c.stroke();
 }
-// Alpha 0.7: When a solid obstacle crosses the line of sight,
-// fade it instead of swinging the camera in front of the player.
-// This keeps the entire avatar visible close to house and maze walls.
+// Check the whole avatar silhouette against the final interpolated camera.
+// A center-only ray misses walls covering the feet/head or the camera near plane.
 const fadedWalls=new Set();
-function clearFadedWalls(){
-  for(const mesh of fadedWalls){
-    mesh.material.transparent=false;
-    mesh.material.opacity=1;
-    mesh.material.depthWrite=true;
-  }
-  fadedWalls.clear();
-}
-function safeCamera(origin,target){
-  const segment=target.clone().sub(origin);
-  const distance=segment.length();
-  if(distance<.001)return target.clone();
-  const ray=new THREE.Ray(origin,segment.multiplyScalar(1/distance));
+function updateWallVisibility(delta){
   for(const b of blocks){
-    const hit=ray.intersectBox(b.box,new THREE.Vector3());
-    if(!hit || hit.distanceTo(origin)>distance)continue;
-    b.mesh.material.transparent=true;
-    b.mesh.material.opacity=.12;
-    b.mesh.material.depthWrite=false;
-    fadedWalls.add(b.mesh);
+    const mesh=b.mesh,mat=mesh.material,hidden=wallHidesAvatar(camera.position,playerGroup.position,b.box);
+    if(hidden){
+      if(!mat.transparent){mat.transparent=true;mat.needsUpdate=true;}
+      mat.opacity=.06;mat.depthWrite=false;mesh.castShadow=false;fadedWalls.add(mesh);
+    }else if(fadedWalls.has(mesh)){
+      mat.opacity=Math.min(1,mat.opacity+delta*5);
+      if(mat.opacity>=1){mat.transparent=false;mat.depthWrite=true;mat.needsUpdate=true;mesh.castShadow=true;fadedWalls.delete(mesh);}
+    }
   }
-  return target.clone();
 }
 window.addEventListener("keydown",e=>{keysDown.add(e.key.toLowerCase());if(e.code==="Space")wantJump=true});
 window.addEventListener("keyup",e=>keysDown.delete(e.key.toLowerCase()));
@@ -390,10 +379,8 @@ function frame(){
  coop?.tick(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
  const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
- clearFadedWalls();
- const safeTarget=safeCamera(lookAt,desired);
- camera.position.lerp(safeTarget,Math.min(1,delta*10));
- camera.position.copy(safeCamera(lookAt,camera.position));
+ camera.position.lerp(desired,Math.min(1,delta*10));
+ updateWallVisibility(delta);
  camera.lookAt(lookAt);paintMinimap(time);
  collectible.forEach((k,i)=>{k.group.rotation.y+=delta;k.group.position.y=1.6+Math.sin(time*2+i*2)*.15});
  portalMaterial.emissiveIntensity=1.2+Math.sin(time*2)*.25;
@@ -401,6 +388,7 @@ function frame(){
 }
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 roster();wallet();$("selectedInfo").textContent="Selected hero: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");
+$("voiceHud").classList.toggle("hidden",!isCoop);
 if(isCoop){
  $("startButton").disabled=true;
  $("startButton").textContent="CONNECTING TO CO-OP ROOM…";
@@ -423,5 +411,6 @@ if(isCoop){
   });
  }
 }
+window.addEventListener("pagehide",()=>coop?.close());
 frame();
 if(!isCoop&&new URLSearchParams(location.search).has("autostart"))start();

@@ -1,3 +1,4 @@
+import {createRoomVoice} from "./voice.js?v=1";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
 const KEY="jobby-world-room-peer";
@@ -5,6 +6,10 @@ let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[];
 let selected="JOBBY";
+const voice=createRoomVoice({mount:$("lobbyVoice"),
+ send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
+ sendAudio:data=>{if(ws?.readyState===WebSocket.OPEN&&ws.bufferedAmount<16384)ws.send(data);}
+});
 try{selected=JSON.parse(localStorage.getItem("jobby-world-v01")||"{}").selected||"JOBBY"}catch{}
 const progress=(()=>{try{return JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}catch{return {}}})();
 for(const option of $("avatar").options){
@@ -27,7 +32,7 @@ function render(){
     const face=document.createElement("span");face.className="face";face.textContent=emoji(p.avatar);
     const who=document.createElement("div");who.className="who";
     const label=document.createElement("b");label.textContent=p.name+(p.id===publicId?" (You)":"");
-    const sub=document.createElement("small");sub.textContent=p.id===host?"HOST · "+p.avatar:p.avatar;
+    const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+p.avatar+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
   const iamHost=publicId===host,waiting=state==="lobby";
@@ -38,7 +43,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  location.href="./play.html?room="+encodeURIComponent(code)+"&v=10";
+  voice.close();location.href="./play.html?room="+encodeURIComponent(code)+"&v=11";
 }
 function connect(){
   if(ws){ws.onclose=null;ws.close()}
@@ -49,21 +54,24 @@ function connect(){
   sessionStorage.setItem("jobby-world-room-avatar",$("avatar").value);
   const protocol=location.protocol==="https:"?"wss:":"ws:";
   ws=new WebSocket(protocol+"//"+location.host+"/api/world/rooms/"+code+"/socket?"+params);
+  ws.binaryType="arraybuffer";
   ws.onmessage=ev=>{
+    if(ev.data instanceof ArrayBuffer){voice.audio(ev.data);return;}
     let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==="welcome"){
-      publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];render();
+      publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
       if(state==="finished")status("Match finished. Create a new room for another escape.");
     }
-    if(m.type==="roster"){host=m.hostId;roster=m.players||[];render()}
+    if(m.type==="roster"){host=m.hostId;roster=m.players||[];voice.roster(roster,publicId);render()}
+    if(m.type==="voice_state"){voice.state(m);roster=roster.map(p=>p.id===m.id?{...p,voice:m.joined,muted:m.muted}:p);render();}
     if(m.type==="start")beginGame();
     if(m.type==="error")status(m.message||"Room error.");
     if(m.type==="complete"){state="finished";status("Your squad escaped!")}
   };
   ws.onopen=()=>status("Connected to private room "+code+".");
   ws.onerror=()=>status("Connection failed. The multiplayer service may not be deployed yet.");
-  ws.onclose=()=>{status("Disconnected. Return and rejoin with the same room code.");$("start").disabled=true};
+  ws.onclose=()=>{voice.disconnected();status("Disconnected. Return and rejoin with the same room code.");$("start").disabled=true};
 }
 async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
@@ -94,6 +102,6 @@ $("create").onclick=create;$("join").onclick=join;
 $("roomInput").addEventListener("keydown",e=>{if(e.key==="Enter")join()});
 $("copyCode").onclick=()=>copy(code);$("copyInvite").onclick=()=>copy(invite());
 $("start").onclick=()=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"start"}))};
-$("leave").onclick=()=>{ws?.close();location.href="./index.html?v=9"};
+$("leave").onclick=()=>{voice.close();ws?.close();location.href="./index.html?v=10"};
 const incoming=new URLSearchParams(location.search).get("code")?.toUpperCase()||"";
 if(re.test(incoming)){$("roomInput").value=incoming;showStatus("Invite code detected. Tap JOIN ROOM to connect.")}

@@ -1,45 +1,41 @@
-# JOBBY WORLD — Alpha 0.8 (co-op development branch)
+# JOBBY WORLD — Alpha 0.9
 
-## One website, one repository
-All new source is inside `MUSTAFA9223/jobby-site`: the existing website, the 3D solo game, the private-room frontend, the Cloudflare Worker API, and the Durable Object room coordinator. No Railway service or second gameplay website is used.
+One repository (`MUSTAFA9223/jobby-site`) and one official website (`jobby.lol`).
+The existing homepage, solo game, points and character unlocks are retained.
 
-This release is currently on `feature/world-coop-rooms` and **is not deployed or verified on the live phone website**. Keep `main` production unchanged until the Cloudflare deployment has been checked.
+## Play
+- `/world/`: character selection, solo escape and private co-op.
+- `/world/rooms.html`: create a room or join by six-character code, 2–6 players.
+- `/world/play.html?room=ABC234`: cooperative arena with independent characters and shared keys.
+- `/api/world/health`: Worker health and release version.
 
-## Routes (once the branch is deployed)
-- `/world/index.html`: 3D menu, choose a hero, local points, solo mode and PRIVATE CO-OP entry.
-- `/world/play.html`: solo adventure preserved.
-- `/world/rooms.html`: create private room, join with a six-character code, copy shareable invite link, view live player list.
-- `/world/play.html?room=ABC234`: the same 3D arena with multiple independent player avatars.
-- `GET /api/world/health`: reports Worker room binding readiness.
-- `POST /api/world/rooms`: creates an unlisted code (needs same-origin JSON, a random session ID).
-- `GET /api/world/rooms/{CODE}`: retrieves room status.
-- `GET /api/world/rooms/{CODE}/socket`: upgraded WebSocket for presence, 3D movement and shared objectives.
-- `/world/models/JOBBY.glb`: same-origin proxy to the original user-owned 3D asset on GitHub Raw.
+## Alpha 0.9
+- Room voice is available in the lobby and during co-op gameplay.
+- Tap **JOIN VOICE** and grant microphone permission on each device.
+- **MUTE MIC**, **SOUND ON/OFF** and **LEAVE VOICE** control capture and playback independently.
+- Voice stops and releases microphone tracks on leaving the page or losing the room connection.
+- Moving from lobby to game opens a new page: tap **JOIN VOICE** again in-game.
+- Microphones are off by default. Only participants who opt into voice receive audio frames.
+- Live audio passes through the existing room WebSocket on Cloudflare. No separate hosting service, TURN account or voice subscription is required.
+- Audio is not recorded or stored. Frames use 16 kHz mono PCM in 80 ms packets, silence gating, bounded playback queues and rate/size limits. Bandwidth is roughly 32 KB/s per actively speaking participant before transport overhead; Cloudflare usage quotas still apply.
+- Camera occlusion now samples the complete hero silhouette at feet, torso, head and both sides. Blocking walls fade immediately, stop casting obstructing shadows and restore smoothly after the camera clears them.
 
-## Scope implemented on this branch
-- One same-domain Cloudflare Worker serves the existing site; only multiplayer API and the JOBBY proxy path call the Worker before static assets.
-- SQLite-backed Durable Object room state and WebSocket hibernation support.
-- 2–6 concurrent browser participants, host-controlled start, room join, leave and roster updates.
-- Join code, invite link, English-only UI, avatar selection and camera controls.
-- WebSocket pose relay and individual Three.js models for other squad members.
-- Three shared server-validated key pickups and server-triggered team escape completion.
-- The solo version, local points, character unlocks and leaderboard are preserved.
-- The co-op mode **does not issue points or tokens**, since server-side account identity and an anti-cheat economy have not been implemented.
-- Does not include voice chat, global leaderboard, persistent accounts or user moderation.
+## Architecture
+`worker.js` serves the same static website and routes multiplayer requests to the SQLite-backed `WorldRoom` Durable Object. Each room has its own state and WebSockets. Audio sender identity is derived from the authenticated socket rather than client-supplied metadata. Audio never enters Durable Object storage.
 
-## Important limitations
-- An unlisted room code is not a secure password. Do not share it publicly.
-- Rooms have a 24-hour lifetime, up to six connections. The host needs another player before starting.
-- Basic range validation for keys and positions exists, but there is no full server-side physics anti-cheat.
-- Browser connections should be tested on two **different mobile devices** after deployment. JavaScript syntax checks do not prove network or animation quality.
-- Durable Objects use Cloudflare Workers plan quotas. The free plan can support SQLite-backed Durable Objects, subject to usage limits.
-- JOBBY's binary is still stored in the earlier user-owned `JOBBY-3D-Viewer` repository; the new Worker serves it to the browser through a `jobby.lol` URL with edge caching. To completely eliminate the other repository dependency, copy the `JOBBY.glb` binary into `public/world/models/` using an authenticated Git or GitHub binary upload and then remove the Worker proxy.
-- Because adding `main="worker.js"` and a Durable Object binding changes production deployment behavior, verify Cloudflare access, the Worker binding and the `/health` / static homepage before promoting the branch.
+The JOBBY model is served at `/world/models/JOBBY.glb` through the existing user-owned model repository proxy. Other heroes remain local GLB files.
 
-## Deployment readiness and safe checks
-1. Make sure Cloudflare Worker `jobby` is the site's production deployment and the Wrangler account has access to the same project.
-2. Build/test this branch separately with `npm ci` and `npx wrangler dev`.
-3. Check `/world/index.html`, `/world/rooms.html`, and the REST create/status endpoints.
-4. Start two mobile sessions in the same room; verify each sees the other's character, shared key state, and team escape.
-5. Verify `/world/models/JOBBY.glb` serves a nonempty GLB file and test character animations.
-6. Only after successful checks, merge or explicitly deploy the branch to the existing Worker/custom domain.
+## Validation
+```sh
+node --test tests/*.test.mjs
+npm install --no-audit --no-fund
+npx wrangler deploy --dry-run --outdir .build/world
+node tests/world-voice-runtime.mjs .build/world/worker.js
+```
+
+Tests cover room lifecycle and session identity; voice opt-in, mute enforcement, room isolation, frame size/rate validation, no self echo, PCM sample timing, microphone permission failures/cleanup, and wall intersection regression cases. The runtime test uses six real WebSockets against workerd with synthetic audio, while gameplay messages run alongside voice. Physical microphone quality, speaker echo and visual camera behavior should also be checked on two phones.
+
+## Hosting
+Cloudflare builds a Preview for feature branches using `npx wrangler preview`. Preview room bindings are isolated. Production uses `main` and `npx wrangler deploy`. Existing domain routes and Durable Object migrations are retained.
+
+Co-op rewards, live token conversion, global rankings and full anti-cheat are not enabled. Solo points remain local.
