@@ -3,7 +3,6 @@ import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 const $=id=>document.getElementById(id);
-const OFFICIAL_JOBBY="./assets/jobby-original.webp";
 const JOBBY_MODEL="./models/JOBBY.glb";
 const AVATARS=[
  {id:"JOBBY",name:"JOBBY 3D (Prototype)",cost:0,size:1941348},
@@ -65,7 +64,6 @@ function renderScores(){
 const placeholder=(label)=>"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="256" height="260" viewBox="0 0 256 260"><rect width="256" height="260" rx="25" fill="#33345d"/><circle cx="128" cy="103" r="43" fill="#8278b7"/><path d="M53 218 Q52 142 128 144 Q204 142 203 218" fill="#8278b7"/><text x="128" y="245" fill="#d1c8fa" font-family="sans-serif" font-size="15" text-anchor="middle">'+label+'</text></svg>');
 const portraitKey=id=>"jobby-portrait-v06-"+id;
 function cachedPortrait(a){
- if(a.id==="JOBBY")return OFFICIAL_JOBBY;
  try{return localStorage.getItem(portraitKey(a.id))||null}catch(e){return null}
 }
 function renderCards(){
