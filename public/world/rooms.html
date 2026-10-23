@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090e22">
+<title>JOBBY WORLD | Private Co-op Rooms</title>
+<style>
+:root{color-scheme:dark;--mint:#6df6cf;--gold:#ffd978;--muted:#b9c4dc;--line:#434466}
+*{box-sizing:border-box}body{margin:0;color:#fff;min-height:100vh;background:radial-gradient(circle at 85% -5%,#5a318c88,transparent 42%),radial-gradient(circle at -10% 80%,#104d5c88,transparent 48%),#090e22;font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--mint)}button,input,select{font:inherit}button{border:0;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:720px;margin:0 auto;padding:19px 16px 48px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:5px 0 32px}.brand{font-size:21px;font-weight:1000;color:#fff;text-decoration:none}.brand em{font-style:normal;color:var(--mint)}.alpha{font-size:10px;font-weight:900;letter-spacing:1px;border:1px solid #8d72e766;border-radius:100px;padding:7px 10px;color:#c7b0ff}
+h1{font-size:clamp(27px,7vw,40px);line-height:1.1;margin:9px 0 12px}h2{font-size:20px;margin:0 0 12px}.muted{color:var(--muted);line-height:1.65;font-size:13px}.eyebrow{color:var(--mint);font-size:11px;font-weight:900;letter-spacing:1.5px}
+.card{padding:22px;border:1px solid var(--line);border-radius:23px;background:linear-gradient(145deg,#1e2142ef,#141a35ee);box-shadow:0 17px 50px #05061b44;margin:16px 0}
+.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1}.field{display:block;font-size:12px;font-weight:850;color:#d9ddf2;margin:17px 0 7px}
+input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background:#14182f;color:white;padding:13px 12px;min-height:47px;outline:none}input:focus,select:focus{border-color:var(--mint)}
+.primary,.secondary{border-radius:13px;min-height:47px;padding:12px 16px;font-weight:950;font-size:14px}.primary{background:linear-gradient(120deg,var(--mint),#bcffd5);color:#103b32}.secondary{background:#312952;color:#f5f4ff;border:1px solid #7d74b1}.full{width:100%}
+.or{text-align:center;color:#a0a8c0;letter-spacing:2px;font-size:11px;margin:20px 0}
+.hidden{display:none!important}.code{letter-spacing:6px;font-size:clamp(25px,7vw,37px);font-weight:1000;color:var(--gold);text-align:center;padding:16px 0 7px}.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.person{border:1px solid #555578;background:#222744;padding:11px;border-radius:14px;display:flex;align-items:center;gap:10px;min-width:0}.face{font-size:24px}.who{overflow:hidden}.who b{display:block;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:13px}.who small{color:#a8b5d5;font-size:11px}
+.status{padding:11px 12px;border-radius:13px;border:1px solid #57547f;color:#d4d8f1;background:#23223f;font-size:12px;line-height:1.5;margin:12px 0}
+.note{margin-top:15px;font-size:11px;color:#98a5c6;line-height:1.7}.right{text-align:right}
+@media(max-width:420px){.card{padding:16px}.wrap{padding-inline:12px}.people{grid-template-columns:1fr 1fr}.person{padding:8px}.row{gap:7px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a class="brand" href="./index.html">JOBBY <em>WORLD</em></a><span class="alpha">CO-OP ALPHA 0.8</span></header>
+<div id="setup">
+<div class="eyebrow">REAL-TIME ONLINE ROOMS</div>
+<h1>ESCAPE TOGETHER.</h1><p class="muted">Create a private room and invite friends by room code. Each player controls their own 3D character. Supports 2–6 players.</p>
+<div class="card">
+<h2>PRIVATE MULTIPLAYER</h2>
+<label class="field" for="name">YOUR DISPLAY NAME</label><input id="name" maxlength="18" autocomplete="nickname" placeholder="Player">
+<label class="field" for="avatar">YOUR CHARACTER</label>
+<select id="avatar">
+<option value="JOBBY">JOBBY — Free</option>
+<option value="Casual_Male">Explorer — Free</option>
+<option value="Ninja_Male">Ninja — Free</option>
+<option value="Pug">Pug — Free</option>
+<option value="Wizard">Wizard — Unlockable</option>
+<option value="Pirate_Female">Pirate — Unlockable</option>
+</select>
+<button class="primary full" id="create" style="margin-top:20px">+ CREATE PRIVATE ROOM</button>
+<div class="or">OR JOIN A FRIEND</div>
+<label class="field" for="roomInput">6-CHARACTER ROOM CODE</label>
+<div class="row"><input id="roomInput" maxlength="6" placeholder="ABC234" autocomplete="off" style="text-transform:uppercase;letter-spacing:3px;text-align:center;min-width:0;flex:1.35"><button class="secondary" id="join">JOIN ROOM →</button></div>
+<div id="setupStatus" class="status hidden" role="status"></div>
+</div></div>
+<div id="lobby" class="hidden">
+<div class="eyebrow">PRIVATE LOBBY</div><h1>YOUR SQUAD</h1>
+<p class="muted">Share this code with your friends. The host can start once at least two players have joined.</p>
+<div class="card">
+<div class="eyebrow" style="text-align:center">ROOM CODE</div><div id="code" class="code">------</div>
+<div class="row"><button class="secondary" id="copyCode">COPY CODE</button><button class="secondary" id="copyInvite">COPY INVITE LINK</button></div>
+<div class="status" id="lobbyStatus" role="status">Connecting…</div>
+<div class="row" style="align-items:center;margin:15px 0 8px"><h2 style="margin:0">PLAYERS</h2><span id="count" class="right muted">0 / 6</span></div>
+<div class="people" id="people"></div>
+<button class="primary full" id="start" disabled style="margin-top:20px">START CO-OP ESCAPE</button>
+<button class="secondary full" id="leave" style="margin-top:9px">LEAVE ROOM</button>
+<p class="note">Room codes are unlisted, not passwords. Avoid sharing the invite publicly. Connection requires Cloudflare multiplayer service. Cooperative runs award no real tokens or global points.</p>
+</div></div>
+</div>
+<script type="module" src="./rooms.js?v=1"></script>
+</body></html>

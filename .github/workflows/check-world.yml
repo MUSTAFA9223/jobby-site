@@ -1,0 +1,38 @@
+name: JOBBY WORLD checks
+on:
+  push:
+    branches:
+      - feature/world-coop-rooms
+  pull_request:
+    paths:
+      - 'worker.js'
+      - 'wrangler.toml'
+      - 'public/world/**'
+      - 'tests/**'
+      - '.github/workflows/check-world.yml'
+permissions:
+  contents: read
+jobs:
+  verify-world:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out game source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test private co-op room state
+        run: node --test tests/world-room.test.mjs
+      - name: Check JavaScript syntax
+        run: |
+          node --check worker.js
+          node --check public/world/main.js
+          node --check public/world/hub.js
+          node --check public/world/rooms.js
+          node --check public/world/multiplayer.js
+      - name: Install Wrangler tooling
+        run: npm install --no-audit --no-fund
+      - name: Build Cloudflare Worker without deployment
+        run: npx wrangler deploy --dry-run --outdir .build/world

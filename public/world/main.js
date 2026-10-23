@@ -1,9 +1,12 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { connectCoop } from "./multiplayer.js";
 
 // JOBBY WORLD v0.1. Game source in the JOBBY website repo;
 // original user-owned glTF archive remains in JOBBY-3D-Viewer.
 const $ = id => document.getElementById(id);
+const roomCode=new URLSearchParams(location.search).get("room")||"";
+const isCoop=/^[A-HJ-NP-Z2-9]{6}$/.test(roomCode);
 const AVATARS = [
   {id:"JOBBY",name:"JOBBY 3D",icon:"✨",cost:0},
   {id:"Casual_Male",name:"Explorer",icon:"🧑",cost:0},
@@ -13,7 +16,7 @@ const AVATARS = [
   {id:"Pirate_Female",name:"Pirate",icon:"🏴‍☠️",cost:120}
 ];
 const MODEL_BASE="./models/";
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
+const JOBBY_MODEL="./models/JOBBY.glb";
 const MODEL_SIZES={JOBBY:1941348,Casual_Male:1238384,Ninja_Male:1058660,Pug:1045324,Wizard:1260568,Pirate_Female:1413296};
 let saved={points:0,unlocked:[],best:0,selected:"JOBBY"};
 try {saved={...saved,...JSON.parse(localStorage.getItem("jobby-world-v01")||"{}")}}catch(e){}
@@ -23,6 +26,8 @@ let chosen=AVATARS.find(a=>a.id===saved.selected&&available(a))?.id||"JOBBY", st
 let px=0,pz=9,py=0,vy=0,grounded=true,heading=Math.PI;
 let yaw=0,tilt=.38,cameraDistance=7,dragPointer=null,lastDragX=0,lastDragY=0;
 let stickPointer=null,joyX=0,joyY=0;
+let coop=null,sharedKeys=[],launchingCoop=false,coopComplete=false;
+if(isCoop){const a=sessionStorage.getItem("jobby-world-room-avatar");if(AVATARS.some(x=>x.id===a))chosen=a;}
 let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
 // JOBBY is again a playable prototype avatar, as requested by the owner.
 const keysDown=new Set(),loader=new GLTFLoader();
@@ -195,6 +200,40 @@ async function start(){
  if(!loaded)return;
  reset();roundStartedAt=performance.now();started=true;$("menu").classList.add("hidden");$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden");
 }
+function applySharedKeys(keys){
+ sharedKeys=Array.isArray(keys)?keys.filter(i=>Number.isInteger(i)&&i>=0&&i<3):[];
+ count=sharedKeys.length;
+ collectible.forEach((k,index)=>{k.taken=sharedKeys.includes(index);k.group.visible=!k.taken});
+ if(count===3){
+  $("quest").innerHTML="<strong>GATE UNLOCKED</strong> — Escape together!";
+  portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad");
+ }else{
+  $("quest").innerHTML="Team keys: <strong>"+count+" / 3</strong> — Explore together";
+  portalMaterial.color.set("#ff759e");portalMaterial.emissive.set("#ff557e");
+ }
+ wallet();
+}
+async function launchCoop(){
+ if(started||launchingCoop||coopComplete)return;
+ launchingCoop=true;
+ const loaded=await loadCharacter(chosen);launchingCoop=false;
+ if(!loaded){$("menu").classList.remove("hidden");return}
+ reset();applySharedKeys(sharedKeys);
+ roundStartedAt=performance.now();started=true;
+ $("menu").classList.add("hidden");$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden");
+ toast("Connected! Collect 3 keys with your team.");
+}
+function finishCoop(){
+ if(coopComplete)return;
+ coopComplete=true;started=false;finished=true;
+ $("controls").classList.add("hidden");$("endoverlay").classList.remove("hidden");
+ $("endoverlay").querySelector(".endTitle").textContent="TEAM ESCAPED!";
+ $("endoverlay").querySelector(".subtitle").textContent="Your squad collected all 3 keys and escaped. Co-op rewards are not enabled in this alpha.";
+ $("againButton").textContent="BACK TO ROOM";
+ $("againButton").onclick=()=>{location.href="./rooms.html?code="+roomCode};
+ $("charactersButton").textContent="RETURN TO WORLD";
+ toast("Co-op escape complete!");
+}
 function complete(){
  finished=true;started=false;saved.points+=50;saved.best=Math.max(saved.best,saved.points);
  try{
@@ -332,16 +371,23 @@ function frame(){
   if(!grounded){vy-=18*delta;py+=vy*delta;if(py<=0){py=0;vy=0;grounded=true}}
   playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;
   animate(!grounded?"Jump":length<.07?"Idle":fast?"Run":"Walk");
-  for(const k of collectible){
+  for(const [index,k] of collectible.entries()){
    if(!k.taken&&Math.hypot(px-k.x,pz-k.z)<1.1){
-    k.taken=true;k.group.visible=false;count++;saved.points+=10;persist();wallet();
-    toast("Key collected! +10 points");
-    if(count===3){$("quest").innerHTML="<strong>GATE UNLOCKED</strong> — Reach the exit!";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
+    if(isCoop){coop?.sendKey(index)}
+    else{
+     k.taken=true;k.group.visible=false;count++;saved.points+=10;persist();wallet();
+     toast("Key collected! +10 points");
+     if(count===3){$("quest").innerHTML="<strong>GATE UNLOCKED</strong> — Reach the exit!";portalMaterial.color.set("#68ffd0");portalMaterial.emissive.set("#25d3ad")}
+    }
    }
   }
-  if(count===3&&pz < -24.8&&Math.abs(px)<3.1)complete();
+  if(count===3&&pz < -24.8&&Math.abs(px)<3.1){
+   if(isCoop)coop?.tryFinish();else complete();
+  }
+  if(isCoop)coop?.sendPose({x:px,z:pz,y:py,h:heading,anim:!grounded?"Jump":length<.07?"Idle":fast?"Run":"Walk"});
  }
  if(mixer)mixer.update(delta);
+ coop?.tick(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
  const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
  clearFadedWalls();
@@ -354,5 +400,28 @@ function frame(){
  renderer.render(scene,camera);
 }
 window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-roster();wallet();$("selectedInfo").textContent="Selected hero: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");frame();
-if(new URLSearchParams(location.search).has("autostart"))start();
+roster();wallet();$("selectedInfo").textContent="Selected hero: "+(AVATARS.find(a=>a.id===chosen)?.name||"JOBBY");
+if(isCoop){
+ $("startButton").disabled=true;
+ $("startButton").textContent="CONNECTING TO CO-OP ROOM…";
+ $("menu").querySelector(".subtitle").textContent="Joining private team room "+roomCode+"…";
+ $("menuButton").onclick=()=>{location.href="./rooms.html?code="+roomCode};
+ const peerId=sessionStorage.getItem("jobby-world-room-peer")||"";
+ if(!/^[a-zA-Z0-9_-]{12,64}$/.test(peerId)){
+  $("menu").querySelector(".subtitle").textContent="Your room session expired. Return to the room lobby.";
+  $("startButton").textContent="BACK TO ROOM";$("startButton").disabled=false;
+  $("startButton").onclick=()=>{location.href="./rooms.html?code="+roomCode};
+ }else{
+  const playerName=localStorage.getItem("jobby-world-display-name")||"Player";
+  coop=connectCoop({
+   code:roomCode,id:peerId,avatar:chosen,name:playerName,scene,
+   onWelcome:m=>{if(m.status==="lobby")setStatus("Waiting for host to start…")},
+   onStart:()=>{void launchCoop()},
+   onKeys:keys=>{sharedKeys=keys;if(started)applySharedKeys(keys)},
+   onComplete:()=>finishCoop(),
+   onError:message=>{setStatus(message);toast(message)}
+  });
+ }
+}
+frame();
+if(!isCoop&&new URLSearchParams(location.search).has("autostart"))start();

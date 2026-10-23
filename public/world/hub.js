@@ -4,7 +4,7 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 const $=id=>document.getElementById(id);
 const OFFICIAL_JOBBY="./assets/jobby-original.webp";
-const JOBBY_MODEL="https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb";
+const JOBBY_MODEL="./models/JOBBY.glb";
 const AVATARS=[
  {id:"JOBBY",name:"JOBBY 3D (Prototype)",cost:0,size:1941348},
  {id:"Casual_Male",name:"Explorer",cost:0,size:1238384},
@@ -193,12 +193,12 @@ function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./play.html?autostart=1&v=8";
+ location.href="./play.html?autostart=1&v=10";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{alert("Multiplayer is not available in this build. Private rooms require a real-time game server.")};
+$("multiMode").onclick=()=>{location.href="./rooms.html?v=1"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
