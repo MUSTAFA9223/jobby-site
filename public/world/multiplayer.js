@@ -20,7 +20,7 @@ const urlOf=avatar=>avatar==="JOBBY"?JOBBY_MODEL:"./models/"+encodeURIComponent(
 function dispose(root){
   root.traverse(obj=>{if(!obj.isMesh)return;obj.geometry?.dispose();for(const m of Array.isArray(obj.material)?obj.material:[obj.material]){if(!m)continue;m.map?.dispose();m.dispose()}});
 }
-export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcome,onStart,onKeys,onComplete,onError}){
+export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcome,onStart,onKeys,onComplete,onError,onTasks=()=>{},onGuard=()=>{},onCaught=()=>{},onHide=()=>{}}){
   const remotes=new Map();
   const models=createAssetCache(url=>loader.loadAsync(url),gltf=>dispose(gltf.scene));
   let publicId=null;
@@ -73,7 +73,7 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       if(remotes.has(p.id)&&remotes.get(p.id).avatar!==p.avatar)removeRemote(p.id);
       if(!remotes.has(p.id))addRemote(p);
       const r=remotes.get(p.id);
-      Object.assign(r,{x:p.x??r.x,z:p.z??r.z,y:p.y??r.y,h:p.h??r.h,anim:p.anim||r.anim});
+      Object.assign(r,{x:p.x??r.x,z:p.z??r.z,y:p.y??r.y,h:p.h??r.h,anim:p.anim||r.anim});r.group.visible=!p.hidden;
     }
   }
   function open(){
@@ -89,15 +89,19 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       if(m.type==="welcome"){
         publicId=m.selfId;
         voice.roster(m.players,publicId);
-        syncRoster(m.players||[]);onKeys(m.keys||[]);
+        syncRoster(m.players||[]);onKeys(m.keys||[]);onTasks(m.tasks||[]);if(m.guard)onGuard(m.guard);
         onWelcome(m);
         if(m.status==="playing")onStart();
         if(m.status==="finished")onComplete(m);
       }else if(m.type==="roster"){syncRoster(m.players||[]);voice.roster(m.players,publicId);}
       else if(m.type==="voice_state"){voice.state(m);}
+      else if(m.type==="guard")onGuard(m.guard);
+      else if(m.type==="house_tasks")onTasks(m.tasks||[]);
+      else if(m.type==="hide"){const r=remotes.get(m.id);if(r)r.group.visible=!m.hidden;onHide(m);}
+      else if(m.type==="caught"){const r=remotes.get(m.id);if(r){r.x=m.x;r.z=m.z;r.y=0;r.group.position.set(m.x,0,m.z);r.group.visible=true;}onCaught(m);}
       else if(m.type==="pose"){
-        const r=remotes.get(m.id);if(r)Object.assign(r,{x:m.x,z:m.z,y:m.y,h:m.h,anim:m.anim});
-      }else if(m.type==="start"){onKeys([]);onStart()}
+        const r=remotes.get(m.id);if(r)Object.assign(r,{x:m.x,z:m.z,y:m.y,h:m.h,anim:m.anim});if(r)r.group.visible=!m.hidden;
+      }else if(m.type==="start"){onKeys([]);onTasks([]);onStart()}
       else if(m.type==="key"){onKeys(m.keys||[])}
       else if(m.type==="gate_open"){onKeys([0,1,2])}
       else if(m.type==="complete")onComplete(m)
@@ -119,6 +123,8 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       lastPose=performance.now();
       ws.send(JSON.stringify({type:"pose",x:p.x,z:p.z,y:p.y,h:p.h,anim:p.anim}));
     },
+    action(type,index,hidden){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type,index,hidden}));},
+    selfId(){return publicId;},
     sendKey(index){
       if(ws?.readyState!==WebSocket.OPEN||Date.now()-(lastKey.get(index)||0)<500)return;
       lastKey.set(index,Date.now());ws.send(JSON.stringify({type:"key",index}));

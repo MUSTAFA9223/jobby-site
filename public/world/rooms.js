@@ -5,6 +5,7 @@ const KEY="jobby-world-room-peer";
 let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
+let roomMap="classic";
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
  send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
@@ -43,7 +44,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href="./play.html?room="+encodeURIComponent(code)+"&v=12";
+  voice.close();location.href=(roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=13";
 }
 function connect(){
   if(ws){ws.onclose=null;ws.close()}
@@ -59,7 +60,7 @@ function connect(){
     if(ev.data instanceof ArrayBuffer){voice.audio(ev.data);return;}
     let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==="welcome"){
-      maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
+      roomMap=m.map||"classic";$("lobbyStatus").dataset.map=roomMap;maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
       if(state==="finished")status("Match finished. Create a new room for another escape.");
     }
@@ -76,7 +77,7 @@ function connect(){
 async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id})});
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:new URLSearchParams(location.search).get("map")==="classic"?"classic":"big-house-v1"})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090d20">
 <meta name="description" content="JOBBY WORLD - Choose your character, collect keys, earn points, and unlock new heroes.">
-<title>JOBBY WORLD | Alpha 0.10</title>
+<title>JOBBY WORLD | Alpha 0.11</title>
 <style>
 :root{color-scheme:dark;--bg:#090e22;--panel:#151a36;--text:#fff;--muted:#aab4d4;--stroke:#343957;--mint:#6df6cf;--gold:#ffd978;--pink:#f29cd9;--purple:#ab92ff}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Tahoma,sans-serif}
@@ -77,19 +77,20 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 </head>
 <body>
 <div class="page">
-<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.10</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
+<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.11</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
 <main>
 <section id="home" class="view">
 <div class="hero">
-<div><div class="eyebrow">⚡ YOUR ADVENTURE STARTS HERE</div><h1>Welcome to <span class="gradient">JOBBY WORLD</span></h1><p class="soft">Choose your character, escape the maze, collect keys, and unlock new heroes with points.</p><div class="actionStack"><button id="playNow" class="primary">▶ PLAY NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
+<div><div class="eyebrow">⚡ YOUR ADVENTURE STARTS HERE</div><h1>Welcome to <span class="gradient">JOBBY WORLD</span></h1><p class="soft">Enter the Big House, hide from the chef, complete exit tasks, and unlock new heroes with points.</p><div class="actionStack"><button id="playNow" class="primary">▶ PLAY NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
 <div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
 <div class="home-foot">This is the official JOBBY reference artwork. JOBBY is playable with a temporary 3D model, which may differ from the final mascot design.</div><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ESCAPES COMPLETED</span></div></div>
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
-<button id="soloMode" class="mode"><span class="emoji">🗝️</span><strong>SOLO ESCAPE</strong><p>Explore the house and maze, find 3 keys, and escape!</p></button>
+<button id="soloMode" class="mode"><span class="emoji">🗝️</span><strong>BIG HOUSE ESCAPE</strong><p>Nine rooms · A chasing chef · Three ways out</p></button>
 <button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>PRIVATE CO-OP + VOICE</strong><p>Create or join a room · 2–12 players · Optional microphone chat</p></button>
 </div>
+<div class="home-foot"><a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
 <div class="home-foot">🏆 Earn points by playing and unlock more characters. Points and rankings are experimental and saved only on this device.</div>
 </section>
 <section id="characters" class="view hidden">
@@ -107,5 +108,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 </div>
 <nav class="nav" aria-label="Navigation"><button class="active" data-view="home"><span>⌂</span>HOME</button><button data-view="characters"><span>🧑‍🚀</span>CHARACTERS</button><button data-view="leaderboard"><span>🏆</span>RANKINGS</button></nav>
 <div id="previewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewName"><div class="modal-card"><div class="modal-top"><div><div class="eyebrow">3D PREVIEW</div><h2 id="previewName">JOBBY</h2></div><button id="closePreview" class="circleBtn" aria-label="Close">×</button></div><div id="previewStage"><span id="previewLoading" class="soft">Preparing 3D character…</span></div><div id="previewText" class="previewHint">Drag to rotate your character</div><button id="previewAction" class="primary" style="width:100%">SELECT CHARACTER</button></div></div>
-<script type="module" src="./hub.js?v=9"></script>
+<script type="module" src="./hub.js?v=10"></script>
 </body></html>
