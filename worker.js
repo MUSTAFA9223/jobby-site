@@ -1,3 +1,4 @@
+import * as race from "./race-room.js";
 import * as warehouse from "./warehouse-room.js";
 import {playerApi} from "./player-store.js";
 export {WorldPlayers} from "./player-store.js";
@@ -45,7 +46,7 @@ export default {
       });
     }
     if(path==="/api/world/leaderboard"||path.startsWith("/api/world/profile"))return playerApi(request,env);
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.13",playerSaves:!!env.WORLD_PLAYERS,map:house.MAP_ID,voice:"room-audio",warehouse:warehouse.MAP_ID},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.14",playerSaves:!!env.WORLD_PLAYERS,map:house.MAP_ID,voice:"room-audio",warehouse:warehouse.MAP_ID,race:race.MAP_ID},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){
@@ -56,7 +57,7 @@ export default {
       if(!ownerId)return json({error:"Invalid session."},400);
       for(let attempt=0;attempt<5;attempt++){
         const code=roomCode(),stub=roomStub(env,code);
-        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId,map:[house.MAP_ID,warehouse.MAP_ID].includes(data.map)?data.map:"classic"})});
+        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId,map:[house.MAP_ID,warehouse.MAP_ID,race.MAP_ID].includes(data.map)?data.map:"classic"})});
         if(response.status===201)return json({code,maxPlayers:MAX_PLAYERS},201);
       }
       return json({error:"Could not create a unique room. Retry."},503);
@@ -101,13 +102,14 @@ export class WorldRoom extends DurableObject {
       let data;try{data=await request.json()}catch{return json({error:"Invalid body."},400)}
       const existing=await this.ctx.storage.get("room");
       if(existing && Date.now()-existing.createdAt<TTL)return json({error:"Code collision."},409);
-      const room={code:data.code,hostId:data.ownerId,createdAt:Date.now(),status:"lobby",keys:[],...(data.map===house.MAP_ID?{map:house.MAP_ID,tasks:[]}:data.map===warehouse.MAP_ID?{map:warehouse.MAP_ID,warehouse:warehouse.newState(Date.now())}: {})};
+      const room={code:data.code,hostId:data.ownerId,createdAt:Date.now(),status:"lobby",keys:[],...(data.map===house.MAP_ID?{map:house.MAP_ID,tasks:[]}:data.map===warehouse.MAP_ID?{map:warehouse.MAP_ID,warehouse:warehouse.newState(Date.now())}:data.map===race.MAP_ID?{map:race.MAP_ID,race:race.newState()}: {})};
       await this.ctx.storage.put("room",room);
       return json({ok:true},201);
     }
     const room=await this.ctx.storage.get("room");
     if(!room || Date.now()-room.createdAt>TTL)return json({error:"Room expired or not found."},404);
     if(room.map===warehouse.MAP_ID&&room.status==="finished")await warehouse.retryRewards(this,room);
+    if(room.map===race.MAP_ID){if(room.status==="playing"&&Date.now()>room.race.deadline)room.status="finished";if(room.status==="finished")await race.retryRewards(this,room);}
     if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic"});
     if(url.pathname!=="/_socket")return json({error:"Not found."},404);
     if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return json({error:"Upgrade required."},426);
@@ -124,11 +126,12 @@ export class WorldRoom extends DurableObject {
     this.ctx.acceptWebSocket(server);
     const slot=Math.max(0,current.length%MAX_PLAYERS);
     const info={id,name,avatar,x:(slot%4-1.5)*1.5,z:18+Math.floor(slot/4)*1.5,y:0,h:0,anim:"Idle",last:0,hidden:false,safeUntil:Date.now()+8000,voice:false,muted:true,expiresAt:room.createdAt+TTL};
+    if(room.map===race.MAP_ID){race.join(room,info);await this.ctx.storage.put("room",room);}
     server.serializeAttachment(info);
     if(!this.sockets().some(ws=>ws!==server && ws.deserializeAttachment()?.id===room.hostId)){
       room.hostId=id;await this.ctx.storage.put("room",room);
     }
-    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic",tasks:room.tasks||[],guard:house.guardView(this.houseGuard||house.newGuard()),...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:{})}));
+    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic",tasks:room.tasks||[],guard:house.guardView(this.houseGuard||house.newGuard()),...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:room.map===race.MAP_ID?{race:race.view(room)}:{})}));
     this.broadcast({type:"roster",hostId:room.hostId,players:this.players()});
     return new Response(null,{status:101,webSocket:client});
   }
@@ -157,6 +160,15 @@ export class WorldRoom extends DurableObject {
       a.voice=m.joined;a.muted=!m.joined||m.muted;ws.serializeAttachment(a);
       this.broadcast({type:"voice_state",id:a.id,joined:a.voice,muted:a.muted});return;
     }
+    const raceRoom=await this.ctx.storage.get("room");
+    if(raceRoom?.map===race.MAP_ID&&m.type!=="start"){
+      // External profile reward calls yield the input gate. Serialize race updates
+      // so another racer's pose cannot overwrite an in-flight finish or rank.
+      this.raceQueue=(this.raceQueue||Promise.resolve()).catch(()=>{}).then(async()=>{
+        const fresh=await this.ctx.storage.get("room"),current=ws.deserializeAttachment();
+        if(fresh&&current&&ws.readyState===1)await race.handle(this,ws,current,m,fresh);
+      });await this.raceQueue;return;
+    }
     if(m.type==="pose"){
       const nums=[m.x,m.z,m.y,m.h];
       if(nums.some(n=>typeof n!=="number"||!Number.isFinite(n)))return;
@@ -176,8 +188,8 @@ export class WorldRoom extends DurableObject {
     if(!room)return;
     if(m.type==="start" && room.hostId===a.id && room.status!=="playing"){
       if(this.sockets().length<2){ws.send(JSON.stringify({type:"error",message:"At least 2 players are required."}));return}
-      room.status="playing";room.keys=[];if(room.map===warehouse.MAP_ID)await warehouse.start(this,room);if(room.map===house.MAP_ID){room.tasks=[];this.houseGuard=house.newGuard();this.guardAt=Date.now();for(const peer of this.sockets()){const p=peer.deserializeAttachment();p.hidden=false;p.safeUntil=Date.now()+8000;peer.serializeAttachment(p);}}await this.ctx.storage.put("room",room);
-      this.broadcast({type:"start",keys:[],tasks:[],...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:{})});
+      room.status="playing";room.keys=[];if(room.map===race.MAP_ID)await race.start(this,room);if(room.map===warehouse.MAP_ID)await warehouse.start(this,room);if(room.map===house.MAP_ID){room.tasks=[];this.houseGuard=house.newGuard();this.guardAt=Date.now();for(const peer of this.sockets()){const p=peer.deserializeAttachment();p.hidden=false;p.safeUntil=Date.now()+8000;peer.serializeAttachment(p);}}await this.ctx.storage.put("room",room);
+      this.broadcast({type:"start",keys:[],tasks:[],...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:room.map===race.MAP_ID?{race:race.view(room)}:{})});
       return;
     }
     if(room.map===warehouse.MAP_ID){await warehouse.handle(this,ws,a,m,room);return;}

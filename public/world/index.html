@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090d20">
-<meta name="description" content="JOBBY WORLD - Choose your character, collect keys, earn points, and unlock new heroes.">
-<title>JOBBY WORLD | Alpha 0.13</title>
+<meta name="description" content="JOBBY WORLD - Funny obstacle races with pushing, falling, traps and twelve-player private rooms.">
+<title>JOBBY WORLD | Alpha 0.14</title>
 <style>
 :root{color-scheme:dark;--bg:#090e22;--panel:#151a36;--text:#fff;--muted:#aab4d4;--stroke:#343957;--mint:#6df6cf;--gold:#ffd978;--pink:#f29cd9;--purple:#ab92ff}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Tahoma,sans-serif}
@@ -73,26 +73,27 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 @media(max-width:520px){.page{padding-inline:12px}.topbar{height:62px}.hero{grid-template-columns:1fr 44%;min-height:275px;padding:16px}.hero-image{height:225px}.hero-image small{font-size:9px}.hero .soft{font-size:11px}.hero h1{font-size:29px}.hero .actionStack button{font-size:12px;padding:11px}.stats{gap:6px}.stat{padding:11px 8px}.stat b{font-size:17px}.stat span{font-size:10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.avatarCard .name{font-size:12px}.actionStack{gap:6px}.modes{gap:7px}.mode{padding:11px}.version{font-size:9px;padding:7px}}
 @media(max-width:360px){.hero h1{font-size:25px}.hero-image{height:190px}.hero{min-height:240px}.logo{font-size:18px}.coin{padding:7px}}
 .player-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 16px;padding:10px 13px;border:1px solid var(--stroke);border-radius:15px;background:#161c35}.player-bar b{display:block;font-size:14px}.player-bar small{color:var(--muted);font-size:10px}.profile-field{display:block;margin:13px 0 6px;color:var(--muted);font-size:12px}.profile-input{width:100%;min-height:44px;padding:10px;border:1px solid #6d6b98;border-radius:10px;background:#0d142a;color:white;font:inherit}.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.profile-actions button{flex:1;min-height:44px}.profile-divider{border:0;border-top:1px solid var(--stroke);margin:20px 0}.score .who{min-width:0;overflow-wrap:anywhere}.score .who small{display:block}.score .pts{white-space:nowrap}.profile-code{font:12px monospace;overflow-wrap:anywhere;user-select:all}
+.coursePreview{display:block;position:relative;overflow:hidden;margin-top:14px;border-radius:20px;border:1px solid #7f7ab56e;background:#9ac8f4}.coursePreview img{display:block;width:100%;height:230px;object-fit:cover}.coursePreview span{position:absolute;bottom:0;left:0;right:0;padding:18px;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px;background:linear-gradient(transparent,#141833db)}.coursePreview b{float:right;font-size:18px}.hero{background:linear-gradient(140deg,#41408a,#382b68 40%,#1c3559)}.hero h1{font-size:clamp(34px,8vw,58px);letter-spacing:-2px}@media(max-width:520px){.coursePreview img{height:190px}.hero h1{font-size:39px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div class="page">
-<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.13</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
+<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.14</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
 <div class="player-bar"><div><b id="playerLabel">Your player</b><small id="saveStatus" role="status">Connecting to player save…</small></div><button class="secondary" id="managePlayer">PLAYER</button></div>
 <main>
 <section id="home" class="view">
 <div class="hero">
-<div><div class="eyebrow">⚡ YOUR ADVENTURE STARTS HERE</div><h1>Welcome to <span class="gradient">JOBBY WORLD</span></h1><p class="soft">Break into the warehouse. Decode symbols, restore power, rescue your team and escape the chef.</p><div class="actionStack"><button id="playNow" class="primary">▶ PLAY NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
+<div><div class="eyebrow">🏁 JUMP. PUSH. LAUGH. REPEAT.</div><h1>Race into <span class="gradient">the chaos.</span></h1><p class="soft">Moving islands, spinning sweepers and trapdoors. Race your friends across the sky — every fall is a comeback.</p><div class="actionStack"><button id="playNow" class="primary">▶ RACE NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
 <div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
-<div class="home-foot">This is the official JOBBY reference artwork. JOBBY is playable with a temporary 3D model, which may differ from the final mascot design.</div><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ESCAPES COMPLETED</span></div></div>
+<a class="coursePreview" href="./race-guide.html"><img src="./assets/race-overview.webp" alt="Four zones of the JOBBY Chaos Course"><span>EXPLORE THE COURSE <b>↗</b></span></a><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
-<button id="soloMode" class="mode"><span class="emoji">🗝️</span><strong>WAREHOUSE ESCAPE</strong><p>Three puzzles · Timed shutter · Crate delivery · A chasing chef</p></button>
-<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>PRIVATE CO-OP + VOICE</strong><p>Create or join a room · 2–12 players · Optional microphone chat</p></button>
+<button id="soloMode" class="mode"><span class="emoji">🏁</span><strong>CHAOS COURSE</strong><p>Solo practice · Four obstacle zones · Three checkpoints · Unlimited comebacks</p></button>
+<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>RACE WITH FRIENDS</strong><p>2–12 racers · Push and tumble · Live standings · Optional voice</p></button>
 </div>
-<div class="home-foot"><a href="./warehouse-plan.html" style="color:var(--mint)">WAREHOUSE MAP & RULES</a> · <a href="./house.html?autostart=1" style="color:var(--mint)">PLAY THE BIG HOUSE</a> · <a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
+<div class="home-foot"><a href="./race-guide.html" style="color:var(--mint)">RACE COURSE & CONTROLS</a> · <a href="./warehouse.html?autostart=1" style="color:var(--mint)">WAREHOUSE ESCAPE</a> · <a href="./warehouse-plan.html" style="color:var(--mint)">WAREHOUSE MAP & RULES</a> · <a href="./house.html?autostart=1" style="color:var(--mint)">PLAY THE BIG HOUSE</a> · <a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
 <div class="home-foot">🏆 Earn points by playing and unlock more characters. Your points and characters save to your player profile. Keep your recovery code to use another phone.</div>
 </section>
 <section id="characters" class="view hidden">
@@ -101,10 +102,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div class="cardActions"><button class="primary" id="playSelected">PLAY SELECTED HERO</button><button class="secondary" data-view="home">BACK</button></div>
 </section>
 <section id="leaderboard" class="view hidden">
-<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Real players, ranked by total points earned from solo rounds and warehouse co-op. One place for each player.</p>
-<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>FASTEST ESCAPE</span></div><div class="stat"><b id="leaderPoints">0</b><span>POINT BALANCE</span></div></div>
+<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Real players, ranked by total points earned from races, solo escapes and warehouse co-op. One place for each player.</p>
+<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>BEST ROUND TIME</span></div><div class="stat"><b id="leaderPoints">0</b><span>POINT BALANCE</span></div></div>
 <div id="scoreboard" class="scoreboard"></div>
-<div class="home-foot">🌍 Your old progress is kept in your balance. Global rankings count new round points, including warehouse co-op, so imported points never overwrite the leaderboard. These are experimental game scores with no real rewards.</div>
+<div class="home-foot">🌍 Your old progress is kept in your balance. Global rankings count new round points, including private races and warehouse co-op, so imported points never overwrite the leaderboard. These are experimental game scores with no real rewards.</div>
 </section>
 </main>
 </div>
@@ -121,5 +122,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=12"></script>
+<script type="module" src="./hub.js?v=13"></script>
 </body></html>

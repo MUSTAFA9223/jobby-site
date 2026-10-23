@@ -47,13 +47,13 @@ export class WorldPlayers extends DurableObject{
   if(path==="/api/world/leaderboard"&&request.method==="GET")return reply({players:this.sql.exec("SELECT id,name,earned,wins,best FROM players WHERE earned>0 ORDER BY earned DESC,wins DESC,best ASC,id ASC LIMIT 50").toArray()});
   if(path==="/_room_reward"&&request.method==="POST"){
    const body=await request.json();
-   if(body.map!=="warehouse-v1"||!Array.isArray(body.players)||body.players.length>12||!/^[a-f0-9-]{36}$/.test(body.round))return reply({error:"Invalid round."},400);
+   if(!["warehouse-v1","jobby-race-v1"].includes(body.map)||!Array.isArray(body.players)||body.players.length>12||!/^[a-f0-9-]{36}$/.test(body.round))return reply({error:"Invalid round."},400);
    return this.ctx.storage.transactionSync(()=>{
     for(const a of body.players){
      const session=this.sql.exec("SELECT player FROM sessions WHERE id=?",a.session).toArray()[0];if(!session)continue;
      const p=this.get(session.player);if(!p)continue;
      if(this.sql.exec("SELECT round FROM coop_awards WHERE player=? AND round=?",p.key,body.round).toArray().length)continue;
-     const points=50+bounded(a.tasks,3)*10+bounded(a.rescues,3)*5,state=JSON.parse(p.state),seconds=Math.max(1,(Date.now()-body.started)/1000);
+     const points=50+bounded(a.tasks,3)*10+bounded(a.rescues,3)*5,state=JSON.parse(p.state),seconds=Math.max(1,body.map==="jobby-race-v1"?Number(a.seconds)||1:(Date.now()-body.started)/1000);
      state.points+=points;state.history=[{character:state.selected,map:body.map,coop:true,points,seconds,date:Date.now()},...(state.history||[])].slice(0,60);
      this.sql.exec("INSERT INTO coop_awards(player,round) VALUES(?,?)",p.key,body.round);
      this.sql.exec("UPDATE players SET state=?,earned=?,wins=?,best=? WHERE key=?",JSON.stringify(state),p.earned+points,p.wins+1,p.best===null?seconds:Math.min(p.best,seconds),p.key);
@@ -106,7 +106,7 @@ export class WorldPlayers extends DurableObject{
      // One active solo run per profile; repeat delivery never resets a round.
      if(!this.sql.exec("SELECT id FROM runs WHERE player=? AND id=?",key,a.run).toArray().length){
       this.sql.exec("DELETE FROM runs WHERE player=? AND finished=0",key);
-      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,["big-house-v1","warehouse-v1"].includes(a.map)?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
+      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,["big-house-v1","warehouse-v1","jobby-race-v1"].includes(a.map)?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
      }
      continue;
     }

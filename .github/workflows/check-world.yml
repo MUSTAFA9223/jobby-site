@@ -11,6 +11,7 @@ on:
       - 'worker.js'
       - 'player-store.js'
       - 'warehouse-room.js'
+      - 'race-room.js'
       - 'wrangler.toml'
       - 'public/world/**'
       - 'tests/**'
@@ -34,6 +35,10 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: |
+          node --check race-room.js
+          node --check public/world/race-rules.js
+          node --check public/world/race-scene.js
+          node --check public/world/race-game.js
           node --check warehouse-room.js
           node --check public/world/warehouse-layout.js
           node --check public/world/warehouse-rules.js
@@ -66,3 +71,6 @@ jobs:
 
       - name: Test warehouse puzzles and saved co-op rewards with twelve players
         run: node tests/world-warehouse-runtime.mjs .build/world/worker.js
+
+      - name: Test obstacle racing with twelve real clients and saved individual finishes
+        run: node tests/world-race-runtime.mjs .build/world/worker.js
