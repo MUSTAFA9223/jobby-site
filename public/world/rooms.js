@@ -1,4 +1,4 @@
-import {createRoomVoice} from "./voice.js?v=2";
+import {createRoomVoice} from "./voice.js?v=3";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
 const KEY="jobby-world-room-peer";

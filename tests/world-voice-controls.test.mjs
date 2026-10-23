@@ -7,8 +7,8 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  const names=["window","document","navigator","isSecureContext","AudioWorkletNode"],before=new Map(names.map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
  t.after(()=>{for(const key of names){const descriptor=before.get(key);if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}});
  class Element{
-  constructor(){this.children=[];this.hidden=false;}
-  append(...items){this.children.push(...items);}setAttribute(){}remove(){}
+  constructor(){this.children=[];this.hidden=false;this.dataset={};this.attrs=new Map();this.classList={add(){},remove(){}};}
+  append(...items){this.children.push(...items);}setAttribute(k,v){this.attrs.set(k,v);}getAttribute(k){return this.attrs.get(k);}contains(target){return target===this||this.children.some(c=>c.contains(target));}remove(){}
  }
  const contexts=[],captures=[],tracks=[],sent=[],packets=[];let micRequests=0,denied=false,pending=null;
  class AudioContext{
@@ -30,11 +30,13 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  const env={window:{AudioContext,addEventListener:(key,fn)=>events.set(key,fn),removeEventListener:key=>events.delete(key)},document:{createElement:()=>new Element()},navigator:{mediaDevices:media},isSecureContext:true,AudioWorkletNode:class{constructor(){this.port={onmessage:null};captures.push(this);}connect(){}disconnect(){}}};
  for(const [key,value] of Object.entries(env))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
  const mount=new Element(),voice=createRoomVoice({mount,send:m=>sent.push(m),sendAudio:data=>packets.push(data)});
- const controls=mount.children[0].children[0].children,[mic,speaker,leave,mode,talk]=controls;
+ const panel=mount.children[0],controls=panel.children[0].children,[mic,speaker,more,talk]=controls,options=panel.children[1],[mode,leave]=options.children;
  const self="11".repeat(16),peer="22".repeat(16),roster=[{id:self,voice:false},{id:peer,voice:true,muted:false}];
  const settle=()=>new Promise(resolve=>setImmediate(resolve));
  assert.equal(micRequests,0,"loading the page must not request microphone permission");
+ assert.equal(options.hidden,true);assert.equal(mic.getAttribute("aria-label"),"Join voice");
  voice.roster(roster,self);mic.onclick();await settle();
+ more.onclick();assert.equal(options.hidden,false);assert.equal(more.getAttribute("aria-expanded"),"true");events.get("pointerdown")({target:mount});assert.equal(options.hidden,true);
  assert.equal(micRequests,1);assert.equal(tracks[0].enabled,true);assert.ok(sent.some(m=>m.joined===true&&!m.muted));
  captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).fill(3000).buffer});assert.equal(packets.length,1);
  mic.onclick();assert.equal(tracks[0].enabled,false);captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,1,"muting also blocks outgoing audio messages");
@@ -43,7 +45,7 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,1,"playback guard prevents room audio being echoed back");
  contexts[0].currentTime+=1;
  captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,2,"capture resumes after acoustic tail");
- mode.onclick();assert.equal(tracks[0].enabled,false);assert.equal(sent.at(-1).muted,true);
+ more.onclick();mode.onclick();assert.equal(options.hidden,true);assert.equal(tracks[0].enabled,false);assert.equal(sent.at(-1).muted,true);
  const press=()=>talk.onpointerdown({preventDefault(){},pointerId:1});
  press();assert.equal(tracks[0].enabled,true);assert.equal(contexts[0].output.gain.value,0);
  captures[0].port.onmessage({data:new Int16Array(VOICE_SAMPLES).buffer});assert.equal(packets.length,3);
@@ -55,9 +57,9 @@ test("Voice controls are opt-in, mute capture, play received PCM and release the
  assert.equal(contexts[0].played.length,1);assert.ok(Math.abs(contexts[0].played[0].buffer.samples[0]-.25)<.0001,"received PCM reaches the audio output");
  voice.audio(relayFrame(clientFrame(new Int16Array(VOICE_SAMPLES),9),peer));assert.equal(contexts[0].played.length,1,"duplicate audio is dropped");
  voice.state({id:peer,joined:false,muted:true});voice.audio(relayFrame(clientFrame(new Int16Array(VOICE_SAMPLES),10),peer));assert.equal(contexts[0].played.length,1,"audio from a player who left voice is discarded");
- speaker.onclick();assert.match(speaker.textContent,/OFF/);
+ speaker.onclick();assert.equal(speaker.getAttribute("aria-label"),"Turn room sound on");
  leave.onclick();assert.equal(tracks[0].stopped,true);assert.equal(contexts[0].state,"closed");assert.equal(captures[0].port.onmessage,null);
- denied=true;mic.onclick();await settle();assert.match(mount.children[0].children[1].textContent,/denied/);assert.equal(contexts[1].state,"closed");
+ denied=true;mic.onclick();await settle();assert.match(panel.children[2].textContent,/denied/);assert.equal(contexts[1].state,"closed");
  denied=false;pending={};pending.promise=new Promise(resolve=>pending.resolve=resolve);
  mic.onclick();await settle();voice.disconnected();pending.resolve();await settle();
  assert.equal(tracks.at(-1).stopped,true,"late permission approval after disconnection never leaves the microphone running");

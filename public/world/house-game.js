@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { connectCoop } from "./multiplayer.js?v=4";
+import { connectCoop } from "./multiplayer.js?v=5";
 import { safeCameraPosition } from "./camera-occlusion.js?v=2";
 import * as house from "./house-layout.js";
 import {buildHouse} from "./house-scene.js";
