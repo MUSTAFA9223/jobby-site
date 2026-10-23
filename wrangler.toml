@@ -24,3 +24,8 @@ tag = "world-rooms-v1"
 new_sqlite_classes = ["WorldRoom"]
 
 [previews]
+
+# Preview rooms use an isolated namespace within the same Cloudflare Worker.
+[[previews.durable_objects.bindings]]
+name = "WORLD_ROOM"
+class_name = "WorldRoom"
