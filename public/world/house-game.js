@@ -30,6 +30,7 @@ let px=0,pz=9,py=0,vy=0,grounded=true,heading=Math.PI;
 let yaw=0,tilt=.38,cameraDistance=7,dragPointer=null,lastDragX=0,lastDragY=0;
 let stickPointer=null,joyX=0,joyY=0;
 let coop=null,sharedTasks=[],launchingCoop=false,coopComplete=false;
+let spawnPoint={...house.SPAWN};
 let tasks=[],hidden=false,taskProgress=null,guard=house.newGuard(),guardTarget={...guard},guardTime=0,safeUntil=0;
 if(isCoop){const a=sessionStorage.getItem("jobby-world-room-avatar");if(AVATARS.some(x=>x.id===a))chosen=a;}
 let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
@@ -141,7 +142,7 @@ function cancelTask(){
  $("interact").style.setProperty("--charge","0%");
 }
 function reset(){
- px=house.SPAWN.x;pz=house.SPAWN.z;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;runHeld=false;wantJump=false;
+ px=spawnPoint.x;pz=spawnPoint.z;py=0;vy=0;grounded=true;heading=Math.PI;count=0;finished=false;joyX=joyY=0;runHeld=false;wantJump=false;
  tasks=[];hidden=false;safeUntil=performance.now()+8000;cancelTask();
  if(!isCoop){guard=house.newGuard();guardTarget={...guard};}
  playerGroup.visible=true;playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;
@@ -207,7 +208,7 @@ async function start(){
 async function launchCoop(){
  if(started||launchingCoop||coopComplete)return;
  launchingCoop=true;
- const loaded=await loadCharacter(chosen);launchingCoop=false;
+ const loaded=await loadCharacter(chosen);launchingCoop=false;if(coopComplete)return;
  if(!loaded){$("menu").classList.remove("hidden");return}
  reset();applySharedTasks(sharedTasks);
  roundStartedAt=performance.now();started=true;
@@ -375,7 +376,7 @@ if(isCoop){
   const playerName=localStorage.getItem("jobby-world-display-name")||"Player";
   coop=connectCoop({
    code:roomCode,id:peerId,avatar:chosen,name:playerName,scene,getLocalPosition:()=>playerGroup.position,
-   onWelcome:m=>{if(m.map!==house.MAP_ID){location.replace("./play.html?room="+roomCode);return;}if(m.status==="lobby")setStatus("Waiting for host to start…")},
+   onWelcome:m=>{const self=m.players?.find(p=>p.id===m.selfId);if(self)spawnPoint={x:self.x,z:self.z};if(m.map!==house.MAP_ID){location.replace("./play.html?room="+roomCode);return;}if(m.status==="lobby")setStatus("Waiting for host to start…")},
    onStart:()=>{void launchCoop()},
    onKeys:()=>{},
    onTasks:values=>{sharedTasks=values;if(started)applySharedTasks(values);},
