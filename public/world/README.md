@@ -1,39 +1,44 @@
-# JOBBY WORLD — Alpha 0.7
+# JOBBY WORLD — Alpha 0.8 (co-op development branch)
 
-## Current milestone: English-only mobile UI and clearer camera
-At the owner's explicit request, the previously withheld JOBBY GLB is restored as the **first, free, playable** character in the main lobby and the solo maze. This is a temporary 3D character study, **not claimed to accurately reproduce the approved white-and-purple JOBBY illustration**.
+## One website, one repository
+All new source is inside `MUSTAFA9223/jobby-site`: the existing website, the 3D solo game, the private-room frontend, the Cloudflare Worker API, and the Durable Object room coordinator. No Railway service or second gameplay website is used.
 
-- 3D URL: `https://raw.githubusercontent.com/MUSTAFA9223/JOBBY-3D-Viewer/main/models/JOBBY.glb` (1.9 MB). It is reused from the owner's existing repository, not modified or duplicated.
-- JOBBY appears first in the `AVATARS` collection of `hub.js` and `main.js`.
-- Selecting JOBBY persists to the same-device `jobby-world-v01` localStorage record and is honored by solo play.
-- Tapping the JOBBY card opens a real GLTFLoader/OrbitControls rotatable 3D viewer, and the select button enables playing the maze as JOBBY.
-- The main hero image still shows the owner's approved 2D reference illustration, which may differ from the trial model.
+This release is currently on `feature/world-coop-rooms` and **is not deployed or verified on the live phone website**. Keep `main` production unchanged until the Cloudflare deployment has been checked.
 
-## Alpha 0.7 changes
-- All visible home, avatar picker, 3D preview, leaderboard, solo gameplay, HUD, game instructions and notifications are in English (left-to-right, en-US formatting).
-- The existing 3D map, open-roof house, keys, 6 heroes, key collection, local points and unlocks are retained.
-- Character stays visible near walls: any intersecting level block becomes translucent rather than moving the third-person camera against the player.
-- Run and jump buttons remain large for touchscreens; 360-degree camera drag and pinch zoom remain available.
-- Each key adds 10 points and the exit adds 50 bonus points; the leaderboard correctly records **80 total points earned per successful round**, while the win screen describes the 50-point completion bonus.
-- Stored points, unlocked characters and local leaderboard use the existing keys without clearing progress.
-- Online multiplayer, live voice, private rooms, global rankings and token rewards are NOT implemented.
-- Deployment and real-mobile runtime remain to be independently verified.
+## Routes (once the branch is deployed)
+- `/world/index.html`: 3D menu, choose a hero, local points, solo mode and PRIVATE CO-OP entry.
+- `/world/play.html`: solo adventure preserved.
+- `/world/rooms.html`: create private room, join with a six-character code, copy shareable invite link, view live player list.
+- `/world/play.html?room=ABC234`: the same 3D arena with multiple independent player avatars.
+- `POST /api/world/rooms`: creates an unlisted code (needs same-origin JSON, a random session ID).
+- `GET /api/world/rooms/{CODE}`: retrieves room status.
+- `GET /api/world/rooms/{CODE}/socket`: upgraded WebSocket for presence, 3D movement and shared objectives.
+- `/world/models/JOBBY.glb`: same-origin proxy to the original user-owned 3D asset on GitHub Raw.
 
-## Entry points
-- Home screen: `/world/index.html?v=9`
-- Escape minigame: `/world/play.html?v=8`
-- Repo paths: `public/world/index.html`, `hub.js`, `play.html`, `main.js`.
-- Main JS cache bump: `hub.js?v=5` and `main.js?v=8`.
+## Scope implemented on this branch
+- One same-domain Cloudflare Worker serves the existing site; only multiplayer API and the JOBBY proxy path call the Worker before static assets.
+- SQLite-backed Durable Object room state and WebSocket hibernation support.
+- 2–6 concurrent browser participants, host-controlled start, room join, leave and roster updates.
+- Join code, invite link, English-only UI, avatar selection and camera controls.
+- WebSocket pose relay and individual Three.js models for other squad members.
+- Three shared server-validated key pickups and server-triggered team escape completion.
+- The solo version, local points, character unlocks and leaderboard are preserved.
+- The co-op mode **does not issue points or tokens**, since server-side account identity and an anti-cheat economy have not been implemented.
+- Does not include voice chat, global leaderboard, persistent accounts or user moderation.
 
-## Other playable characters and economy
-Free: JOBBY, Explorer, Ninja, Pug. Prototype point unlocks: Wizard (80), Pirate (120).
-Points, purchases, and the time leaderboard remain local to the browser. Online multiplayer and global leaderboards are not implemented.
+## Important limitations
+- An unlisted room code is not a secure password. Do not share it publicly.
+- Rooms have a 24-hour lifetime, up to six connections. The host needs another player before starting.
+- Basic range validation for keys and positions exists, but there is no full server-side physics anti-cheat.
+- Browser connections should be tested on two **different mobile devices** after deployment. JavaScript syntax checks do not prove network or animation quality.
+- Durable Objects use Cloudflare Workers plan quotas. The free plan can support SQLite-backed Durable Objects, subject to usage limits.
+- JOBBY's binary is still stored in the earlier user-owned `JOBBY-3D-Viewer` repository; the new Worker serves it to the browser through a `jobby.lol` URL with edge caching. To completely eliminate the other repository dependency, copy the `JOBBY.glb` binary into `public/world/models/` using an authenticated Git or GitHub binary upload and then remove the Worker proxy.
+- Because adding `main="worker.js"` and a Durable Object binding changes production deployment behavior, verify Cloudflare access, the Worker binding and the `/health` / static homepage before promoting the branch.
 
-## Verification and caveats
-- GitHub source was changed; asset locations and JS syntax can be checked in repository.
-- **The live website and gameplay have NOT been verified in a real browser on the owner's phone after this commit.**
-- JOBBY's asset URL is served by GitHub Raw from the owner's separate 3D Viewer repository. If that repo/file goes away or the network blocks raw.githubusercontent.com, JOBBY won't load. A later release should move or mirror this GLB to first-party static hosting.
-- The 3D model is temporary at the owner's request; future improvements should match the 2D approved mascot.
-
-## Safety
-The main website homepage and the older JOBBY-3D-Viewer files are not modified by this update.
+## Deployment readiness and safe checks
+1. Make sure Cloudflare Worker `jobby` is the site's production deployment and the Wrangler account has access to the same project.
+2. Build/test this branch separately with `npm ci` and `npx wrangler dev`.
+3. Check `/world/index.html`, `/world/rooms.html`, and the REST create/status endpoints.
+4. Start two mobile sessions in the same room; verify each sees the other's character, shared key state, and team escape.
+5. Verify `/world/models/JOBBY.glb` serves a nonempty GLB file and test character animations.
+6. Only after successful checks, merge or explicitly deploy the branch to the existing Worker/custom domain.
