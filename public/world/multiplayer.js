@@ -19,6 +19,7 @@ function dispose(root){
 }
 export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,onComplete,onError}){
   const remotes=new Map();
+  let publicId=null;
   let ws=null,lastPose=0,closed=false,lastKey=new Map(),lastFinish=0,attempts=0;
   function removeRemote(id){
     const r=remotes.get(id);if(!r)return;
@@ -57,7 +58,7 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
     r.clips[r.clip]?.fadeOut(.15);r.clips[key].reset().fadeIn(.15).play();r.clip=key;
   }
   function syncRoster(players){
-    const other=(players||[]).filter(p=>p.id!==id);
+    const other=(players||[]).filter(p=>p.id!==publicId);
     const ids=new Set(other.map(p=>p.id));
     for(const otherId of [...remotes.keys()])if(!ids.has(otherId))removeRemote(otherId);
     for(const p of other){
@@ -69,13 +70,14 @@ export function connectCoop({code,id,avatar,name,scene,onWelcome,onStart,onKeys,
   }
   function open(){
     if(closed)return;
-    const q=new URLSearchParams({id,avatar,name});
+    const q=new URLSearchParams({token:id,avatar,name});
     const proto=location.protocol==="https:"?"wss:":"ws:";
     ws=new WebSocket(proto+"//"+location.host+"/api/world/rooms/"+code+"/socket?"+q);
     ws.onopen=()=>{attempts=0};
     ws.onmessage=event=>{
       let m;try{m=JSON.parse(event.data)}catch{return}
       if(m.type==="welcome"){
+        publicId=m.selfId;
         syncRoster(m.players||[]);onKeys(m.keys||[]);
         onWelcome(m);
         if(m.status==="playing")onStart();
