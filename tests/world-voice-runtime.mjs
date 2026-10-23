@@ -10,7 +10,7 @@ const send=(client,data)=>client.ws.send(typeof data==="object"&&!(data instance
 const audio=client=>client.messages.filter(m=>m instanceof ArrayBuffer);
 let result=0;
 try{
- const health=await(await mf.dispatchFetch(base+"/api/world/health")).json();assert.equal(health.version,"0.13");
+ const health=await(await mf.dispatchFetch(base+"/api/world/health")).json();assert.equal(health.version,"0.14");
  const response=await mf.dispatchFetch(base+"/api/world/rooms",{method:"POST",headers:{origin:base,"content-type":"application/json"},body:JSON.stringify({token:"voice-runtime-player-0-secret",map:house.MAP_ID})});
  assert.equal(response.status,201);const {code}=await response.json();
  for(let i=0;i<12;i++){

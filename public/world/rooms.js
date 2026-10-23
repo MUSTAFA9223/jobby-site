@@ -7,7 +7,7 @@ let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let roomMap="classic";
-$("mapChoice").value=["warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"warehouse-v1";
+$("mapChoice").value=["jobby-race-v1","warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"jobby-race-v1";
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
  send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
@@ -38,15 +38,15 @@ function render(){
     const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+p.avatar+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
-  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&roomMap==="warehouse-v1");
+  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1"].includes(roomMap));
   $("start").classList.toggle("hidden",!waiting);
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
-  $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":"▶ START CO-OP ESCAPE"):"WAITING FOR HOST…";
+  $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":(roomMap==="jobby-race-v1"?"▶ START RACE":"▶ START CO-OP ESCAPE")):"WAITING FOR HOST…";
   if(waiting)status(roster.length<2?"Share the room code. Waiting for another player…":(iamHost?"Your squad is ready. Start when everyone is here.":"Waiting for the host to start the match."));
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href=(roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=13";
+  voice.close();location.href=(roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=14";
 }
 async function connect(){
   try{await linkRoomSession(id);}catch(e){showStatus(e.message,true);return;}
@@ -66,7 +66,7 @@ async function connect(){
     if(m.type==="welcome"){
       roomMap=m.map||"classic";$("lobbyStatus").dataset.map=roomMap;maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
-      if(state==="finished")status("Match finished. Create a new room for another escape.");
+      if(state==="finished")status("Round finished. The host can start another race.");
     }
     if(m.type==="roster"){host=m.hostId;roster=m.players||[];voice.roster(roster,publicId);render()}
     if(m.type==="voice_state"){voice.state(m);roster=roster.map(p=>p.id===m.id?{...p,voice:m.joined,muted:m.muted}:p);render();}
@@ -107,6 +107,6 @@ $("create").onclick=create;$("join").onclick=join;
 $("roomInput").addEventListener("keydown",e=>{if(e.key==="Enter")join()});
 $("copyCode").onclick=()=>copy(code);$("copyInvite").onclick=()=>copy(invite());
 $("start").onclick=()=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"start"}))};
-$("leave").onclick=()=>{voice.close();ws?.close();location.href="./index.html?v=11"};
+$("leave").onclick=()=>{voice.close();ws?.close();location.href="./index.html?v=14"};
 const incoming=new URLSearchParams(location.search).get("code")?.toUpperCase()||"";
 if(re.test(incoming)){$("roomInput").value=incoming;showStatus("Invite code detected. Tap JOIN ROOM to connect.")}

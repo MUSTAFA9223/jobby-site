@@ -26,10 +26,10 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 </head>
 <body>
 <div class="wrap">
-<header class="top"><a class="brand" href="./index.html">JOBBY <em>WORLD</em></a><span class="alpha">CO-OP ALPHA 0.13</span></header>
+<header class="top"><a class="brand" href="./index.html">JOBBY <em>WORLD</em></a><span class="alpha">CO-OP ALPHA 0.14</span></header>
 <div id="setup">
 <div class="eyebrow">REAL-TIME ONLINE ROOMS</div>
-<h1>ESCAPE TOGETHER.</h1><p class="muted">Create a private room and invite friends by room code. Choose a map, solve puzzles and escape the chef together. Supports 2–12 players.</p>
+<h1>PLAY TOGETHER.</h1><p class="muted">Create a private room and invite friends by room code. Race through obstacles and push your friends, or choose an escape map. Supports 2–12 players.</p>
 <div class="card">
 <h2>PRIVATE MULTIPLAYER</h2>
 <label class="field" for="name">YOUR DISPLAY NAME</label><input id="name" maxlength="18" autocomplete="nickname" placeholder="Player">
@@ -42,7 +42,7 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 <option value="Wizard">Wizard — Unlockable</option>
 <option value="Pirate_Female">Pirate — Unlockable</option>
 </select>
-<label class="field" for="mapChoice">YOUR MAP</label><select id="mapChoice"><option value="warehouse-v1">Warehouse — Puzzles + Co-op rewards</option><option value="big-house-v1">Big House — Three exits</option><option value="classic">Classic — Three keys</option></select>
+<label class="field" for="mapChoice">YOUR MAP</label><select id="mapChoice"><option value="jobby-race-v1">Chaos Course — Obstacle race + Pushing</option><option value="warehouse-v1">Warehouse — Puzzles + Co-op rewards</option><option value="big-house-v1">Big House — Three exits</option><option value="classic">Classic — Three keys</option></select>
 <button class="primary full" id="create" style="margin-top:20px">+ CREATE PRIVATE ROOM</button>
 <div class="or">OR JOIN A FRIEND</div>
 <label class="field" for="roomInput">6-CHARACTER ROOM CODE</label>
@@ -60,10 +60,10 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 <div class="people" id="people"></div>
 <div id="lobbyVoice"></div>
 <p class="note">Voice is optional. After the match opens, tap the microphone icon again. Microphones stop when leaving this page.</p>
-<button class="primary full" id="start" disabled style="margin-top:20px">START CO-OP ESCAPE</button>
+<button class="primary full" id="start" disabled style="margin-top:20px">START RACE / ESCAPE</button>
 <button class="secondary full" id="leave" style="margin-top:9px">LEAVE ROOM</button>
 <p class="note">Room codes are unlisted, not passwords. Avoid sharing the invite publicly. Connection requires Cloudflare multiplayer service. Warehouse co-op awards saved game points for active players, tasks and rescues. Other co-op maps currently award no points. No real tokens are awarded.</p>
 </div></div>
 </div>
-<script type="module" src="./rooms.js?v=7"></script>
+<script type="module" src="./rooms.js?v=8"></script>
 </body></html>
