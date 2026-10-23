@@ -1,3 +1,4 @@
+import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=1";
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -21,7 +22,7 @@ if(!Array.isArray(state.unlocked))state.unlocked=[];
 const owned=a=>a.cost===0||state.unlocked.includes(a.id);
 if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
 try{if(!localStorage.getItem("jobby-world-alpha06-default")){if(state.selected==="Casual_Male")state.selected="JOBBY";localStorage.setItem(STORAGE,JSON.stringify(state));localStorage.setItem("jobby-world-alpha06-default","1")}}catch(e){}
-const save=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){}};
+const save=()=>{try{saveSelection(state)}catch(e){}};
 const money=n=>new Intl.NumberFormat("en-US").format(n);
 const latestScores=()=>{try{const values=JSON.parse(localStorage.getItem(HISTORY)||"[]");return Array.isArray(values)?values:[]}catch(e){return []}};
 let activeView="home",currentModel=null,viewer=null,orbit=null,scene=null,camera=null,mixer=null,animationFrame=0,oldTime=0,previewRequest=0,rotTimer=null;
@@ -32,10 +33,12 @@ function updateStats(){
  $("wallet").textContent=money(state.points);
  $("myPoints").textContent=money(state.points);
  $("myOwned").textContent=AVATARS.filter(owned).length+" / "+AVATARS.length;
- $("myWins").textContent=latestScores().length;
- $("leaderWins").textContent=latestScores().length;
- const best=latestScores().sort((a,b)=>Number(a.seconds)-Number(b.seconds))[0];
- $("leaderBest").textContent=best?Math.round(best.seconds)+"s":"—";
+ const wins=playerInfo().profile?playerInfo().profile.wins+(state.legacyWins||0):latestScores().length;
+ $("myWins").textContent=wins;
+ $("leaderWins").textContent=wins;
+ const best=latestScores().filter(a=>Number(a.seconds)>0).sort((a,b)=>Number(a.seconds)-Number(b.seconds))[0];
+ const bestTime=Math.min(best?.seconds||Infinity,state.legacyBest||Infinity,playerInfo().profile?.best||Infinity);
+ $("leaderBest").textContent=Number.isFinite(bestTime)?Math.round(bestTime)+"s":"—";
  $("leaderPoints").textContent=money(state.points);
 }
 function showView(id){
@@ -47,20 +50,48 @@ function showView(id){
  if(id==="leaderboard")renderScores();
  window.scrollTo({top:0,behavior:"instant"});
 }
-function renderScores(){
- const root=$("scoreboard");root.replaceChildren();
- const scores=latestScores().sort((a,b)=>Number(a.seconds)-Number(b.seconds)).slice(0,20);
- if(!scores.length){const p=document.createElement("div");p.className="empty";p.textContent="No escapes recorded yet. Complete your first solo escape to appear on this leaderboard.";root.append(p);return}
- for(const [i,entry] of scores.entries()){
-  const item=document.createElement("div");item.className="score";
-  const rank=document.createElement("span");rank.className="rank";rank.textContent=i===0?"🥇":i===1?"🥈":i===2?"🥉":"#"+(i+1);
-  const who=document.createElement("div");who.className="who";
-  const name=document.createElement("b");name.textContent="You · "+(entry.character||"JOBBY");
-  const date=document.createElement("small");date.textContent=new Date(Number(entry.date)||Date.now()).toLocaleDateString("en-US")+" · "+Math.round(Number(entry.seconds)||0)+" sec";
-  const points=document.createElement("span");points.className="pts";points.textContent="+"+money(Number(entry.points)||50);
-  who.append(name,date);item.append(rank,who,points);root.append(item);
- }
+let scoresRequest=0;
+async function renderScores(){
+ const request=++scoresRequest,root=$("scoreboard");root.textContent="Loading player rankings…";
+ try{
+  const scores=await leaderboard();if(request!==scoresRequest)return;root.replaceChildren();
+  if(!scores.length){root.classList.add("empty");root.textContent="No ranked rounds yet. Earn points in a new solo round to add your name here. Your existing balance is still saved.";return;}
+  root.classList.remove("empty");
+  for(const [i,entry] of scores.entries()){
+   const item=document.createElement("div");item.className="score";
+   const rank=document.createElement("span");rank.className="rank";rank.textContent=["🥇","🥈","🥉"][i]||"#"+(i+1);
+   const who=document.createElement("div");who.className="who";
+   const name=document.createElement("b");name.textContent=entry.name+(entry.id===playerInfo().profile?.id?" · You":"");
+   const details=document.createElement("small");details.textContent=entry.wins+" wins · Best "+(entry.best?Math.round(entry.best)+"s":"—")+" · #"+entry.id.slice(0,6);
+   const points=document.createElement("span");points.className="pts";points.textContent=money(entry.earned)+" pts";
+   who.append(name,details);item.append(rank,who,points);root.append(item);
+  }
+ }catch{if(request!==scoresRequest)return;root.classList.add("empty");root.textContent="Could not load online rankings. Your personal points and results are kept. Reconnect and tap Rankings to retry.";}
 }
+function playerStatus(){
+ const info=playerInfo();$("playerLabel").textContent=info.name;$("saveStatus").textContent=info.status;
+ updateStats();if(activeView==="characters")renderCards();
+}
+function closePlayer(){ $("playerModal").classList.add("hidden");$("ownRecovery").textContent="";$("ownRecovery").classList.add("hidden");$("recoveryInput").value="";$("managePlayer").focus(); }
+$("managePlayer").onclick=()=>{
+ const info=playerInfo();$("playerName").value=info.name;$("playerMessage").textContent="";
+ const select=$("savedPlayers");select.replaceChildren();
+ for(const slot of info.slots){const option=document.createElement("option");option.value=slot.id;option.textContent=slot.name+(slot.active?" (current)":"");option.selected=slot.active;select.append(option);}
+ $("playerModal").classList.remove("hidden");$("playerName").focus();
+};
+$("closePlayer").onclick=closePlayer;
+$("playerModal").addEventListener("click",e=>{if(e.target.id==="playerModal")closePlayer();});
+async function playerAction(button,action){
+ button.disabled=true;$("playerMessage").textContent="Saving…";
+ try{await action();const info=playerInfo();$("playerMessage").textContent=info.error||"Player saved online.";playerStatus();}
+ catch(e){$("playerMessage").textContent=e.message;}finally{button.disabled=false;}
+}
+$("savePlayerName").onclick=e=>playerAction(e.currentTarget,()=>{if(!$("playerName").value.trim())throw Error("Enter a player name.");return renamePlayer($("playerName").value);});
+$("createPlayer").onclick=e=>playerAction(e.currentTarget,()=>newPlayer($("playerName").value));
+$("restorePlayer").onclick=e=>playerAction(e.currentTarget,()=>restorePlayer($("recoveryInput").value));
+$("switchPlayer").onclick=e=>playerAction(e.currentTarget,()=>switchPlayer($("savedPlayers").value));
+$("showRecovery").onclick=()=>{$("ownRecovery").textContent=recoveryCode();$("ownRecovery").classList.toggle("hidden");};
+window.addEventListener("jobby-profile-change",playerStatus);
 const placeholder=(label)=>"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="256" height="260" viewBox="0 0 256 260"><rect width="256" height="260" rx="25" fill="#33345d"/><circle cx="128" cy="103" r="43" fill="#8278b7"/><path d="M53 218 Q52 142 128 144 Q204 142 203 218" fill="#8278b7"/><text x="128" y="245" fill="#d1c8fa" font-family="sans-serif" font-size="15" text-anchor="middle">'+label+'</text></svg>');
 const portraitKey=id=>"jobby-portrait-v06-"+id;
 function cachedPortrait(a){
@@ -199,7 +230,8 @@ $("exploreChars").onclick=()=>showView("characters");
 $("multiMode").onclick=()=>{location.href="./rooms.html?v=4"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
-window.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
+window.addEventListener("keydown",e=>{if(e.key==="Escape"){closePreview();if(!$("playerModal").classList.contains("hidden"))closePlayer()}});
 window.addEventListener("pageshow",()=>{updateStats();if(activeView==="leaderboard")renderScores()});
 updateStats();
-showView(location.hash==="#characters"?"characters":"home");
+playerStatus();
+showView(location.hash==="#leaderboard"?"leaderboard":location.hash==="#characters"?"characters":"home");

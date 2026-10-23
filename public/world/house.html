@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - Mobile 3D adventure with original characters, touch controls, a house, a maze, and an escape challenge">
-  <title>JOBBY WORLD | Alpha 0.11</title>
+  <title>JOBBY WORLD | Alpha 0.12</title>
   <link rel="stylesheet" href="./voice.css?v=3">
   <style>
     #quest{max-width:calc(100vw - 24px);white-space:normal!important;min-width:0!important;width:max-content}
@@ -69,7 +69,7 @@
   <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="Area minimap"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 RESET</button><button id="cameraZoom" class="cameraButton">🔍 ZOOM</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>RUN</button><button id="jump" class="act"><span class="emoji">⬆</span>JUMP</button></div><button id="interact" type="button">FIND A TASK / HIDE SPOT</button><div id="guardStatus">CHEF ON PATROL</div><div id="hint">Drag to rotate 360° · Pinch with two fingers to zoom</div></div>
   <div id="menu">
     <div class="glass panel">
-      <div class="eyebrow">THE BIG HOUSE · Alpha 0.11</div>
+      <div class="eyebrow">THE BIG HOUSE · Alpha 0.12</div>
       <div class="headline">JOBBY <em>WORLD</em></div>
       <div class="subtitle">Play as your favorite hero in a full 3D world.<br>Enter the Big House, complete tasks, hide from the chef, and choose one of three exits.</div>
       <div class="secTitle">CHOOSE YOUR HERO <span style="color:#a5a3d6;font-weight:400">— 4 free · 2 unlockable with points</span></div>
@@ -79,12 +79,12 @@
       <a class="mainBtn secondaryBtn" href="./rooms.html" style="box-sizing:border-box;text-decoration:none">👥 PRIVATE CO-OP + VOICE</a>
       <div id="loadBar"><div id="barProgress"></div></div>
       <div id="loadStatus" style="font-size:11px;color:#c3d6e4;padding-top:5px">Ready — only your selected character will load (JOBBY ~1.9 MB)</div>
-      <p class="notice">Solo points are saved on this device. Private co-op supports 2–12 players with optional room voice. After entering the game, tap the microphone icon to enable your mic.</p>
+      <p class="notice">Solo points save to your player profile on Cloudflare. Manage your name and recovery code in WORLD → PLAYER. Private co-op supports 2–12 players with optional room voice. After entering the game, tap the microphone icon to enable your mic.</p>
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">ESCAPE COMPLETE!</div><p class="subtitle">You completed an exit task and escaped the Big House. You earned <b style="color:#ffd76a">50 points</b> for escaping.</p><button class="mainBtn" id="againButton">↻ PLAY AGAIN</button><button class="mainBtn secondaryBtn" id="charactersButton">CHOOSE ANOTHER HERO</button></div></div>
   <script type="module">
-    import("./house-game.js?v=2").catch(error=>{
+    import("./house-game.js?v=3").catch(error=>{
       console.error(error);document.getElementById("loadStatus").textContent="3D could not start in this browser. Try Chrome with graphics enabled.";
       const a=document.createElement("a");a.href="./house-plan.html";a.className="mainBtn secondaryBtn";a.textContent="VIEW THE BIG HOUSE MAP";document.querySelector("#menu .panel").append(a);
     });
