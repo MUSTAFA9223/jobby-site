@@ -20,10 +20,10 @@ The existing homepage, solo game, points and character unlocks are retained.
 
 ## Alpha 0.11
 - Room voice is available in the lobby and during co-op gameplay.
-- Tap **JOIN VOICE** and grant microphone permission on each device.
-- **MUTE MIC**, **SOUND ON/OFF** and **LEAVE VOICE** control capture and playback independently.
+- Tap the microphone icon and grant microphone permission on each device.
+- Compact microphone and speaker icons control capture/playback with one tap. In-game they sit along the left edge, away from the upper-right minimap and bottom movement controls. In landscape the dock becomes a short row. Voice mode and leave controls are in the small options menu.
 - Voice stops and releases microphone tracks on leaving the page or losing the room connection.
-- Moving from lobby to game opens a new page: tap **JOIN VOICE** again in-game.
+- Moving from lobby to game opens a new page: tap the microphone icon again in-game.
 - Microphones are off by default. Only participants who opt into voice receive audio frames.
 - Live audio passes through the existing room WebSocket on Cloudflare. No separate hosting service, TURN account or voice subscription is required.
 - Audio is not recorded or stored. Frames use 16 kHz mono PCM in 80 ms packets, silence gating, bounded playback queues and rate/size limits. Bandwidth is roughly 32 KB/s per actively speaking participant before transport overhead; Cloudflare usage quotas still apply.

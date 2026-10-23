@@ -1,8 +1,19 @@
-.room-voice{border:1px solid #7970a6;border-radius:15px;padding:10px;background:#171b39f2;color:#f4f6ff;font:12px system-ui;margin-top:14px}
-.voice-buttons{display:flex;gap:6px;flex-wrap:wrap}.voice-buttons button{min-height:44px;border:1px solid #8c82b7;border-radius:11px;padding:8px 11px;background:#36305d;color:#fff;font:800 11px system-ui;cursor:pointer;touch-action:manipulation}.voice-buttons button:first-child{background:#74f0cd;color:#103b32;border-color:#adffe8}.voice-buttons button:disabled{opacity:.55}.voice-buttons button[hidden]{display:none}
-.voice-status{margin:8px 0 0;line-height:1.5;color:#c6d3e9;max-width:100%;overflow-wrap:anywhere}
-#voiceHud{position:absolute;z-index:11;top:108px;left:max(env(safe-area-inset-left),10px);width:min(310px,calc(100vw - 20px));pointer-events:auto}
-#voiceHud .room-voice{margin:0;box-shadow:0 5px 18px #080a2066}#voiceHud .voice-buttons button{padding:7px 8px;min-height:42px;font-size:10px}#voiceHud .voice-status{font-size:10px}
-@media(max-height:560px){#voiceHud{top:98px;width:270px}#voiceHud .room-voice{padding:6px}#voiceHud .voice-status{margin-top:4px}}
-
-.voice-buttons button:last-child{touch-action:none;user-select:none;-webkit-user-select:none}.voice-buttons button[aria-pressed="true"]:last-child{background:#74f0cd;color:#103b32}
+.room-voice{position:relative;display:inline-block;margin-top:12px;color:#f4f6ff;font:12px system-ui;pointer-events:none}
+.voice-buttons{display:flex;gap:8px;align-items:center;pointer-events:none}
+.voice-icon{display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:0;border:1px solid #b5bed58a;border-radius:50%;background:#17243bd9;color:#e3ebf6;box-shadow:0 3px 10px #080b2740;cursor:pointer;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.voice-icon svg{display:block;pointer-events:none}.voice-icon:active{transform:scale(.94)}.voice-icon:focus-visible{outline:3px solid #ffe395;outline-offset:3px}.voice-icon:disabled{opacity:.45;cursor:default}
+.voice-icon[data-state="on"]{background:#71efd0;color:#103e35;border-color:#b7ffe8}.voice-mic[data-state="muted"]{background:#562c43;color:#ffd3d9;border-color:#ffb2c3}.voice-mic[data-state="joining"]{animation:voice-pulse 1s infinite alternate}
+.voice-more{flex-basis:34px;width:34px;height:34px;background:#17243ba8}.voice-more svg{width:20px;height:20px}.voice-talk{touch-action:none;user-select:none;-webkit-user-select:none;border-color:#ffe395;color:#ffe395}.voice-talk[aria-pressed="true"]{background:#71efd0;color:#103e35}
+.voice-options{position:absolute;z-index:2;top:calc(100% + 8px);left:0;width:196px;padding:8px;border:1px solid #9da8c3;border-radius:14px;background:#17243bf5;box-shadow:0 8px 25px #080b2755;pointer-events:auto}
+.voice-options button{display:block;width:100%;min-height:44px;margin:0;padding:8px 10px;border:0;border-radius:9px;background:transparent;color:#eaf1ff;text-align:left;font:800 11px system-ui;cursor:pointer;touch-action:manipulation}.voice-options button:hover,.voice-options button:focus-visible{background:#394563}.voice-options button:last-child{color:#ffbecb}
+.room-voice [hidden]{display:none!important}
+.voice-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;pointer-events:none}
+.has-notice .voice-status{z-index:3;left:0;top:calc(100% + 8px);width:min(230px,calc(100vw - 80px));height:auto;margin:0;padding:9px 12px;border:1px solid #a6b7cc;border-radius:12px;background:#15243bf5;color:#ecf3ff;font-size:11px;line-height:1.5;clip-path:none;white-space:normal}
+#voiceHud{position:absolute;z-index:8;top:30vh;top:clamp(140px,30dvh,270px);left:max(env(safe-area-inset-left),10px);width:44px;pointer-events:none}
+#voiceHud .room-voice{display:block;margin:0;width:44px}
+#voiceHud .voice-buttons{flex-direction:column;gap:8px;width:44px}
+#voiceHud .voice-options,#voiceHud .has-notice .voice-status{left:54px;top:0;width:min(210px,calc(100vw - 80px))}
+#lobbyVoice{min-height:44px}
+@keyframes voice-pulse{to{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.voice-mic[data-state="joining"]{animation:none}}
+@media(max-height:560px){#voiceHud{top:calc(env(safe-area-inset-top) + 105px);width:auto}#voiceHud .room-voice{width:auto}#voiceHud .voice-buttons{flex-direction:row;width:auto}#voiceHud .voice-options,#voiceHud .has-notice .voice-status{left:0;top:54px}}

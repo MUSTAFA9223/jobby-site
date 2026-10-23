@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {clone as cloneSkeleton} from "three/addons/utils/SkeletonUtils.js";
 import {createAssetCache} from "./avatar-cache.js";
-import {createRoomVoice} from "./voice.js?v=2";
+import {createRoomVoice} from "./voice.js?v=3";
 
 const ICON={JOBBY:"JOBBY",Casual_Male:"Explorer",Ninja_Male:"Ninja",Pug:"Pug",Wizard:"Wizard",Pirate_Female:"Pirate"};
 const JOBBY_MODEL="./models/JOBBY.glb";
