@@ -74,6 +74,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 @media(max-width:360px){.hero h1{font-size:25px}.hero-image{height:190px}.hero{min-height:240px}.logo{font-size:18px}.coin{padding:7px}}
 .player-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 16px;padding:10px 13px;border:1px solid var(--stroke);border-radius:15px;background:#161c35}.player-bar b{display:block;font-size:14px}.player-bar small{color:var(--muted);font-size:10px}.profile-field{display:block;margin:13px 0 6px;color:var(--muted);font-size:12px}.profile-input{width:100%;min-height:44px;padding:10px;border:1px solid #6d6b98;border-radius:10px;background:#0d142a;color:white;font:inherit}.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.profile-actions button{flex:1;min-height:44px}.profile-divider{border:0;border-top:1px solid var(--stroke);margin:20px 0}.score .who{min-width:0;overflow-wrap:anywhere}.score .who small{display:block}.score .pts{white-space:nowrap}.profile-code{font:12px monospace;overflow-wrap:anywhere;user-select:all}
 .coursePreview{display:block;position:relative;overflow:hidden;margin-top:14px;border-radius:20px;border:1px solid #7f7ab56e;background:#9ac8f4}.coursePreview img{display:block;width:100%;height:230px;object-fit:cover}.coursePreview span{position:absolute;bottom:0;left:0;right:0;padding:18px;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px;background:linear-gradient(transparent,#141833db)}.coursePreview b{float:right;font-size:18px}.hero{background:linear-gradient(140deg,#41408a,#382b68 40%,#1c3559)}.hero h1{font-size:clamp(34px,8vw,58px);letter-spacing:-2px}@media(max-width:520px){.coursePreview img{height:190px}.hero h1{font-size:39px}}
+.ranking-tabs{display:flex;gap:10px;margin:20px 0}.ranking-tabs button{flex:1;min-height:48px}.ranking-tabs .active{border-color:var(--mint);color:var(--mint)}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
@@ -87,14 +88,12 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div><div class="eyebrow">🏰 EXPLORE. SOLVE. ESCAPE TOGETHER.</div><h1>Uncover <span class="gradient">the castle.</span></h1><p class="soft">Explore the towers, woodland, old village and crypt in one connected estate. Solve the castle puzzles and escape the guardian together.</p><div class="actionStack"><button id="playNow" class="primary">▶ ENTER THE CASTLE</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
 <div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
-<a class="coursePreview" href="./castle-guide.html"><img src="./assets/castle-overview.webp" alt="Overview rendered from the castle and labyrinth models"><span>EXPLORE THE CASTLE <b>↗</b></span></a><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
+<div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
-<button id="soloMode" class="mode"><span class="emoji">🏰</span><strong>CASTLE & LABYRINTH</strong><p>Solo escape · Three linked puzzles · Guardian chase · Twelve minutes</p></button>
-<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>ESCAPE WITH FRIENDS</strong><p>2–12 players · Work together · Saved points · Optional voice</p></button>
+<button id="soloMode" class="mode"><span class="emoji">🏰</span><strong>CASTLE & LABYRINTH</strong><p>Play solo</p></button>
+<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>ESCAPE WITH FRIENDS</strong><p>Private rooms · Co-op or team challenges</p></button>
 </div>
-<div class="home-foot"><a href="./castle-guide.html" style="color:var(--mint)">CASTLE MAP & RULES</a> · <a href="./asset-library.html" style="color:var(--mint)">ALL 124 MODEL PREVIEWS</a> · <a href="./race.html?autostart=1" style="color:var(--mint)">CHAOS COURSE</a> · <a href="./race-guide.html" style="color:var(--mint)">RACE COURSE & CONTROLS</a> · <a href="./warehouse.html?autostart=1" style="color:var(--mint)">WAREHOUSE ESCAPE</a> · <a href="./warehouse-plan.html" style="color:var(--mint)">WAREHOUSE MAP & RULES</a> · <a href="./house.html?autostart=1" style="color:var(--mint)">PLAY THE BIG HOUSE</a> · <a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
-<div class="home-foot">🏆 Earn points by playing and unlock more characters. Your points and characters save to your player profile. Keep your recovery code to use another phone.</div>
 </section>
 <section id="characters" class="view hidden">
 <div class="titlebar"><div><div class="eyebrow">CHARACTER COLLECTION</div><h1>CHOOSE YOUR CHARACTER</h1><p class="soft">JOBBY is the first free hero. Tap any card to inspect its 3D model and select it.</p></div><span class="coin" id="charCounter">6 CHARACTERS</span></div>
@@ -102,10 +101,11 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div class="cardActions"><button class="primary" id="playSelected">PLAY SELECTED HERO</button><button class="secondary" data-view="home">BACK</button></div>
 </section>
 <section id="leaderboard" class="view hidden">
-<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Real players, ranked by total points earned from races, solo escapes and castle and warehouse co-op. One place for each player.</p>
-<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>BEST ROUND TIME</span></div><div class="stat"><b id="leaderPoints">0</b><span>POINT BALANCE</span></div></div>
+<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Separate rankings for solo play and multiplayer.</p>
+<div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>BEST ROUND TIME</span></div><div class="stat"><b id="leaderPoints">0</b><span>MODE POINTS EARNED</span></div></div>
+<div class="ranking-tabs" role="group" aria-label="Ranking mode"><button class="secondary active" id="soloRanks" aria-pressed="true">SOLO</button><button class="secondary" id="teamRanks" aria-pressed="false">MULTIPLAYER</button></div>
 <div id="scoreboard" class="scoreboard"></div>
-<div class="home-foot">🌍 Your old progress is kept in your balance. Global rankings count new round points, including private races and castle and warehouse co-op, so imported points never overwrite the leaderboard. These are experimental game scores with no real rewards.</div>
+
 </section>
 </main>
 </div>
@@ -122,5 +122,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=16-13"></script>
+<script type="module" src="./hub.js?v=16-14"></script>
 </body></html>

@@ -1,7 +1,7 @@
 import * as rules from './public/world/race-rules.js';
 export const MAP_ID=rules.MAP_ID;
 export function newState(){return {round:null,started:0,deadline:0,entries:{}};}
-export function view(room,now=Date.now()){const r=room.race;return {round:r.round,started:r.started,deadline:r.deadline,serverNow:now,status:room.status,entries:Object.values(r.entries).map(p=>({id:p.id,name:p.name,checkpoint:p.checkpoint,falls:p.falls,finishAt:p.finishAt||0,rank:p.rank||0,slot:p.slot,x:p.x,y:p.y,z:p.z,h:p.h||0}))};}
+export function view(room,now=Date.now()){const r=room.race;return {round:r.round,started:r.started,deadline:r.deadline,serverNow:now,status:room.status,challenge:room.challenge?{fee:room.challenge.fee,teams:room.challenge.teams,ready:room.challenge.ready,status:room.challenge.status,winner:room.challenge.winner,payouts:room.challenge.payouts,pot:room.challenge.pot,round:room.challenge.round}:null,entries:Object.values(r.entries).map(p=>({id:p.id,name:p.name,checkpoint:p.checkpoint,falls:p.falls,finishAt:p.finishAt||0,rank:p.rank||0,slot:p.slot,x:p.x,y:p.y,z:p.z,h:p.h||0}))};}
 export function join(room,info){
  let p=room.race.entries[info.id];
  if(!p){const slot=Object.keys(room.race.entries).length%12;p={...rules.spawn(slot),id:info.id,name:info.name,slot,checkpoint:0,falls:0,poseAt:Date.now(),safeUntil:Date.now()+1500};room.race.entries[info.id]=p;}
@@ -13,7 +13,7 @@ export async function start(instance,room){
 }
 function correct(ws,p){ws.send(JSON.stringify({type:'race_reset',id:p.id,x:p.x,y:p.y,z:p.z,checkpoint:p.checkpoint,falls:p.falls}));}
 export async function retryRewards(instance,room){
- if(!instance.playerStore)return;
+ if(!instance.playerStore||room.challenge)return;
  for(const p of Object.values(room.race.entries)){
   if(!p.finishAt||p.rewarded)continue;
   try{const res=await instance.playerStore.fetch('https://players.internal/_room_reward',{method:'POST',body:JSON.stringify({map:MAP_ID,round:room.race.round,started:room.race.started,players:[{session:p.id,tasks:3,rescues:0,seconds:(p.finishAt-room.race.started)/1000}]})});if(res.ok)p.rewarded=true;}catch{}
@@ -42,12 +42,12 @@ export async function handle(instance,ws,a,m,room){
   const floor=rules.supportAt(p.x,p.z,(now-r.started)/1000);
   if(floor&&Math.abs(p.y-floor.y)<.18){
    if(floor.checkpoint===p.checkpoint+1){p.checkpoint++;instance.broadcast({type:'race_checkpoint',id:p.id,index:p.checkpoint});}
-   if(floor.finish&&p.checkpoint===3&&p.z<-133){p.finishAt=now;p.rank=Object.values(r.entries).filter(q=>q.finishAt).length;instance.broadcast({type:'race_finish',id:p.id,rank:p.rank,seconds:(now-r.started)/1000,points:80});await retryRewards(instance,room);}
+   if(floor.finish&&p.checkpoint===3&&p.z<-133){p.finishAt=now;p.rank=Object.values(r.entries).filter(q=>q.finishAt).length;instance.broadcast({type:'race_finish',id:p.id,rank:p.rank,seconds:(now-r.started)/1000,points:room.challenge?0:80});await retryRewards(instance,room);}
   }
   instance.broadcast({type:'pose',id:a.id,x:p.x,z:p.z,y:p.y,h:p.h,anim:['Idle','Walk','Run','Jump'].includes(m.anim)?m.anim:'Idle'},ws);
  }
  Object.assign(a,{x:p.x,y:p.y,z:p.z,h:p.h||0});ws.serializeAttachment(a);
  if(changed){await instance.ctx.storage.put('room',room);if(p.finishAt||now-(instance.raceSentAt||0)>650){instance.raceSentAt=now;instance.broadcast({type:'race_state',state:view(room)});}}
- const playing=Object.values(r.entries).filter(q=>instance.players().some(a=>a.id===q.id));
+ const playing=Object.values(r.entries).filter(q=>room.challenge||instance.players().some(a=>a.id===q.id));
  if(playing.length&&playing.every(q=>q.finishAt)){room.status='finished';await retryRewards(instance,room);instance.broadcast({type:'race_state',state:view(room)});}
 }

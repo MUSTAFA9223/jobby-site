@@ -1,4 +1,4 @@
-import {renamePlayer,linkRoomSession} from "./player-profile.js?v=2";
+import {renamePlayer,linkRoomSession,syncProfile,playerInfo} from "./player-profile.js?v=2";
 import {createRoomVoice} from "./voice.js?v=3";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
@@ -6,7 +6,10 @@ const KEY="jobby-world-room-peer";
 let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
-let roomMap="classic";
+let roomMap="classic",challenge=null;
+$("roomType").value=new URLSearchParams(location.search).get("mode")==="challenge"?"challenge":"coop";
+function roomType(){const active=$("roomType").value==="challenge";$("challengeRules").classList.toggle("hidden",!active);$("mapChoice").classList.toggle("hidden",active);$("mapLabel").classList.toggle("hidden",active);}
+$("roomType").onchange=roomType;roomType();
 $("mapChoice").value=["castle-dungeon-v1","jobby-race-v1","warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"castle-dungeon-v1";
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
@@ -35,7 +38,7 @@ function render(){
     const face=document.createElement("span");face.className="face";face.textContent=emoji(p.avatar);
     const who=document.createElement("div");who.className="who";
     const label=document.createElement("b");label.textContent=p.name+(p.id===publicId?" (You)":"");
-    const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+p.avatar+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
+    const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+(challenge?("TEAM "+(challenge.teams[p.id]||"—")+(challenge.ready[p.id]?" · READY":" · NOT READY")):p.avatar)+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
   const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1","castle-dungeon-v1"].includes(roomMap));
@@ -43,6 +46,18 @@ function render(){
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
   $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":(roomMap==="jobby-race-v1"?"▶ START RACE":"▶ START CO-OP ESCAPE")):"WAITING FOR HOST…";
   if(waiting)status(roster.length<2?"Share the room code. Waiting for another player…":(iamHost?"Your squad is ready. Start when everyone is here.":"Waiting for the host to start the match."));
+  $("challengeLobby").classList.toggle("hidden",!challenge);$("coopNote").classList.toggle("hidden",!!challenge);
+  if(challenge){
+   const a=roster.filter(p=>challenge.teams[p.id]==="A").length,b=roster.filter(p=>challenge.teams[p.id]==="B").length,ready=roster.filter(p=>challenge.ready[p.id]).length;
+   const open=challenge.status==="lobby";
+   $("challengeSummary").textContent="TEAM A "+a+" vs TEAM B "+b+" · "+ready+"/"+roster.length+" READY · POOL "+(challenge.pot||roster.length*100)+" POINTS";
+   for(const [id,team] of [["teamA","A"],["teamB","B"]]){$(id).disabled=!open;$(id).setAttribute("aria-pressed",String(challenge.teams[publicId]===team));}
+   $("confirmEntry").disabled=!open;$("confirmEntry").textContent=challenge.ready[publicId]?"READY ✓ · TAP TO CANCEL":"READY · CONFIRM 100 POINTS";
+   $("start").disabled=!iamHost||ws?.readyState!==WebSocket.OPEN||(open&&(!a||a!==b||ready!==roster.length));
+   $("start").textContent=!iamHost?"WAITING FOR HOST…":open?"START TEAM CHALLENGE":"PREPARE NEXT CHALLENGE";
+   if(open)status(a!==b||!a?"Choose two equal teams, then every player confirms entry.":ready!==roster.length?"Waiting for every player to confirm 100 points.":"Both teams are ready. The host can start.");
+   else if(["paid","refunded"].includes(challenge.status))status(challenge.status==="paid"?"TEAM "+challenge.winner+" WON · "+(challenge.payouts[0]?.points||0)+" POINTS PER WINNER":"NO WINNER · ALL ENTRY POINTS REFUNDED");
+  }
 }
 function beginGame(){
   if(!code)return;
@@ -64,11 +79,12 @@ async function connect(){
     if(ev.data instanceof ArrayBuffer){voice.audio(ev.data);return;}
     let m;try{m=JSON.parse(ev.data)}catch{return}
     if(m.type==="welcome"){
-      roomMap=m.map||"classic";$("lobbyStatus").dataset.map=roomMap;maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
+      challenge=m.challenge||null;roomMap=m.map||"classic";$("lobbyStatus").dataset.map=roomMap;maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
-      if(state==="finished")status("Round finished. The host can start another round.");
+      if(state==="finished"&&!challenge)status("Round finished. The host can start another round.");
     }
-    if(m.type==="roster"){host=m.hostId;roster=m.players||[];voice.roster(roster,publicId);render()}
+    if(m.type==="challenge_state"){challenge=m.challenge;state=["paid","refunded"].includes(challenge.status)?"finished":challenge.status==="lobby"?"lobby":state;render();void syncProfile();}
+    if(m.type==="roster"){if(m.challenge)challenge=m.challenge;host=m.hostId;roster=m.players||[];voice.roster(roster,publicId);render()}
     if(m.type==="voice_state"){voice.state(m);roster=roster.map(p=>p.id===m.id?{...p,voice:m.joined,muted:m.muted}:p);render();}
     if(m.type==="start")beginGame();
     if(m.type==="error")status(m.message||"Room error.");
@@ -81,7 +97,8 @@ async function connect(){
 async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value})});
+    await linkRoomSession(id);
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value,mode:$("roomType").value})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}
@@ -103,6 +120,14 @@ async function copy(value){
   try{await navigator.clipboard.writeText(value);status("Copied! Share it with your friends.")}
   catch{status("Copy manually: "+value)}
 }
+$("teamA").onclick=()=>ws?.readyState===WebSocket.OPEN&&ws.send(JSON.stringify({type:"challenge_team",team:"A"}));
+$("teamB").onclick=()=>ws?.readyState===WebSocket.OPEN&&ws.send(JSON.stringify({type:"challenge_team",team:"B"}));
+$("confirmEntry").onclick=async()=>{
+ if(ws?.readyState!==WebSocket.OPEN||!challenge)return;
+ $("confirmEntry").disabled=true;let errorMessage="";
+ try{await syncProfile();if(!challenge.ready[publicId]&&(playerInfo().profile?.state?.points||0)<100){errorMessage="You need 100 free game points. Play solo or co-op to earn more.";return;}ws.send(JSON.stringify({type:"challenge_ready",ready:!challenge.ready[publicId]}));}
+ finally{render();if(errorMessage)status(errorMessage);}
+};
 $("create").onclick=create;$("join").onclick=join;
 $("roomInput").addEventListener("keydown",e=>{if(e.key==="Enter")join()});
 $("copyCode").onclick=()=>copy(code);$("copyInvite").onclick=()=>copy(invite());

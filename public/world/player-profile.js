@@ -74,7 +74,7 @@ export async function newPlayer(name){
 export async function switchPlayer(id){const slot=read(SLOTS,[]).find(s=>s.id===id);if(slot)await restorePlayer(slot.token);}
 export async function linkRoomSession(session){await syncProfile();if(!current().created||current().actions.length)throw Error("Reconnect to save your player before joining a room.");return api("profile/link",{session});}
 export function recoveryCode(){return token;}
-export async function leaderboard(){const res=await fetch("/api/world/leaderboard",{cache:"no-store"});if(!res.ok)throw Error("Rankings are temporarily unavailable.");return (await res.json()).players;}
+export async function leaderboard(mode="solo"){const res=await fetch("/api/world/leaderboard?mode="+encodeURIComponent(mode),{cache:"no-store"});if(!res.ok)throw Error("Rankings are temporarily unavailable.");return (await res.json()).players;}
 window.addEventListener("online",()=>void syncProfile());
 window.addEventListener("pageshow",()=>void syncProfile());
 window.addEventListener("storage",event=>{if(event.key===ACTIVE){location.reload();return;}if(event.key===STATE)notice();});

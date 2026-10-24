@@ -129,10 +129,12 @@ const elapsed=()=>Math.max(0,((isCoop?Date.now()+serverOffset:performance.now())
 function position(){px=runner.x;pz=runner.z;py=runner.y;playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;}
 function standings(){
  const entries=race?.entries||[];const ordered=[...entries].sort((a,b)=>(a.rank||99)-(b.rank||99)||b.checkpoint-a.checkpoint||a.z-b.z);
- $('raceList').replaceChildren();for(const [i,p] of ordered.entries()){const row=document.createElement('p');row.textContent=(p.rank?'#'+p.rank:'•')+' '+p.name+' · '+(p.finishAt?((p.finishAt-race.started)/1000).toFixed(1)+'s':p.checkpoint+'/3 CP');if(p.id===coop?.selfId())row.className='me';$('raceList').append(row);}
+ $('raceList').replaceChildren();for(const [i,p] of ordered.entries()){const row=document.createElement('p');row.textContent=(race?.challenge?'TEAM '+race.challenge.teams[p.id]+' · ':'')+(p.rank?'#'+p.rank:'•')+' '+p.name+' · '+(p.finishAt?((p.finishAt-race.started)/1000).toFixed(1)+'s':p.checkpoint+'/3 CP');if(p.id===coop?.selfId())row.className='me';$('raceList').append(row);}
+ if(race?.challenge){const c=race.challenge;const progress=t=>entries.filter(p=>c.teams[p.id]===t&&p.finishAt).length+'/'+entries.filter(p=>c.teams[p.id]===t).length;$('rankHud').textContent='A '+progress('A')+' · B '+progress('B');return;}
  const me=ordered.findIndex(p=>p.id===coop?.selfId());$('rankHud').textContent=isCoop?(me+1)+' / '+entries.length:'PRACTICE';
 }
 function applyRace(value){race=value;serverOffset=value.serverNow-Date.now();roundStartedAt=value.started;standings();
+ if(value.challenge){const own=value.entries.find(p=>p.id===coop?.selfId());if(own?.finishAt||value.status==='finished')showChallengeResult();return;}
  const own=value.entries.find(p=>p.id===coop?.selfId());
  if(own?.finishAt){if(!finished)showResult(own.rank,(own.finishAt-value.started)/1000,80);void syncProfile();}
  if(value.status==='finished'&&!finished)showResult(0,elapsed(),0);
@@ -140,9 +142,19 @@ function applyRace(value){race=value;serverOffset=value.serverNow-Date.now();rou
 async function start(){if(loading||launching)return;launching=true;$('startButton').disabled=true;
  if(!loadedHero)loadedHero=await loadCharacter(chosen);launching=false;$('startButton').disabled=false;if(!loadedHero)return;
  finished=false;started=true;runner=rules.newRunner(slot);heading=Math.PI;lastPush=-9;joyX=joyY=0;
- if(isCoop){const own=race?.entries.find(p=>p.id===coop?.selfId());if(own){slot=own.slot;runner=rules.newRunner(slot,own.checkpoint);Object.assign(runner,{x:own.x,y:own.y,z:own.z,falls:own.falls});}if(own?.finishAt){showResult(own.rank,(own.finishAt-race.started)/1000,80);return;}}
+ if(isCoop){const own=race?.entries.find(p=>p.id===coop?.selfId());if(own){slot=own.slot;runner=rules.newRunner(slot,own.checkpoint);Object.assign(runner,{x:own.x,y:own.y,z:own.z,falls:own.falls});}if(own?.finishAt){if(race?.challenge)showChallengeResult();else showResult(own.rank,(own.finishAt-race.started)/1000,80);return;}}
  else{roundStartedAt=performance.now()+3000;soloRunBegan=false;}
  position();$('menu').classList.add('hidden');$('endoverlay').classList.add('hidden');$('controls').classList.remove('hidden');$('resultsToggle').classList.toggle('hidden',!isCoop);
+}
+function showChallengeResult(){
+ const c=race?.challenge;if(!c)return;
+ finished=true;started=false;runner.finished=true;joyX=joyY=0;
+ $('controls').classList.add('hidden');$('endoverlay').classList.remove('hidden');
+ const ownTeam=c.teams[coop?.selfId()],prize=c.payouts?.find(p=>p.id===coop?.selfId())?.points||0;
+ $('endTitle').textContent=c.status==='paid'?(c.winner===ownTeam?'YOUR TEAM WINS!':'TEAM '+c.winner+' WINS'):c.status==='refunded'?'ENTRY POINTS REFUNDED':c.status==='settling'?'SAVING TEAM RESULT…':'WAITING FOR YOUR TEAM';
+ $('endDetail').textContent=c.status==='paid'?(prize?'+'+prize+' points · The entire pool was split equally between the winning team.':'Your 100-point entry went to the winning team.'):c.status==='refunded'?'No team completed the challenge. Your 100 entry points were returned.':'The first team with every player across the finish wins. Pool: '+c.pot+' points.';
+ $('againButton').textContent='BACK TO PRIVATE ROOM';$('againButton').onclick=()=>location.href='./rooms.html?code='+roomCode;
+ void syncProfile();
 }
 function showResult(rank,seconds,points){if(finished)return;finished=true;started=false;runner.finished=true;joyX=joyY=0;$('controls').classList.add('hidden');$('endoverlay').classList.remove('hidden');
  $('endTitle').textContent=rank?'FINISH #'+rank:points?'COURSE COMPLETE!':'ROUND OVER';
@@ -254,7 +266,7 @@ if(isCoop){
   if(m.type==='race_reset'&&m.id===coop?.selfId()){Object.assign(runner,rules.newRunner(slot,m.checkpoint),{x:m.x,y:m.y,z:m.z,falls:m.falls});position();}
   if(m.type==='race_shove'&&m.id===coop?.selfId()&&started){rules.impulse(runner,m.x,m.z,7);toast('You got pushed!');}
   if(m.type==='race_checkpoint'&&m.id===coop?.selfId())toast('CHECKPOINT '+m.index+' VERIFIED');
-  if(m.type==='race_finish'&&m.id===coop?.selfId())showResult(m.rank,m.seconds,m.points);
+  if(m.type==='race_finish'&&m.id===coop?.selfId()){if(race?.challenge)toast('FINISHED! Waiting for your team…');else showResult(m.rank,m.seconds,m.points);}
  },onError:message=>{setStatus(message);toast(message);}});
 }
 window.addEventListener('pagehide',()=>coop?.close());frame();

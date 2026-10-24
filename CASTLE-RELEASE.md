@@ -72,3 +72,31 @@ Node requires the existing three/sharp modules).
 - Browser UI inspected through the managed preview: hub navigation, guide,
   model library pictures, filters and search. The cloud browser has WebGL
   disabled, so GPU frame rate and physical-phone gameplay were not verified.
+
+## Private team challenges and separate rankings
+
+The home screen no longer shows the estate overview, legacy-map links, asset
+library links, or explanatory blue panels. Rankings have independent SOLO and
+MULTIPLAYER tabs and mode-specific totals. Existing recorded solo/co-op history
+is classified once without changing balances; unclassified imported balances
+never enter either ranking.
+
+PRIVATE MULTIPLAYER now offers CO-OP ESCAPE or TEAM CHALLENGE. Challenges use
+the existing obstacle course and private room code, with equal teams of one to
+three players (six total). Every entrant explicitly confirms a 100-point entry.
+Only free, non-purchasable, non-redeemable game points are used. Teams lock at
+start; the first team with every member across all checkpoints and the finish
+wins. The complete pool is split equally among that team's frozen roster.
+Individual finishes do not earn the ordinary 80-point race award in this mode.
+
+Entry reservation and settlement are atomic in the player store, reject duplicate
+profiles and overlapping entries, and replay safely. Room input and retries are
+serialized. Disconnects retain team membership and checkpoint progress. A server
+alarm refunds a round without a winner; a separate ten-minute player-store expiry
+refunds orphaned entries even if the room never recovers. Rematches require fresh
+team selection and entry consent. No new Durable Object namespace is required.
+
+Validation adds real 2v2 workerd WebSockets and SQLite tests for full-pool payouts,
+1v1/3v3 splits, insufficient funds, duplicates, retry, expiry refunds, existing-save
+migration, and isolated ranking queries. The preview browser has WebGL disabled;
+phone rendering and physical touch gameplay still require device verification.

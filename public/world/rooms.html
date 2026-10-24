@@ -22,16 +22,19 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 .status{padding:11px 12px;border-radius:13px;border:1px solid #57547f;color:#d4d8f1;background:#23223f;font-size:12px;line-height:1.5;margin:12px 0}
 .note{margin-top:15px;font-size:11px;color:#98a5c6;line-height:1.7}.right{text-align:right}
 @media(max-width:420px){.card{padding:16px}.wrap{padding-inline:12px}.people{grid-template-columns:1fr 1fr}.person{padding:8px}.row{gap:7px}}
+button[aria-pressed="true"]{border:2px solid var(--mint);color:var(--mint)}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><a class="brand" href="./index.html">JOBBY <em>WORLD</em></a><span class="alpha">ALPHA 0.14</span></header>
+<header class="top"><a class="brand" href="./index.html">JOBBY <em>WORLD</em></a><span class="alpha">ALPHA 0.16</span></header>
 <div id="setup">
 <div class="eyebrow">REAL-TIME ONLINE ROOMS</div>
-<h1>PLAY TOGETHER.</h1><p class="muted">Create a private room and invite friends by room code. Race through obstacles and push your friends, or choose an escape map. Supports 2–12 players.</p>
+<h1>PLAY TOGETHER.</h1><p class="muted">Create a private co-op room or a team challenge. Share the code with friends.</p>
 <div class="card">
 <h2>PRIVATE MULTIPLAYER</h2>
+<label class="field" for="roomType">ROOM TYPE</label><select id="roomType"><option value="coop">CO-OP ESCAPE</option><option value="challenge">TEAM CHALLENGE · 100 POINTS EACH</option></select>
+<p id="challengeRules" class="note hidden">Two equal teams: 1v1, 2v2 or 3v3. The first team whose entire roster finishes the obstacle course wins. Each player contributes 100 free game points at the start. The whole pool is split equally between the winning team. No winner: full refund. Game points cannot be bought or converted to tokens or money.</p>
 <label class="field" for="name">YOUR DISPLAY NAME</label><input id="name" maxlength="18" autocomplete="nickname" placeholder="Player">
 <label class="field" for="avatar">YOUR CHARACTER</label>
 <select id="avatar">
@@ -42,7 +45,7 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 <option value="Wizard">Wizard — Unlockable</option>
 <option value="Pirate_Female">Pirate — Unlockable</option>
 </select>
-<label class="field" for="mapChoice">YOUR MAP</label><select id="mapChoice"><option value="castle-dungeon-v1">Castle Estate — All 124 models + Puzzles</option><option value="jobby-race-v1">Chaos Course — Obstacle race + Pushing</option><option value="warehouse-v1">Warehouse — Puzzles + Co-op rewards</option><option value="big-house-v1">Big House — Three exits</option><option value="classic">Classic — Three keys</option></select>
+<label id="mapLabel" class="field" for="mapChoice">YOUR MAP</label><select id="mapChoice"><option value="castle-dungeon-v1">Castle Estate — All 124 models + Puzzles</option><option value="jobby-race-v1">Chaos Course — Obstacle race + Pushing</option><option value="warehouse-v1">Warehouse — Puzzles + Co-op rewards</option><option value="big-house-v1">Big House — Three exits</option><option value="classic">Classic — Three keys</option></select>
 <button class="primary full" id="create" style="margin-top:20px">+ CREATE PRIVATE ROOM</button>
 <div class="or">OR JOIN A FRIEND</div>
 <label class="field" for="roomInput">6-CHARACTER ROOM CODE</label>
@@ -58,12 +61,13 @@ input,select{width:100%;border:1px solid #77779c88;border-radius:13px;background
 <div class="status" id="lobbyStatus" role="status">Connecting…</div>
 <div class="row" style="align-items:center;margin:15px 0 8px"><h2 style="margin:0">PLAYERS</h2><span id="count" class="right muted">0 / 12</span></div>
 <div class="people" id="people"></div>
+<div id="challengeLobby" class="hidden"><p id="challengeSummary" class="status"></p><div class="row"><button id="teamA" class="secondary" aria-pressed="false">TEAM A</button><button id="teamB" class="secondary" aria-pressed="false">TEAM B</button></div><button id="confirmEntry" class="primary full" style="margin-top:12px">READY · CONFIRM 100 POINTS</button><p class="note">Points are charged only after everyone confirms and the host starts. Teams lock during the match. A player who disconnects can rejoin using the same room code.</p></div>
 <div id="lobbyVoice"></div>
 <p class="note">Voice is optional. After the match opens, tap the microphone icon again. Microphones stop when leaving this page.</p>
 <button class="primary full" id="start" disabled style="margin-top:20px">START RACE / ESCAPE</button>
 <button class="secondary full" id="leave" style="margin-top:9px">LEAVE ROOM</button>
-<p class="note">Room codes are unlisted. Share invites with friends. Castle escapes save points for participation, puzzles and rescues. A complete race saves 80 game points per player. Warehouse escapes also earn points for playing, tasks and rescues.</p>
+<p id="coopNote" class="note">Room codes are unlisted. Share invites with friends. Castle escapes save points for participation, puzzles and rescues. A complete race saves 80 game points per player. Warehouse escapes also earn points for playing, tasks and rescues.</p>
 </div></div>
 </div>
-<script type="module" src="./rooms.js?v=16-8"></script>
+<script type="module" src="./rooms.js?v=16-9"></script>
 </body></html>

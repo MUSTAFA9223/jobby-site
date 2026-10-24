@@ -14,7 +14,7 @@ export async function playerApi(request,env){
   if(request.headers.get("origin")!==url.origin)return reply({error:"Same-origin requests only."},403);
   if(!request.headers.get("content-type")?.includes("application/json"))return reply({error:"JSON required."},415);
  }
- const internal=new URL("https://players.internal"+url.pathname);
+ const internal=new URL("https://players.internal"+url.pathname+url.search);
  const headers=new Headers(request.headers);
  if(url.pathname!=="/api/world/leaderboard"){
   const token=headers.get("authorization")?.replace(/^Bearer /,"");
@@ -39,12 +39,86 @@ export class WorldPlayers extends DurableObject{
   this.sql.exec("CREATE TABLE IF NOT EXISTS coop_awards(player TEXT,round TEXT,PRIMARY KEY(player,round))");
   this.sql.exec("CREATE INDEX IF NOT EXISTS player_rank ON players(earned DESC,wins DESC,best ASC,id ASC)");
   this.sql.exec(`CREATE TABLE IF NOT EXISTS runs (player TEXT,id TEXT,map TEXT,started INTEGER,tasks TEXT DEFAULT '[]',finished INTEGER DEFAULT 0,ranked INTEGER DEFAULT 1,PRIMARY KEY(player,id))`);
+  this.sql.exec("CREATE TABLE IF NOT EXISTS mode_scores(player TEXT,mode TEXT,earned INTEGER DEFAULT 0,wins INTEGER DEFAULT 0,best REAL,PRIMARY KEY(player,mode))");
+  this.sql.exec("CREATE TABLE IF NOT EXISTS schema_updates(id TEXT PRIMARY KEY)");
+  if(!this.sql.exec("SELECT id FROM schema_updates WHERE id='mode-scores-v1'").toArray().length)this.ctx.storage.transactionSync(()=>{
+   // Recover only rounds whose mode is known. Imported balances never become ranks.
+   this.sql.exec(`INSERT OR IGNORE INTO mode_scores(player,mode,earned,wins,best)
+    SELECT p.key,CASE WHEN json_extract(h.value,'$.coop')=1 THEN 'team' ELSE 'solo' END,
+    SUM(COALESCE(json_extract(h.value,'$.points'),0)),COUNT(*),MIN(json_extract(h.value,'$.seconds'))
+    FROM players p,json_each(p.state,'$.history') h
+    WHERE COALESCE(json_extract(h.value,'$.legacy'),0)=0
+    GROUP BY p.key,CASE WHEN json_extract(h.value,'$.coop')=1 THEN 'team' ELSE 'solo' END`);
+   this.sql.exec("INSERT INTO schema_updates(id) VALUES('mode-scores-v1')");
+  });
+  this.sql.exec("CREATE TABLE IF NOT EXISTS challenge_pots(id TEXT PRIMARY KEY,room TEXT,roster TEXT,fee INTEGER,status TEXT,winner TEXT,payouts TEXT,expires INTEGER)");
  }
  get(key){return this.sql.exec("SELECT * FROM players WHERE key=?",key).toArray()[0];}
- view(p){const state=JSON.parse(p.state);return {id:p.id,name:p.name,state,earned:p.earned,wins:p.wins,best:p.best};}
+ view(p){const state=JSON.parse(p.state),rankings=Object.fromEntries(this.sql.exec("SELECT mode,earned,wins,best FROM mode_scores WHERE player=?",p.key).toArray().map(s=>[s.mode,{earned:s.earned,wins:s.wins,best:s.best}]));return {id:p.id,name:p.name,state,earned:p.earned,wins:p.wins,best:p.best,rankings};}
+ score(key,mode,points,wins=0,seconds=null){
+  this.sql.exec(`INSERT INTO mode_scores(player,mode,earned,wins,best) VALUES(?,?,?,?,?) ON CONFLICT(player,mode) DO UPDATE SET earned=earned+excluded.earned,wins=wins+excluded.wins,best=CASE WHEN excluded.best IS NULL THEN best WHEN best IS NULL THEN excluded.best ELSE MIN(best,excluded.best) END`,key,mode,points,wins,seconds);
+ }
+ async challengeAlarm(){
+  const next=this.sql.exec("SELECT MIN(expires) AS at FROM challenge_pots WHERE status='held'").toArray()[0]?.at;
+  if(next)await this.ctx.storage.setAlarm(Math.max(Date.now()+1000,next));else await this.ctx.storage.deleteAlarm();
+ }
+ async alarm(){
+  for(const pot of this.sql.exec("SELECT id FROM challenge_pots WHERE status='held' AND expires<=?",Date.now()).toArray())await this.settleChallenge({round:pot.id,winner:null});
+  await this.challengeAlarm();
+ }
+ async reserveChallenge(body){
+  if(!/^[a-f0-9-]{36}$/.test(body.round||'')||!Array.isArray(body.entries)||body.entries.length<2||body.entries.length>6||!['A','B'].every(team=>body.entries.filter(p=>p.team===team).length===body.entries.length/2))return reply({error:'Two equal teams of 1–3 players are required.'},400);
+  const result=this.ctx.storage.transactionSync(()=>{
+   const old=this.sql.exec('SELECT * FROM challenge_pots WHERE id=?',body.round).toArray()[0];
+   if(old)return old.room===body.room&&old.status==='held'?reply({ok:true,pot:JSON.parse(old.roster).length*old.fee}):reply({error:'This challenge cannot be charged again.'},409);
+   const entries=[],seen=new Set();
+   for(const e of body.entries){
+    const session=this.sql.exec('SELECT player FROM sessions WHERE id=?',e.id).toArray()[0],p=session&&this.get(session.player);
+    if(!p)return reply({error:'Every player must connect their saved profile before starting.'},409);
+    if(seen.has(p.key))return reply({error:'Each player must use a different saved profile.'},409);seen.add(p.key);
+    if(JSON.parse(p.state).points<100)return reply({error:p.name+' needs at least 100 free game points.'},409);
+    // Prevent a second room from locking the same balance while a challenge runs.
+    const active=this.sql.exec("SELECT roster FROM challenge_pots WHERE status='held'").toArray();
+    if(active.some(row=>JSON.parse(row.roster).some(q=>q.key===p.key)))return reply({error:p.name+' already has an active challenge.'},409);
+    entries.push({id:e.id,team:e.team,key:p.key});
+   }
+   for(const e of entries){const p=this.get(e.key),state=JSON.parse(p.state);state.points-=100;this.sql.exec('UPDATE players SET state=? WHERE key=?',JSON.stringify(state),e.key);}
+   this.sql.exec("INSERT INTO challenge_pots(id,room,roster,fee,status,payouts,expires) VALUES(?,?,?,?,?,?,?)",body.round,body.room,JSON.stringify(entries),100,'held','[]',Date.now()+10*60*1000);
+   return reply({ok:true,pot:entries.length*100});
+  });
+  await this.challengeAlarm();return result;
+ }
+ async settleChallenge(body){
+  const result=this.ctx.storage.transactionSync(()=>{
+   const pot=this.sql.exec('SELECT * FROM challenge_pots WHERE id=?',body.round).toArray()[0];
+   if(!pot)return reply({error:'Challenge entry was not reserved.'},404);
+   if(pot.status!=='held')return reply({ok:true,status:pot.status,winner:pot.winner,payouts:JSON.parse(pot.payouts)});
+   const entries=JSON.parse(pot.roster),winner=['A','B'].includes(body.winner)&&Date.now()<pot.expires?body.winner:null;
+   const recipients=winner?entries.filter(e=>e.team===winner):entries,share=winner?entries.length*pot.fee/recipients.length:pot.fee,payouts=[];
+   for(const e of recipients){
+    const p=this.get(e.key),state=JSON.parse(p.state);state.points+=share;
+    if(winner){
+     const seconds=Math.max(1,Math.min(600,Number(body.seconds)||1));
+     state.history=[{character:state.selected,map:'team-challenge-v1',coop:true,points:share,entry:pot.fee,seconds,date:Date.now()},...(state.history||[])].slice(0,60);
+     this.score(p.key,'team',share,1,seconds);
+     this.sql.exec('UPDATE players SET state=?,earned=earned+?,wins=wins+1 WHERE key=?',JSON.stringify(state),share,e.key);
+    }else this.sql.exec('UPDATE players SET state=? WHERE key=?',JSON.stringify(state),e.key);
+    payouts.push({id:e.id,points:share});
+   }
+   const status=winner?'paid':'refunded';this.sql.exec('UPDATE challenge_pots SET status=?,winner=?,payouts=? WHERE id=?',status,winner,JSON.stringify(payouts),pot.id);
+   return reply({ok:true,status,winner,payouts});
+  });
+  await this.challengeAlarm();return result;
+ }
  async fetch(request){
   const path=new URL(request.url).pathname,key=request.headers.get("x-player-key");
-  if(path==="/api/world/leaderboard"&&request.method==="GET")return reply({players:this.sql.exec("SELECT id,name,earned,wins,best FROM players WHERE earned>0 ORDER BY earned DESC,wins DESC,best ASC,id ASC LIMIT 50").toArray()});
+  if(path==="/api/world/leaderboard"&&request.method==="GET"){
+   const mode=new URL(request.url).searchParams.get("mode");
+   if(mode&&!['solo','team'].includes(mode))return reply({error:"Invalid ranking mode."},400);
+   return reply({mode:mode||"all",players:mode?this.sql.exec("SELECT p.id,p.name,s.earned,s.wins,s.best FROM mode_scores s JOIN players p ON p.key=s.player WHERE s.mode=? AND s.earned>0 ORDER BY s.earned DESC,s.wins DESC,s.best ASC,p.id ASC LIMIT 50",mode).toArray():this.sql.exec("SELECT id,name,earned,wins,best FROM players WHERE earned>0 ORDER BY earned DESC,wins DESC,best ASC,id ASC LIMIT 50").toArray()});
+  }
+  if(path==="/_challenge_reserve"&&request.method==="POST")return this.reserveChallenge(await request.json());
+  if(path==="/_challenge_settle"&&request.method==="POST")return this.settleChallenge(await request.json());
   if(path==="/_room_reward"&&request.method==="POST"){
    const body=await request.json();
    if(!["warehouse-v1","jobby-race-v1","castle-dungeon-v1"].includes(body.map)||!Array.isArray(body.players)||body.players.length>12||!/^[a-f0-9-]{36}$/.test(body.round))return reply({error:"Invalid round."},400);
@@ -57,6 +131,7 @@ export class WorldPlayers extends DurableObject{
      state.points+=points;state.history=[{character:state.selected,map:body.map,coop:true,points,seconds,date:Date.now()},...(state.history||[])].slice(0,60);
      this.sql.exec("INSERT INTO coop_awards(player,round) VALUES(?,?)",p.key,body.round);
      this.sql.exec("UPDATE players SET state=?,earned=?,wins=?,best=? WHERE key=?",JSON.stringify(state),p.earned+points,p.wins+1,p.best===null?seconds:Math.min(p.best,seconds),p.key);
+     this.score(p.key,"team",points,1,seconds);
     }
     return reply({ok:true});
    });
@@ -115,11 +190,13 @@ export class WorldPlayers extends DurableObject{
     const tasks=JSON.parse(run.tasks);
     if(a.type==="task"&&Number.isInteger(a.index)&&a.index>=0&&a.index<3&&!tasks.includes(a.index)){
      tasks.push(a.index);state.points+=10;p.earned+=10;this.sql.exec("UPDATE runs SET tasks=? WHERE player=? AND id=?",JSON.stringify(tasks),key,a.run);
+     this.score(key,"solo",10);
     }
     if(a.type==="finish"&&tasks.length>=(run.map==="big-house-v1"?1:3)){
      // Server timestamps prevent a client from choosing a fake leaderboard time.
      const seconds=Math.max(1,(Date.now()-run.started)/1000);
      state.points+=50;p.earned+=50;p.wins++;if(run.ranked)p.best=p.best===null?seconds:Math.min(p.best,seconds);
+     this.score(key,"solo",50,1,run.ranked?seconds:null);
      state.history=[{character:state.selected,map:run.map,seconds:run.ranked?seconds:null,offline:!run.ranked,points:50+tasks.length*10,date:Date.now()},...(state.history||[])].slice(0,60);
      this.sql.exec("UPDATE runs SET finished=1 WHERE player=? AND id=?",key,a.run);
     }

@@ -12,6 +12,7 @@ on:
       - 'player-store.js'
       - 'warehouse-room.js'
       - 'race-room.js'
+      - 'challenge-room.js'
       - 'wrangler.toml'
       - 'public/world/**'
       - 'tests/**'
@@ -35,6 +36,7 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: |
+          node --check challenge-room.js
           node --check race-room.js
           node --check public/world/race-rules.js
           node --check public/world/race-scene.js
@@ -74,3 +76,6 @@ jobs:
 
       - name: Test obstacle racing with twelve real clients and saved individual finishes
         run: node tests/world-race-runtime.mjs .build/world/worker.js
+
+      - name: Test team challenges, entry points and isolated rankings
+        run: node tests/world-challenge-runtime.mjs .build/world/worker.js

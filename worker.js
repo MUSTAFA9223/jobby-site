@@ -1,3 +1,4 @@
+import * as challenge from "./challenge-room.js";
 import * as castle from "./castle-room.js";
 import * as race from "./race-room.js";
 import * as warehouse from "./warehouse-room.js";
@@ -58,8 +59,8 @@ export default {
       if(!ownerId)return json({error:"Invalid session."},400);
       for(let attempt=0;attempt<5;attempt++){
         const code=roomCode(),stub=roomStub(env,code);
-        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId,map:[house.MAP_ID,warehouse.MAP_ID,race.MAP_ID,castle.MAP_ID].includes(data.map)?data.map:"classic"})});
-        if(response.status===201)return json({code,maxPlayers:MAX_PLAYERS},201);
+        const response=await stub.fetch("https://room.internal/_create",{method:"POST",body:JSON.stringify({code,ownerId,map:data.mode==="challenge"?race.MAP_ID:[house.MAP_ID,warehouse.MAP_ID,race.MAP_ID,castle.MAP_ID].includes(data.map)?data.map:"classic",challenge:data.mode==="challenge"})});
+        if(response.status===201)return json({code,maxPlayers:data.mode==="challenge"?challenge.MAX_PLAYERS:MAX_PLAYERS},201);
       }
       return json({error:"Could not create a unique room. Retry."},503);
     }
@@ -104,15 +105,20 @@ export class WorldRoom extends DurableObject {
       const existing=await this.ctx.storage.get("room");
       if(existing && Date.now()-existing.createdAt<TTL)return json({error:"Code collision."},409);
       const room={code:data.code,hostId:data.ownerId,createdAt:Date.now(),status:"lobby",keys:[],...(data.map===house.MAP_ID?{map:house.MAP_ID,tasks:[]}:data.map===warehouse.MAP_ID?{map:warehouse.MAP_ID,warehouse:warehouse.newState(Date.now())}:data.map===race.MAP_ID?{map:race.MAP_ID,race:race.newState()}:data.map===castle.MAP_ID?{map:castle.MAP_ID,castle:castle.newState(Date.now())}: {})};
+      if(data.challenge)room.challenge=challenge.newState();
       await this.ctx.storage.put("room",room);
       return json({ok:true},201);
     }
-    const room=await this.ctx.storage.get("room");
+    let room=await this.ctx.storage.get("room");
     if(!room || Date.now()-room.createdAt>TTL)return json({error:"Room expired or not found."},404);
     if(room.map===castle.MAP_ID&&room.status==="finished")await castle.retryRewards(this,room);
     if(room.map===warehouse.MAP_ID&&room.status==="finished")await warehouse.retryRewards(this,room);
-    if(room.map===race.MAP_ID){if(room.status==="playing"&&Date.now()>room.race.deadline)room.status="finished";if(room.status==="finished")await race.retryRewards(this,room);}
-    if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic"});
+    if(room.challenge){
+      this.challengeQueue=(this.challengeQueue||Promise.resolve()).catch(()=>{}).then(async()=>{const fresh=await this.ctx.storage.get("room");if(fresh)await challenge.update(this,fresh);});
+      await this.challengeQueue;room=await this.ctx.storage.get("room");
+    }
+    if(!room.challenge&&room.map===race.MAP_ID){if(room.status==="playing"&&Date.now()>room.race.deadline)room.status="finished";if(room.status==="finished")await race.retryRewards(this,room);}
+    if(url.pathname==="/_status")return json({code:room.code,status:room.status,players:this.players(),maxPlayers:room.challenge?challenge.MAX_PLAYERS:MAX_PLAYERS,map:room.map||"classic",challenge:challenge.view(room)});
     if(url.pathname!=="/_socket")return json({error:"Not found."},404);
     if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return json({error:"Upgrade required."},426);
     const id=await publicPlayerId(url.searchParams.get("token"));
@@ -122,19 +128,21 @@ export class WorldRoom extends DurableObject {
     const current=this.sockets();
     // Reconnecting in the same tab supersedes the old socket.
     const replacing=current.find(ws=>ws.deserializeAttachment()?.id===id);
-    if(!replacing && current.length>=MAX_PLAYERS)return json({error:"Room is full (12 players)."},409);
+    if(room.challenge&&["playing","starting","settling"].includes(room.challenge.status)&&!room.challenge.entries?.some(p=>p.id===id))return json({error:"This challenge has already started. Join the next round."},409);
+    if(!replacing && current.length>=(room.challenge?challenge.MAX_PLAYERS:MAX_PLAYERS))return json({error:"Room is full ("+(room.challenge?challenge.MAX_PLAYERS:MAX_PLAYERS)+" players)."},409);
     if(replacing)try{replacing.close(4001,"Reconnected from another tab")}catch{}
     const pair=new WebSocketPair(),[client,server]=Object.values(pair);
     this.ctx.acceptWebSocket(server);
     const slot=Math.max(0,current.length%MAX_PLAYERS);
     const info={id,name,avatar,x:(slot%4-1.5)*1.5,z:18+Math.floor(slot/4)*1.5,y:0,h:0,anim:"Idle",last:0,hidden:false,safeUntil:Date.now()+8000,voice:false,muted:true,expiresAt:room.createdAt+TTL};
+    if(room.challenge)challenge.assign(room,id,this.players().concat(info));
     if(room.map===race.MAP_ID){race.join(room,info);await this.ctx.storage.put("room",room);}
     server.serializeAttachment(info);
     if(!this.sockets().some(ws=>ws!==server && ws.deserializeAttachment()?.id===room.hostId)){
       room.hostId=id;await this.ctx.storage.put("room",room);
     }
-    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:MAX_PLAYERS,map:room.map||"classic",tasks:room.tasks||[],guard:house.guardView(this.houseGuard||house.newGuard()),...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:room.map===race.MAP_ID?{race:race.view(room)}:room.map===castle.MAP_ID?{castle:castle.view(room)}:{})}));
-    this.broadcast({type:"roster",hostId:room.hostId,players:this.players()});
+    server.send(JSON.stringify({type:"welcome",code:room.code,selfId:id,hostId:room.hostId,status:room.status,keys:room.keys,players:this.players(),maxPlayers:room.challenge?challenge.MAX_PLAYERS:MAX_PLAYERS,map:room.map||"classic",challenge:challenge.view(room),tasks:room.tasks||[],guard:house.guardView(this.houseGuard||house.newGuard()),...(room.map===warehouse.MAP_ID?{warehouse:warehouse.view(room)}:room.map===race.MAP_ID?{race:race.view(room)}:room.map===castle.MAP_ID?{castle:castle.view(room)}:{})}));
+    this.broadcast({type:"roster",hostId:room.hostId,players:this.players(),challenge:challenge.view(room)});
     return new Response(null,{status:101,webSocket:client});
   }
   async webSocketMessage(ws,message){
@@ -163,6 +171,10 @@ export class WorldRoom extends DurableObject {
       this.broadcast({type:"voice_state",id:a.id,joined:a.voice,muted:a.muted});return;
     }
     const raceRoom=await this.ctx.storage.get("room");
+    if(raceRoom?.challenge){
+      this.challengeQueue=(this.challengeQueue||Promise.resolve()).catch(()=>{}).then(()=>challenge.message(this,ws,m));
+      await this.challengeQueue;return;
+    }
     if(raceRoom?.map===race.MAP_ID&&m.type!=="start"){
       // External profile reward calls yield the input gate. Serialize race updates
       // so another racer's pose cannot overwrite an in-flight finish or rank.
@@ -256,10 +268,23 @@ export class WorldRoom extends DurableObject {
   async drop(ws){
     const a=ws.deserializeAttachment();
     const room=await this.ctx.storage.get("room");if(!room)return;
-    if(a?.id&&!this.players().some(p=>p.id===a.id)){await warehouse.drop(this,room,a.id);await castle.drop(this,room,a.id);}
+    if(room.challenge){
+      this.challengeQueue=(this.challengeQueue||Promise.resolve()).catch(()=>{}).then(async()=>{
+        const fresh=await this.ctx.storage.get("room");if(!fresh)return;
+        if(a?.id&&!this.players().some(p=>p.id===a.id))await challenge.drop(this,fresh,a.id);
+        const rest=this.players();if(a?.id===fresh.hostId&&!rest.some(p=>p.id===fresh.hostId)){fresh.hostId=rest[0]?.id||"";await this.ctx.storage.put("room",fresh);}
+        this.broadcast({type:"roster",hostId:fresh.hostId,players:rest,challenge:challenge.view(fresh)});
+      });await this.challengeQueue;return;
+    }
+    if(a?.id&&!this.players().some(p=>p.id===a.id)){await warehouse.drop(this,room,a.id);await castle.drop(this,room,a.id);await challenge.drop(this,room,a.id);}
     const rest=this.players();
     if(a?.id===room.hostId && !rest.some(p=>p.id===room.hostId)){room.hostId=rest[0]?.id||"";await this.ctx.storage.put("room",room)}
     this.broadcast({type:"roster",hostId:room.hostId,players:rest});
+  }
+  async alarm(){
+    this.challengeQueue=(this.challengeQueue||Promise.resolve()).catch(()=>{}).then(async()=>{
+      const room=await this.ctx.storage.get("room");if(room?.challenge)await challenge.update(this,room);
+    });await this.challengeQueue;
   }
   async webSocketClose(ws){await this.drop(ws)}
   async webSocketError(ws){try{ws.close(1011,"Connection error")}catch{}await this.drop(ws)}

@@ -1,4 +1,4 @@
-import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=2";
+import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=3";
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -35,11 +35,10 @@ function updateStats(){
  $("myOwned").textContent=AVATARS.filter(owned).length+" / "+AVATARS.length;
  const wins=playerInfo().profile?playerInfo().profile.wins+(state.legacyWins||0):latestScores().length;
  $("myWins").textContent=wins;
- $("leaderWins").textContent=wins;
- const best=latestScores().filter(a=>Number(a.seconds)>0).sort((a,b)=>Number(a.seconds)-Number(b.seconds))[0];
- const bestTime=Math.min(best?.seconds||Infinity,state.legacyBest||Infinity,playerInfo().profile?.best||Infinity);
- $("leaderBest").textContent=Number.isFinite(bestTime)?Math.round(bestTime)+"s":"—";
- $("leaderPoints").textContent=money(state.points);
+ $("leaderWins").textContent=playerInfo().profile?.rankings?.[rankingMode]?.wins||0;
+ const modeBest=playerInfo().profile?.rankings?.[rankingMode]?.best;
+ $("leaderBest").textContent=modeBest?Math.round(modeBest)+"s":"—";
+ $("leaderPoints").textContent=money(playerInfo().profile?.rankings?.[rankingMode]?.earned||0);
 }
 function showView(id){
  activeView=id;
@@ -50,12 +49,17 @@ function showView(id){
  if(id==="leaderboard")renderScores();
  window.scrollTo({top:0,behavior:"instant"});
 }
-let scoresRequest=0;
+let scoresRequest=0,rankingMode="solo";
+for(const [id,mode] of [["soloRanks","solo"],["teamRanks","team"]])$(id).onclick=()=>{
+ rankingMode=mode;
+ for(const [button,value] of [["soloRanks","solo"],["teamRanks","team"]]){$(button).classList.toggle("active",value===mode);$(button).setAttribute("aria-pressed",String(value===mode));}
+ updateStats();void renderScores();
+};
 async function renderScores(){
  const request=++scoresRequest,root=$("scoreboard");root.textContent="Loading player rankings…";
  try{
-  const scores=await leaderboard();if(request!==scoresRequest)return;root.replaceChildren();
-  if(!scores.length){root.classList.add("empty");root.textContent="No ranked rounds yet. Earn points in a new solo round to add your name here. Your existing balance is still saved.";return;}
+  const scores=await leaderboard(rankingMode);if(request!==scoresRequest)return;root.replaceChildren();
+  if(!scores.length){root.classList.add("empty");root.textContent="No results in this mode yet. Complete a round to join this ranking.";return;}
   root.classList.remove("empty");
   for(const [i,entry] of scores.entries()){
    const item=document.createElement("div");item.className="score";
