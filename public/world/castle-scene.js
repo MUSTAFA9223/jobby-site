@@ -4,7 +4,7 @@ import * as map from "./castle-layout.js";
 
 // One cached download per model, one instanced draw per source mesh. Architecture
 // stays opaque; camera collision uses the very same bounds as movement.
-export function buildCastle(scene,{loadAssets=true,loadAll=false,onProgress=()=>{},assetLoader=null}={}){
+export function buildCastle(scene,{loadAssets=true,loadAll=false,onProgress=()=>{},assetLoader=null,party=false}={}){
  const assetCache=new Map(),loadedKeys=new Set();let sharedCastleTexture=null;
  const unit=new THREE.BoxGeometry(1,1,1),materials=new Map(),blocks=[],propsMeshes=[],collectibles=[],jobs=new Map(),loader=assetLoader||new GLTFLoader();
  const mat=color=>{if(!materials.has(color))materials.set(color,new THREE.MeshStandardMaterial({color,roughness:.88}));return materials.get(color);};
@@ -66,7 +66,7 @@ export function buildCastle(scene,{loadAssets=true,loadAll=false,onProgress=()=>
  const gold=mat("#ffdb85"),cyan=mat("#6de9f0"),purple=mat("#c6a5ff");
  for(const [key,p] of Object.entries(map.STATIONS)){
   if(key==="jail"||key==="fuse")continue;
-  box(p.x,.4,p.z,.65,.8,.65,"#686d76");sign(p.name,p.x,2.25,p.z,key==="socket"?"#6de9f0":"#ffdf99");
+  box(p.x,.4,p.z,.65,.8,.65,"#686d76");sign(party?({clue:"ECHO TABLET",panel:"ECHO LOCK",socket:"CROWN ALTAR"}[key]||p.name):p.name,p.x,2.25,p.z,key==="socket"?"#6de9f0":"#ffdf99");
  }
  // Decorative station pedestals have no separate obstacle: their interaction area is walkable.
  const tablet=new THREE.Mesh(new THREE.BoxGeometry(.7,1,.16),gold);tablet.position.set(map.STATIONS.clue.x,1.2,map.STATIONS.clue.z);tablet.rotation.x=-.2;scene.add(tablet);
@@ -88,6 +88,7 @@ export function buildCastle(scene,{loadAssets=true,loadAll=false,onProgress=()=>
  box(0,1.1,0,.75,.9,.5,"#5d7181",guard);box(0,1.92,0,.72,.65,.62,"#a8b4bd",guard);box(0,1.98,.324,.51,.1,.025,"#172433",guard);box(0,1.12,-.32,.82,1.2,.08,"#685088",guard);
  const arms=[-.51,.51].map(x=>box(x,1.05,0,.23,.8,.28,"#8298a5",guard));for(const x of [-.22,.22])box(x,.3,0,.28,.6,.36,"#3d4f5d",guard);
  const alert=new THREE.Mesh(new THREE.TorusGeometry(.65,.045,6,24),gold);alert.rotation.x=Math.PI/2;alert.position.y=.08;guard.add(alert);
+ if(party){tablet.visible=false;crystal.visible=false;installedCrystal.visible=false;carried.visible=false;for(const o of [...seals,...sealSigns])o.visible=false;shutter.position.y=3.2;shutterBlock.box.min.y=3.2;shutterBlock.box.max.y=5.9;exitGlow.visible=false;exitSign.visible=false;}
  const metrics={requested:jobs.size,loaded:0,coreRequested:coreKeys.size,coreLoaded:0,failed:[],instances:0,keys:[]};
  async function instantiate(pack,id,placements,parent=scene){
   const key=pack+"/"+id;

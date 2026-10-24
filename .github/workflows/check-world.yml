@@ -13,6 +13,7 @@ on:
       - 'warehouse-room.js'
       - 'race-room.js'
       - 'challenge-room.js'
+      - 'party-room.js'
       - 'owner-setup.js'
       - 'wrangler.toml'
       - 'public/world/**'
@@ -37,6 +38,11 @@ jobs:
         run: node --test tests/*.test.mjs
       - name: Check JavaScript syntax
         run: |
+          node --check party-room.js
+          node --check public/world/party-game.js
+          node --check public/world/party-rules.js
+          node --check public/world/party-scene.js
+          node --check public/world/party-replay.js
           node --check challenge-room.js
           node --check race-room.js
           node --check public/world/race-rules.js
@@ -80,3 +86,6 @@ jobs:
 
       - name: Test team challenges, entry points and isolated rankings
         run: node tests/world-challenge-runtime.mjs .build/world/worker.js
+
+      - name: Test crown heist, cursed treasure, signals and full team payout
+        run: node tests/world-party-runtime.mjs .build/world/worker.js

@@ -238,6 +238,7 @@ function play(){
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
+$("partyMode").onclick=()=>{location.href="./party.html?autostart=1"};
 $("multiMode").onclick=()=>{location.href="./rooms.html?map=castle-dungeon-v1"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});

@@ -1,3 +1,4 @@
+import * as party from "./party-room.js";
 import * as race from './race-room.js';
 export const ENTRY=100,MAX_PLAYERS=6;
 export const validEntry=fee=>Number.isSafeInteger(fee)&&fee>=1&&fee<=1000000;
@@ -12,15 +13,16 @@ export function assign(room,id,players){
 function broadcast(instance,room){instance.broadcast({type:'challenge_state',challenge:view(room)});}
 export async function update(instance,room){
  const c=room.challenge;if(!c?.round||['lobby','paid','refunded'].includes(c.status))return;
- const entries=c.entries||[];
+ const entries=c.entries||[],game=room.party||room.race;
  // The frozen roster includes disconnected racers: disconnecting cannot shrink
  // a team's finish requirement. The same session can rejoin at its checkpoint.
  if(c.status==='playing'){
-  for(const team of ['A','B']){
+  if(room.party){party.deadline(room,Date.now());if(room.party.finished){c.winner=room.party.winner;c.status='settling';}}
+  for(const team of room.party?[]:['A','B']){
    const members=entries.filter(p=>p.team===team);
    if(members.length&&members.every(p=>room.race.entries[p.id]?.finishAt)){c.winner=team;c.status='settling';break;}
   }
-  if(Date.now()>room.race.deadline){c.status='settling';room.status='finished';}
+  if(Date.now()>game.deadline){c.status='settling';room.status='finished';}
  }
  if(c.status==='starting'&&Date.now()>(c.startAttempt||0)+20000){c.status='settling';room.status='finished';}
  if(c.status!=='settling')return;
@@ -29,11 +31,11 @@ export async function update(instance,room){
  // only deliver this same decision and can never debit or pay a round twice.
  await instance.ctx.storage.put('room',room);
  try{
-  const res=await instance.playerStore.fetch('https://players.internal/_challenge_settle',{method:'POST',body:JSON.stringify({round:c.round,winner:c.winner,seconds:(Date.now()-room.race.started)/1000})});
+  const res=await instance.playerStore.fetch('https://players.internal/_challenge_settle',{method:'POST',body:JSON.stringify({round:c.round,winner:c.winner,seconds:(Date.now()-game.started)/1000})});
   if(!res.ok&&res.status!==404)throw Error('Settlement unavailable');
   const data=res.status===404?{status:'refunded',winner:null,payouts:[]}:await res.json();c.status=data.status;c.winner=data.winner;c.payouts=data.payouts;
   await instance.ctx.storage.put('room',room);await instance.ctx.storage.deleteAlarm();
-  broadcast(instance,room);instance.broadcast({type:'race_state',state:{...race.view(room),challenge:view(room)}});
+  broadcast(instance,room);instance.broadcast(room.party?{type:'party_state',state:{...party.view(room),challenge:view(room)}}:{type:'race_state',state:{...race.view(room),challenge:view(room)}});
  }catch{await instance.ctx.storage.setAlarm(Date.now()+10000);}
 }
 export async function message(instance,ws,m){
@@ -59,7 +61,7 @@ export async function message(instance,ws,m){
   if(a.id!==room.hostId||!await isOwner(instance,a.id)){fail('Only the game owner can start a challenge.');return;}
   if(room.status==='playing'||['starting','settling'].includes(c.status))return;
   if(['paid','refunded'].includes(c.status)){
-   room.challenge=newState(c.fee,c.creatorId);room.race=race.newState();room.status='lobby';for(const p of instance.players())assign(room,p.id,instance.players());
+   room.challenge=newState(c.fee,c.creatorId);if(room.party)room.party=party.newState(Date.now());else room.race=race.newState();room.status='lobby';for(const p of instance.players())assign(room,p.id,instance.players());
    await instance.ctx.storage.put('room',room);broadcast(instance,room);fail('New round ready. Choose teams and confirm entry again.');return;
   }
   const players=instance.players(),counts=['A','B'].map(t=>players.filter(p=>c.teams[p.id]===t).length);
@@ -74,14 +76,15 @@ export async function message(instance,ws,m){
    if(!response.ok){c.status='lobby';c.round=null;await instance.ctx.storage.put('room',room);await instance.ctx.storage.deleteAlarm();fail(data.error||'Could not reserve entry points.');return;}
    c.pot=data.pot;
    if(!c.entries.every(p=>instance.players().some(a=>a.id===p.id))){c.status='settling';await update(instance,room);fail('A player left before the start. All entry points were refunded.');return;}
-   await race.start(instance,room);room.status='playing';c.status='playing';
-   await instance.ctx.storage.put('room',room);await instance.ctx.storage.setAlarm(room.race.deadline+100);
-   instance.broadcast({type:'start',keys:[],tasks:[],race:{...race.view(room),challenge:view(room)}});
+   if(room.party)await party.start(instance,room);else await race.start(instance,room);room.status='playing';c.status='playing';
+   await instance.ctx.storage.put('room',room);await instance.ctx.storage.setAlarm((room.party||room.race).deadline+100);
+   instance.broadcast(room.party?{type:'start',keys:[],tasks:[],party:{...party.view(room),challenge:view(room)}}:{type:'start',keys:[],tasks:[],race:{...race.view(room),challenge:view(room)}});
   }catch{c.status='settling';await update(instance,room);fail('The challenge could not start. Entry points will be refunded automatically.');}
   return;
  }
- await race.handle(instance,ws,a,m,room);await update(instance,room);
+ if(room.party)await party.handle(instance,ws,a,m,room);else await race.handle(instance,ws,a,m,room);await update(instance,room);
 }
 export async function drop(instance,room,id){
+ if(room.party){party.disconnect(room,id);await instance.ctx.storage.put("room",room);instance.broadcast({type:"party_state",state:party.view(room)});}
  if(room.challenge?.status==='lobby'){room.challenge.ready[id]=false;await instance.ctx.storage.put('room',room);broadcast(instance,room);}
 }

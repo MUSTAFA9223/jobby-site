@@ -18,3 +18,14 @@ test('A failed payout retries the saved winner rather than awarding another team
  await challenge.update(instance,room);assert.equal(room.challenge.status,'settling');assert.equal(alarms,1);
  room.race.entries.b.finishAt=Date.now();fails=false;await challenge.update(instance,room);assert.deepEqual(winners,['A','A']);assert.equal(room.challenge.status,'paid');
 });
+
+test('Crown victory and timeout share the same replay-safe pool settlement without race state',async()=>{
+ const rules=await import('../public/world/party-rules.js');
+ for(const win of [true,false]){
+  const now=Date.now(),game=rules.newRound(4,now-1000,[{id:'a',team:'A'},{id:'b',team:'B'}]);
+  if(win){Object.assign(game.actors.a,rules.CROWN);rules.applyAction(game,'a',{type:'crown'},now);Object.assign(game.actors.a,rules.BASES.A);rules.applyAction(game,'a',{type:'bank_crown'},now);}else game.deadline=now-1;
+  const room={code:'ABC234',status:'playing',party:game,challenge:{...challenge.newState(70),round:crypto.randomUUID(),status:'playing',entries:[{id:'a',team:'A'},{id:'b',team:'B'}]}};
+  const calls=[],events=[],instance={ctx:{storage:{put:async()=>{},deleteAlarm:async()=>{},setAlarm:async()=>{}}},broadcast:m=>events.push(m),playerStore:{fetch:async(url,options)=>{calls.push(JSON.parse(options.body));return Response.json({status:win?'paid':'refunded',winner:win?'A':null,payouts:[]});}}};
+  await challenge.update(instance,room);assert.equal(calls.length,1);assert.equal(calls[0].winner,win?'A':null);assert.equal(room.status,'finished');assert.equal(events.at(-1).type,'party_state');assert.ok(events.at(-1).state.highlights);
+ }
+});

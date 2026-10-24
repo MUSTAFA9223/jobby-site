@@ -34,8 +34,8 @@ button[aria-pressed="true"]{border:2px solid var(--mint);color:var(--mint)}
 <div class="card">
 <h2>PRIVATE MULTIPLAYER</h2>
 <label class="field" for="roomType">ROOM TYPE</label><select id="roomType"><option value="coop">CO-OP ESCAPE</option><option value="challenge">TEAM CHALLENGE · OWNER ONLY</option></select>
-<div id="challengeAmountSetup" class="hidden"><label class="field" for="entryAmount">ENTRY POINTS PER PLAYER</label><input id="entryAmount" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric"></div><p id="ownerNotice" class="status hidden">Only the game owner can create challenges. Join a challenge with its room code. <a href="./index.html#owner">Owner setup</a></p>
-<p id="challengeRules" class="note hidden">Two equal teams: 1v1, 2v2 or 3v3. The first team whose entire roster finishes the obstacle course wins. The owner sets how many free game points each player contributes. The amount is shown before anyone confirms entry. The whole pool is split equally between the winning team. No winner: full refund. Game points cannot be bought or converted to tokens or money.</p>
+<div id="challengeAmountSetup" class="hidden"><label class="field" for="challengeGame">CHALLENGE GAME</label><select id="challengeGame"><option value="crown">CROWN & CHAOS · Potions, gates, treasure + replay</option><option value="race">OBSTACLE TEAM RACE</option></select><label class="field" for="entryAmount">ENTRY POINTS PER PLAYER</label><input id="entryAmount" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric"></div><p id="ownerNotice" class="status hidden">Only the game owner can create challenges. Join a challenge with its room code. <a href="./index.html#owner">Owner setup</a></p>
+<p id="challengeRules" class="note hidden">Two equal teams: 1v1, 2v2 or 3v3. Crown & Chaos: deliver the crown to your team flag. Obstacle Race: the first whole team across the finish wins. The owner sets how many free game points each player contributes. The amount is shown before anyone confirms entry. The whole pool is split equally between the winning team. No winner: full refund. Game points cannot be bought or converted to tokens or money.</p>
 <label class="field" for="name">YOUR DISPLAY NAME</label><input id="name" maxlength="18" autocomplete="nickname" placeholder="Player">
 <label class="field" for="avatar">YOUR CHARACTER</label>
 <select id="avatar">
@@ -70,5 +70,5 @@ button[aria-pressed="true"]{border:2px solid var(--mint);color:var(--mint)}
 <p id="coopNote" class="note">Room codes are unlisted. Share invites with friends. Castle escapes save points for participation, puzzles and rescues. A complete race saves 80 game points per player. Warehouse escapes also earn points for playing, tasks and rescues.</p>
 </div></div>
 </div>
-<script type="module" src="./rooms.js?v=16-10"></script>
+<script type="module" src="./rooms.js?v=17-1"></script>
 </body></html>

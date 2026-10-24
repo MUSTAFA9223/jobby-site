@@ -104,3 +104,41 @@ migration, and isolated ranking queries. The preview browser has WebGL disabled;
 phone rendering and physical touch gameplay still require device verification.
 
 Owner activation: WORLD → PLAYER → GAME OWNER → ENABLE OWNER CONTROLS. The private one-time code is supplied to the project owner separately. Keep the existing player recovery code to retain owner access on another device. The setup code is not a player recovery code.
+
+## Crown & Chaos — six playable additions
+
+`/world/party.html` adds solo practice and owner-created private 1v1/2v2/3v3
+Crown challenges using the existing castle estate, models, identities and voice.
+The owner chooses Crown & Chaos or the original Obstacle Team Race in the
+challenge lobby. Existing maps and the one-time owner activation remain intact.
+
+- Steal the crown in Rune Hall and deliver it to your team's home flag. Carriers
+  slow down and can pass to a nearby teammate. Server movement checks reject
+  teleport pickups and invalid traversal; a crown delivery settles the whole
+  existing free-point pool equally among the winning team, once.
+- Mini fits a physical narrow tunnel, Giant pushes the collision crate, and
+  Jelly changes actual jump height with a visible body wobble. Each potion has
+  stock, a duration and marked refill stations. Mini waits to grow until clear
+  of the tunnel. Peers see the same active transformations.
+- Four gates alternate every minute after a six-second HUD warning. An occupied
+  opening remains clear. The central route stays open so every phase is playable.
+- The cursed bag emits guardian noise at its carrier, can be passed, drops on a
+  capture/disconnect, and grants 15 seconds of team protection at the treasure bank.
+- Echo Tablet information is sent privately to its reader. A different teammate
+  enters the sequence at the lock; optional voice or the seven quick signals
+  support cooperation. A solve opens all shifting gates for twenty seconds.
+- Results show earned player titles and a bounded twelve-second movement moment.
+  WATCH ROUND MOMENT replays a cloned animated avatar and guardian in the 3D
+  scene. Watching or stopping never sends game moves or repeats rewards.
+
+Practice keeps solo progress separate from multiplayer ranks. The same six
+individual character models are cached; the estate streams nearby assets through
+its existing four-request queue. Full party snapshots are limited to four per
+second plus actions, catches and results; ordinary poses use the existing relay.
+No audio is stored as part of the visual replay.
+
+Validation includes pure rules for all six features, actual Three.js scene and
+controller execution with rendering stubs (including Jelly height and replay),
+and a real 2v2 workerd match using physical movement, cursed treasure protection,
+reconnect, a crown delivery and one full-pool settlement. The cloud browser has
+WebGL disabled; GPU performance and physical mobile touch remain unverified.

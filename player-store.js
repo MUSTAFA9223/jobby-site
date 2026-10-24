@@ -195,7 +195,7 @@ export class WorldPlayers extends DurableObject{
      // One active solo run per profile; repeat delivery never resets a round.
      if(!this.sql.exec("SELECT id FROM runs WHERE player=? AND id=?",key,a.run).toArray().length){
       this.sql.exec("DELETE FROM runs WHERE player=? AND finished=0",key);
-      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,["big-house-v1","warehouse-v1","jobby-race-v1","castle-dungeon-v1"].includes(a.map)?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
+      this.sql.exec("INSERT INTO runs(player,id,map,started,ranked) VALUES(?,?,?,?,?)",key,a.run,["big-house-v1","warehouse-v1","jobby-race-v1","castle-dungeon-v1","crown-heist-v1"].includes(a.map)?a.map:"classic",Date.now(),Math.abs(Date.now()-Number(a.at))<15000?1:0);
      }
      continue;
     }

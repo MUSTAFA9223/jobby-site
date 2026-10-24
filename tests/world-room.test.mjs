@@ -1,3 +1,4 @@
+import * as party from "../party-room.js";
 import * as challenge from "../challenge-room.js";
 import * as castle from "../castle-room.js";
 import * as race from "../race-room.js";
@@ -10,6 +11,7 @@ import * as house from "../public/world/house-layout.js";
 import {clientFrame,relayFrame,readFrame,VOICE_SAMPLES} from "../public/world/voice-protocol.js";
 
 const code=readFileSync(new URL("../worker.js",import.meta.url),"utf8")
+ .replace(/^import \* as party from .*;$/m,"")
  .replace(/^import \* as challenge from .*;$/m,"")
  .replace(/^import \* as castle from .*;$/m,"")
  .replace(/^import \* as race from .*;$/m,"")
@@ -37,8 +39,8 @@ class WebSocketPairMock {
 class Base {
  constructor(ctx){this.ctx=ctx}
 }
-const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame","house","warehouse","race","castle","challenge",code+"\nreturn {WorldRoom,publicPlayerId};");
-const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame,house,warehouse,race,castle,challenge);
+const compile=new Function("DurableObject","Response","WebSocketPair","crypto","TextEncoder","structuredClone","URL","relayFrame","house","warehouse","race","castle","challenge","party",code+"\nreturn {WorldRoom,publicPlayerId};");
+const {WorldRoom,publicPlayerId}=compile(Base,MockResponse,WebSocketPairMock,webcrypto,TextEncoder,structuredClone,URL,relayFrame,house,warehouse,race,castle,challenge,party);
 const storage=new Map(),sockets=[];
 const ctx={
  storage:{get:async key=>storage.get(key),put:async(key,value)=>storage.set(key,structuredClone(value))},

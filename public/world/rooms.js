@@ -7,6 +7,7 @@ let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let roomMap="classic",challenge=null;
+$("challengeGame").value=new URLSearchParams(location.search).get("game")==="race"?"race":"crown";
 $("roomType").value=new URLSearchParams(location.search).get("mode")==="challenge"?"challenge":"coop";
 function roomType(){
  const active=$("roomType").value==="challenge",owner=playerInfo().profile?.owner===true;
@@ -46,7 +47,7 @@ function render(){
     const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+(challenge?("TEAM "+(challenge.teams[p.id]||"—")+(challenge.ready[p.id]?" · READY":" · NOT READY")):p.avatar)+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
-  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1","castle-dungeon-v1"].includes(roomMap));
+  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1","castle-dungeon-v1","crown-heist-v1"].includes(roomMap));
   $("start").classList.toggle("hidden",!waiting);
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
   $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":(roomMap==="jobby-race-v1"?"▶ START RACE":"▶ START CO-OP ESCAPE")):"WAITING FOR HOST…";
@@ -70,7 +71,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href=(roomMap==="castle-dungeon-v1"?"./castle.html?room=":roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=16";
+  voice.close();location.href=(roomMap==="crown-heist-v1"?"./party.html?room=":roomMap==="castle-dungeon-v1"?"./castle.html?room=":roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=16";
 }
 async function connect(){
   try{await linkRoomSession(id);}catch(e){showStatus(e.message,true);return;}
@@ -107,7 +108,7 @@ async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
     await linkRoomSession(id);
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value,mode:$("roomType").value,fee:Number($("entryAmount").value)})});
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value,mode:$("roomType").value,fee:Number($("entryAmount").value),game:$("challengeGame").value})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}

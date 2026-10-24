@@ -75,6 +75,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 .player-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 16px;padding:10px 13px;border:1px solid var(--stroke);border-radius:15px;background:#161c35}.player-bar b{display:block;font-size:14px}.player-bar small{color:var(--muted);font-size:10px}.profile-field{display:block;margin:13px 0 6px;color:var(--muted);font-size:12px}.profile-input{width:100%;min-height:44px;padding:10px;border:1px solid #6d6b98;border-radius:10px;background:#0d142a;color:white;font:inherit}.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.profile-actions button{flex:1;min-height:44px}.profile-divider{border:0;border-top:1px solid var(--stroke);margin:20px 0}.score .who{min-width:0;overflow-wrap:anywhere}.score .who small{display:block}.score .pts{white-space:nowrap}.profile-code{font:12px monospace;overflow-wrap:anywhere;user-select:all}
 .coursePreview{display:block;position:relative;overflow:hidden;margin-top:14px;border-radius:20px;border:1px solid #7f7ab56e;background:#9ac8f4}.coursePreview img{display:block;width:100%;height:230px;object-fit:cover}.coursePreview span{position:absolute;bottom:0;left:0;right:0;padding:18px;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px;background:linear-gradient(transparent,#141833db)}.coursePreview b{float:right;font-size:18px}.hero{background:linear-gradient(140deg,#41408a,#382b68 40%,#1c3559)}.hero h1{font-size:clamp(34px,8vw,58px);letter-spacing:-2px}@media(max-width:520px){.coursePreview img{height:190px}.hero h1{font-size:39px}}
 .ranking-tabs{display:flex;gap:10px;margin:20px 0}.ranking-tabs button{flex:1;min-height:48px}.ranking-tabs .active{border-color:var(--mint);color:var(--mint)}
+#partyMode{grid-column:1/-1;border-color:#e2bc6880;background:linear-gradient(120deg,#382a40,#25213b)}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
@@ -92,7 +93,9 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
 <button id="soloMode" class="mode"><span class="emoji">🏰</span><strong>CASTLE & LABYRINTH</strong><p>Play solo</p></button>
+
 <button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>ESCAPE WITH FRIENDS</strong><p>Private rooms · Co-op or team challenges</p></button>
+<button id="partyMode" class="mode"><span class="emoji">👑</span><strong>CROWN & CHAOS</strong><p>Potions · Shifting gates · Cursed treasure · Team signals · Replay</p></button>
 </div>
 </section>
 <section id="characters" class="view hidden">
@@ -123,5 +126,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=16-15"></script>
+<script type="module" src="./hub.js?v=17-1"></script>
 </body></html>
