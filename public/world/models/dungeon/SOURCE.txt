@@ -1,0 +1,8 @@
+Quaternius Modular Dungeons, Updated May 2019
+Author: Quaternius
+Source: https://quaternius.com/packs/modulardungeon.html
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Complete original archive: asset-sources/quaternius-modular-dungeons.zip
+Original archive SHA-256: bb9959ffd2c80b28bcd4ea574eaf4c9dd62a70fda4d61dbc5d6f5193a3f94630
+Y-up; converted OBJ models recentered horizontally and placed with bottom Y=0. Walls and arches lie in the XY plane (thin Z).

@@ -1,0 +1,2224 @@
+{
+  "pack": "dungeon",
+  "title": "Quaternius Modular Dungeons, Updated May 2019",
+  "author": "Quaternius",
+  "source": "https://quaternius.com/packs/modulardungeon.html",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "orientation": "Y-up; converted OBJ models recentered horizontally and placed with bottom Y=0. Walls and arches lie in the XY plane (thin Z).",
+  "modelCount": 48,
+  "totalModelBytes": 3962632,
+  "archive": "quaternius-modular-dungeons.zip",
+  "archiveBytes": 9286217,
+  "archiveSha256": "bb9959ffd2c80b28bcd4ea574eaf4c9dd62a70fda4d61dbc5d6f5193a3f94630",
+  "models": [
+    {
+      "id": "arch",
+      "file": "arch.glb",
+      "url": "./models/dungeon/arch.glb",
+      "category": "entrances",
+      "sourceFile": "Arch.obj",
+      "bounds": {
+        "min": [
+          -2.052181,
+          -0.0,
+          -0.496306
+        ],
+        "max": [
+          2.052181,
+          4.010071,
+          0.496306
+        ]
+      },
+      "size": [
+        4.104362,
+        4.010071,
+        0.992612
+      ],
+      "center": [
+        0.0,
+        2.005035,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -2.052181,
+          -2.2e-05,
+          -0.469388
+        ],
+        "max": [
+          2.052181,
+          4.010049,
+          0.523224
+        ]
+      },
+      "vertices": 8601,
+      "triangles": 4484,
+      "meshes": 3,
+      "bytes": 263652
+    },
+    {
+      "id": "arch-door",
+      "file": "arch-door.glb",
+      "url": "./models/dungeon/arch-door.glb",
+      "category": "entrances",
+      "sourceFile": "Arch_Door.obj",
+      "bounds": {
+        "min": [
+          -1.210557,
+          -0.0,
+          -0.16481
+        ],
+        "max": [
+          1.210556,
+          3.190047,
+          0.16481
+        ]
+      },
+      "size": [
+        2.421113,
+        3.190047,
+        0.32962
+      ],
+      "center": [
+        -0.0,
+        1.595023,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -1.200003,
+          0.006791,
+          -0.172225
+        ],
+        "max": [
+          1.22111,
+          3.196838,
+          0.157395
+        ]
+      },
+      "vertices": 1954,
+      "triangles": 1220,
+      "meshes": 4,
+      "bytes": 65936
+    },
+    {
+      "id": "arch-door-bottompivot",
+      "file": "arch-door-bottompivot.glb",
+      "url": "./models/dungeon/arch-door-bottompivot.glb",
+      "category": "entrances",
+      "sourceFile": "Arch_Door_bottompivot.obj",
+      "bounds": {
+        "min": [
+          -1.210556,
+          0.0,
+          -0.16481
+        ],
+        "max": [
+          1.210556,
+          3.190046,
+          0.16481
+        ]
+      },
+      "size": [
+        2.421112,
+        3.190046,
+        0.32962
+      ],
+      "center": [
+        0.0,
+        1.595023,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -1.210556,
+          -0.000854,
+          -0.16481
+        ],
+        "max": [
+          1.210556,
+          3.189192,
+          0.16481
+        ]
+      },
+      "vertices": 1954,
+      "triangles": 1220,
+      "meshes": 4,
+      "bytes": 65792
+    },
+    {
+      "id": "arch-bars",
+      "file": "arch-bars.glb",
+      "url": "./models/dungeon/arch-bars.glb",
+      "category": "entrances",
+      "sourceFile": "Arch_bars.obj",
+      "bounds": {
+        "min": [
+          -1.239128,
+          0.0,
+          -0.015165
+        ],
+        "max": [
+          1.239128,
+          3.388147,
+          0.015165
+        ]
+      },
+      "size": [
+        2.478255,
+        3.388147,
+        0.03033
+      ],
+      "center": [
+        0.0,
+        1.694074,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -1.237746,
+          -0.025182,
+          -0.015165
+        ],
+        "max": [
+          1.240509,
+          3.362965,
+          0.015165
+        ]
+      },
+      "vertices": 2195,
+      "triangles": 1603,
+      "meshes": 1,
+      "bytes": 73192
+    },
+    {
+      "id": "bag-coins",
+      "file": "bag-coins.glb",
+      "url": "./models/dungeon/bag-coins.glb",
+      "category": "decorations",
+      "sourceFile": "Bag_Coins.obj",
+      "bounds": {
+        "min": [
+          -0.220988,
+          -0.0,
+          -0.111088
+        ],
+        "max": [
+          0.220988,
+          0.114593,
+          0.111088
+        ]
+      },
+      "size": [
+        0.441976,
+        0.114593,
+        0.222176
+      ],
+      "center": [
+        0.0,
+        0.057297,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.154103,
+          -0.011469,
+          -0.114324
+        ],
+        "max": [
+          0.287873,
+          0.103124,
+          0.107852
+        ]
+      },
+      "vertices": 1712,
+      "triangles": 976,
+      "meshes": 2,
+      "bytes": 55216
+    },
+    {
+      "id": "bag-standing",
+      "file": "bag-standing.glb",
+      "url": "./models/dungeon/bag-standing.glb",
+      "category": "decorations",
+      "sourceFile": "Bag_Standing.obj",
+      "bounds": {
+        "min": [
+          -0.108876,
+          0.0,
+          -0.104969
+        ],
+        "max": [
+          0.108876,
+          0.252702,
+          0.104969
+        ]
+      },
+      "size": [
+        0.217752,
+        0.252702,
+        0.209938
+      ],
+      "center": [
+        0.0,
+        0.126351,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.108876,
+          -0.009044,
+          -0.104969
+        ],
+        "max": [
+          0.108876,
+          0.243658,
+          0.104969
+        ]
+      },
+      "vertices": 912,
+      "triangles": 456,
+      "meshes": 2,
+      "bytes": 29756
+    },
+    {
+      "id": "banner",
+      "file": "banner.glb",
+      "url": "./models/dungeon/banner.glb",
+      "category": "decorations",
+      "sourceFile": "Banner.obj",
+      "bounds": {
+        "min": [
+          -1.180506,
+          0.0,
+          -0.109648
+        ],
+        "max": [
+          1.180506,
+          3.798556,
+          0.109648
+        ]
+      },
+      "size": [
+        2.361012,
+        3.798556,
+        0.219296
+      ],
+      "center": [
+        0.0,
+        1.899278,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -1.180506,
+          0.003701,
+          -0.109648
+        ],
+        "max": [
+          1.180506,
+          3.802257,
+          0.109648
+        ]
+      },
+      "vertices": 986,
+      "triangles": 564,
+      "meshes": 4,
+      "bytes": 34700
+    },
+    {
+      "id": "banner-wall",
+      "file": "banner-wall.glb",
+      "url": "./models/dungeon/banner-wall.glb",
+      "category": "walls",
+      "sourceFile": "Banner_wall.obj",
+      "bounds": {
+        "min": [
+          -0.82013,
+          -0.0,
+          -0.296528
+        ],
+        "max": [
+          0.820131,
+          2.846862,
+          0.296529
+        ]
+      },
+      "size": [
+        1.640261,
+        2.846862,
+        0.593057
+      ],
+      "center": [
+        0.0,
+        1.423431,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.793076,
+          -2.793281,
+          -0.503859
+        ],
+        "max": [
+          0.847185,
+          0.053581,
+          0.089198
+        ]
+      },
+      "vertices": 746,
+      "triangles": 440,
+      "meshes": 3,
+      "bytes": 26588
+    },
+    {
+      "id": "barrel",
+      "file": "barrel.glb",
+      "url": "./models/dungeon/barrel.glb",
+      "category": "storage",
+      "sourceFile": "Barrel.obj",
+      "bounds": {
+        "min": [
+          -0.521312,
+          -0.0,
+          -0.51678
+        ],
+        "max": [
+          0.521312,
+          1.346611,
+          0.51678
+        ]
+      },
+      "size": [
+        1.042624,
+        1.346611,
+        1.03356
+      ],
+      "center": [
+        0.0,
+        0.673305,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.521312,
+          0.005742,
+          -0.518572
+        ],
+        "max": [
+          0.521312,
+          1.352353,
+          0.514988
+        ]
+      },
+      "vertices": 2560,
+      "triangles": 1384,
+      "meshes": 3,
+      "bytes": 81524
+    },
+    {
+      "id": "barrel2",
+      "file": "barrel2.glb",
+      "url": "./models/dungeon/barrel2.glb",
+      "category": "storage",
+      "sourceFile": "Barrel2.obj",
+      "bounds": {
+        "min": [
+          -0.513907,
+          -0.0,
+          -0.508195
+        ],
+        "max": [
+          0.513907,
+          1.346611,
+          0.508195
+        ]
+      },
+      "size": [
+        1.027814,
+        1.346611,
+        1.016391
+      ],
+      "center": [
+        -0.0,
+        0.673305,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.518181,
+          0.005742,
+          -0.502527
+        ],
+        "max": [
+          0.509633,
+          1.352353,
+          0.513864
+        ]
+      },
+      "vertices": 2080,
+      "triangles": 1088,
+      "meshes": 2,
+      "bytes": 65392
+    },
+    {
+      "id": "brick",
+      "file": "brick.glb",
+      "url": "./models/dungeon/brick.glb",
+      "category": "decorations",
+      "sourceFile": "Brick.obj",
+      "bounds": {
+        "min": [
+          -0.35743,
+          0.0,
+          -0.198583
+        ],
+        "max": [
+          0.35743,
+          0.186504,
+          0.198583
+        ]
+      },
+      "size": [
+        0.71486,
+        0.186504,
+        0.397166
+      ],
+      "center": [
+        0.0,
+        0.093252,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.35743,
+          -0.008454,
+          -0.198583
+        ],
+        "max": [
+          0.35743,
+          0.17805,
+          0.198583
+        ]
+      },
+      "vertices": 228,
+      "triangles": 140,
+      "meshes": 1,
+      "bytes": 8460
+    },
+    {
+      "id": "bucket",
+      "file": "bucket.glb",
+      "url": "./models/dungeon/bucket.glb",
+      "category": "decorations",
+      "sourceFile": "Bucket.obj",
+      "bounds": {
+        "min": [
+          -0.189088,
+          -0.0,
+          -0.202069
+        ],
+        "max": [
+          0.189088,
+          0.529382,
+          0.202069
+        ]
+      },
+      "size": [
+        0.378176,
+        0.529382,
+        0.404138
+      ],
+      "center": [
+        0.0,
+        0.264691,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.189088,
+          0.001191,
+          -0.201958
+        ],
+        "max": [
+          0.189088,
+          0.530573,
+          0.20218
+        ]
+      },
+      "vertices": 708,
+      "triangles": 360,
+      "meshes": 3,
+      "bytes": 24836
+    },
+    {
+      "id": "chair",
+      "file": "chair.glb",
+      "url": "./models/dungeon/chair.glb",
+      "category": "furniture",
+      "sourceFile": "Chair.obj",
+      "bounds": {
+        "min": [
+          -0.313499,
+          0.0,
+          -0.351219
+        ],
+        "max": [
+          0.313499,
+          1.158944,
+          0.351219
+        ]
+      },
+      "size": [
+        0.626998,
+        1.158944,
+        0.702439
+      ],
+      "center": [
+        0.0,
+        0.579472,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.313499,
+          0.003677,
+          -0.360243
+        ],
+        "max": [
+          0.313499,
+          1.162621,
+          0.342196
+        ]
+      },
+      "vertices": 2077,
+      "triangles": 1298,
+      "meshes": 3,
+      "bytes": 68676
+    },
+    {
+      "id": "chest",
+      "file": "chest.glb",
+      "url": "./models/dungeon/chest.glb",
+      "category": "storage",
+      "sourceFile": "Chest.obj",
+      "bounds": {
+        "min": [
+          -0.589659,
+          0.0,
+          -0.411885
+        ],
+        "max": [
+          0.589658,
+          0.898496,
+          0.411885
+        ]
+      },
+      "size": [
+        1.179317,
+        0.898496,
+        0.82377
+      ],
+      "center": [
+        -0.0,
+        0.449248,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.590267,
+          -0.001326,
+          -0.390449
+        ],
+        "max": [
+          0.58905,
+          0.89717,
+          0.433321
+        ]
+      },
+      "vertices": 2792,
+      "triangles": 1676,
+      "meshes": 3,
+      "bytes": 90592
+    },
+    {
+      "id": "chest-gold",
+      "file": "chest-gold.glb",
+      "url": "./models/dungeon/chest-gold.glb",
+      "category": "storage",
+      "sourceFile": "Chest_Gold.obj",
+      "bounds": {
+        "min": [
+          -0.589659,
+          0.0,
+          -0.741034
+        ],
+        "max": [
+          0.589658,
+          0.89943,
+          0.741034
+        ]
+      },
+      "size": [
+        1.179317,
+        0.89943,
+        1.482068
+      ],
+      "center": [
+        -0.0,
+        0.449715,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.590267,
+          -0.001326,
+          -1.048747
+        ],
+        "max": [
+          0.58905,
+          0.898104,
+          0.433321
+        ]
+      },
+      "vertices": 35745,
+      "triangles": 22512,
+      "meshes": 4,
+      "bytes": 1132580
+    },
+    {
+      "id": "cobweb",
+      "file": "cobweb.glb",
+      "url": "./models/dungeon/cobweb.glb",
+      "category": "decorations",
+      "sourceFile": "Cobweb.obj",
+      "bounds": {
+        "min": [
+          -0.602948,
+          -0.0,
+          -0.455432
+        ],
+        "max": [
+          0.602947,
+          0.754705,
+          0.455432
+        ]
+      },
+      "size": [
+        1.205895,
+        0.754705,
+        0.910864
+      ],
+      "center": [
+        -0.0,
+        0.377352,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.559354,
+          -0.032361,
+          -0.123207
+        ],
+        "max": [
+          0.646541,
+          0.722344,
+          0.787657
+        ]
+      },
+      "vertices": 2216,
+      "triangles": 1108,
+      "meshes": 1,
+      "bytes": 67860
+    },
+    {
+      "id": "cobweb2",
+      "file": "cobweb2.glb",
+      "url": "./models/dungeon/cobweb2.glb",
+      "category": "decorations",
+      "sourceFile": "Cobweb2.obj",
+      "bounds": {
+        "min": [
+          -0.669594,
+          0.0,
+          -0.51503
+        ],
+        "max": [
+          0.669594,
+          0.845087,
+          0.515029
+        ]
+      },
+      "size": [
+        1.339189,
+        0.845087,
+        1.030059
+      ],
+      "center": [
+        -0.0,
+        0.422543,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.608926,
+          -0.01559,
+          -0.070427
+        ],
+        "max": [
+          0.730263,
+          0.829497,
+          0.959632
+        ]
+      },
+      "vertices": 1736,
+      "triangles": 868,
+      "meshes": 1,
+      "bytes": 53444
+    },
+    {
+      "id": "coin-pile",
+      "file": "coin-pile.glb",
+      "url": "./models/dungeon/coin-pile.glb",
+      "category": "decorations",
+      "sourceFile": "Coin_Pile.obj",
+      "bounds": {
+        "min": [
+          -0.068195,
+          0.0,
+          -0.067724
+        ],
+        "max": [
+          0.068195,
+          0.09464,
+          0.067724
+        ]
+      },
+      "size": [
+        0.136389,
+        0.09464,
+        0.135449
+      ],
+      "center": [
+        -0.0,
+        0.04732,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.067335,
+          -0.000593,
+          -0.059104
+        ],
+        "max": [
+          0.069054,
+          0.094047,
+          0.076345
+        ]
+      },
+      "vertices": 5040,
+      "triangles": 3220,
+      "meshes": 1,
+      "bytes": 160956
+    },
+    {
+      "id": "column",
+      "file": "column.glb",
+      "url": "./models/dungeon/column.glb",
+      "category": "columns",
+      "sourceFile": "Column.obj",
+      "bounds": {
+        "min": [
+          -0.65206,
+          0.0,
+          -0.65206
+        ],
+        "max": [
+          0.65206,
+          4.065065,
+          0.65206
+        ]
+      },
+      "size": [
+        1.30412,
+        4.065065,
+        1.30412
+      ],
+      "center": [
+        0.0,
+        2.032532,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.65206,
+          0.008336,
+          -0.65206
+        ],
+        "max": [
+          0.65206,
+          4.073401,
+          0.65206
+        ]
+      },
+      "vertices": 764,
+      "triangles": 440,
+      "meshes": 2,
+      "bytes": 25864
+    },
+    {
+      "id": "column2",
+      "file": "column2.glb",
+      "url": "./models/dungeon/column2.glb",
+      "category": "columns",
+      "sourceFile": "Column2.obj",
+      "bounds": {
+        "min": [
+          -0.65206,
+          0.0,
+          -0.65206
+        ],
+        "max": [
+          0.65206,
+          4.072257,
+          0.65206
+        ]
+      },
+      "size": [
+        1.30412,
+        4.072257,
+        1.30412
+      ],
+      "center": [
+        0.0,
+        2.036129,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.65206,
+          0.008336,
+          -0.65206
+        ],
+        "max": [
+          0.65206,
+          4.080593,
+          0.65206
+        ]
+      },
+      "vertices": 892,
+      "triangles": 548,
+      "meshes": 2,
+      "bytes": 30268
+    },
+    {
+      "id": "crate",
+      "file": "crate.glb",
+      "url": "./models/dungeon/crate.glb",
+      "category": "storage",
+      "sourceFile": "Crate.obj",
+      "bounds": {
+        "min": [
+          -0.689883,
+          -0.0,
+          -0.655446
+        ],
+        "max": [
+          0.689883,
+          1.307625,
+          0.655447
+        ]
+      },
+      "size": [
+        1.379766,
+        1.307625,
+        1.310893
+      ],
+      "center": [
+        0.0,
+        0.653813,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.689883,
+          0.001032,
+          -0.656177
+        ],
+        "max": [
+          0.689883,
+          1.308657,
+          0.654716
+        ]
+      },
+      "vertices": 3425,
+      "triangles": 2502,
+      "meshes": 2,
+      "bytes": 114488
+    },
+    {
+      "id": "decorative-wall",
+      "file": "decorative-wall.glb",
+      "url": "./models/dungeon/decorative-wall.glb",
+      "category": "walls",
+      "sourceFile": "Decorative_Wall.obj",
+      "bounds": {
+        "min": [
+          -0.869909,
+          0.0,
+          -0.219036
+        ],
+        "max": [
+          0.869908,
+          1.522732,
+          0.219036
+        ]
+      },
+      "size": [
+        1.739817,
+        1.522732,
+        0.438072
+      ],
+      "center": [
+        -0.0,
+        0.761366,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.920131,
+          -0.820407,
+          -0.219036
+        ],
+        "max": [
+          0.819686,
+          0.702325,
+          0.219036
+        ]
+      },
+      "vertices": 1980,
+      "triangles": 1156,
+      "meshes": 2,
+      "bytes": 63752
+    },
+    {
+      "id": "fence-90-modular",
+      "file": "fence-90-modular.glb",
+      "url": "./models/dungeon/fence-90-modular.glb",
+      "category": "fences",
+      "sourceFile": "Fence_90_Modular.obj",
+      "bounds": {
+        "min": [
+          -0.695299,
+          -0.0,
+          -0.695299
+        ],
+        "max": [
+          0.695299,
+          1.293929,
+          0.695299
+        ]
+      },
+      "size": [
+        1.390598,
+        1.293929,
+        1.390598
+      ],
+      "center": [
+        0.0,
+        0.646965,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.390598,
+          -0.999089,
+          -1.0
+        ],
+        "max": [
+          1.0,
+          0.29484,
+          0.390598
+        ]
+      },
+      "vertices": 216,
+      "triangles": 112,
+      "meshes": 2,
+      "bytes": 8788
+    },
+    {
+      "id": "fence-end-modular",
+      "file": "fence-end-modular.glb",
+      "url": "./models/dungeon/fence-end-modular.glb",
+      "category": "fences",
+      "sourceFile": "Fence_End_Modular.obj",
+      "bounds": {
+        "min": [
+          -0.695299,
+          -0.0,
+          -0.390598
+        ],
+        "max": [
+          0.695299,
+          1.293929,
+          0.390598
+        ]
+      },
+      "size": [
+        1.390598,
+        1.293929,
+        0.781196
+      ],
+      "center": [
+        0.0,
+        0.646965,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.390598,
+          -0.999089,
+          -0.390598
+        ],
+        "max": [
+          1.0,
+          0.29484,
+          0.390598
+        ]
+      },
+      "vertices": 196,
+      "triangles": 102,
+      "meshes": 2,
+      "bytes": 8192
+    },
+    {
+      "id": "fence-straight-modular",
+      "file": "fence-straight-modular.glb",
+      "url": "./models/dungeon/fence-straight-modular.glb",
+      "category": "fences",
+      "sourceFile": "Fence_Straight_Modular.obj",
+      "bounds": {
+        "min": [
+          -1.0,
+          -0.0,
+          -0.390598
+        ],
+        "max": [
+          1.0,
+          1.293929,
+          0.390598
+        ]
+      },
+      "size": [
+        2.0,
+        1.293929,
+        0.781196
+      ],
+      "center": [
+        0.0,
+        0.646965,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -1.0,
+          -0.999089,
+          -0.390598
+        ],
+        "max": [
+          1.0,
+          0.29484,
+          0.390598
+        ]
+      },
+      "vertices": 200,
+      "triangles": 104,
+      "meshes": 2,
+      "bytes": 8284
+    },
+    {
+      "id": "floor-bricksseparate",
+      "file": "floor-bricksseparate.glb",
+      "url": "./models/dungeon/floor-bricksseparate.glb",
+      "category": "floors",
+      "sourceFile": "Floor_BricksSeparate.obj",
+      "bounds": {
+        "min": [
+          -0.475445,
+          0.0,
+          -0.599922
+        ],
+        "max": [
+          0.475445,
+          0.256085,
+          0.599922
+        ]
+      },
+      "size": [
+        0.95089,
+        0.256085,
+        1.199845
+      ],
+      "center": [
+        -0.0,
+        0.128043,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.452475,
+          -0.02419,
+          -0.725523
+        ],
+        "max": [
+          0.498415,
+          0.231895,
+          0.474322
+        ]
+      },
+      "vertices": 420,
+      "triangles": 236,
+      "meshes": 1,
+      "bytes": 14212
+    },
+    {
+      "id": "floor-bricksseparate2",
+      "file": "floor-bricksseparate2.glb",
+      "url": "./models/dungeon/floor-bricksseparate2.glb",
+      "category": "floors",
+      "sourceFile": "Floor_BricksSeparate2.obj",
+      "bounds": {
+        "min": [
+          -0.652833,
+          0.0,
+          -0.584121
+        ],
+        "max": [
+          0.652832,
+          0.479662,
+          0.584121
+        ]
+      },
+      "size": [
+        1.305665,
+        0.479662,
+        1.168242
+      ],
+      "center": [
+        -0.0,
+        0.239831,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.80725,
+          -0.02419,
+          -0.725523
+        ],
+        "max": [
+          0.498415,
+          0.455472,
+          0.442719
+        ]
+      },
+      "vertices": 864,
+      "triangles": 484,
+      "meshes": 1,
+      "bytes": 27848
+    },
+    {
+      "id": "floor-modular",
+      "file": "floor-modular.glb",
+      "url": "./models/dungeon/floor-modular.glb",
+      "category": "floors",
+      "sourceFile": "Floor_Modular.obj",
+      "bounds": {
+        "min": [
+          -1.002408,
+          -0.0,
+          -1.000289
+        ],
+        "max": [
+          1.002408,
+          0.250328,
+          1.000289
+        ]
+      },
+      "size": [
+        2.004817,
+        0.250328,
+        2.000578
+      ],
+      "center": [
+        -0.0,
+        0.125164,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.997333,
+          -0.125164,
+          -0.999972
+        ],
+        "max": [
+          1.007484,
+          0.125164,
+          1.000606
+        ]
+      },
+      "vertices": 2176,
+      "triangles": 1176,
+      "meshes": 1,
+      "bytes": 67644
+    },
+    {
+      "id": "pedestal",
+      "file": "pedestal.glb",
+      "url": "./models/dungeon/pedestal.glb",
+      "category": "decorations",
+      "sourceFile": "Pedestal.obj",
+      "bounds": {
+        "min": [
+          -0.973476,
+          0.0,
+          -0.979727
+        ],
+        "max": [
+          0.973476,
+          2.19314,
+          0.979727
+        ]
+      },
+      "size": [
+        1.946951,
+        2.19314,
+        1.959454
+      ],
+      "center": [
+        0.0,
+        1.09657,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.973491,
+          -0.000181,
+          -0.979717
+        ],
+        "max": [
+          0.97346,
+          2.192959,
+          0.979737
+        ]
+      },
+      "vertices": 3052,
+      "triangles": 1844,
+      "meshes": 1,
+      "bytes": 96680
+    },
+    {
+      "id": "pedestal2",
+      "file": "pedestal2.glb",
+      "url": "./models/dungeon/pedestal2.glb",
+      "category": "decorations",
+      "sourceFile": "Pedestal2.obj",
+      "bounds": {
+        "min": [
+          -0.871516,
+          0.0,
+          -0.871516
+        ],
+        "max": [
+          0.871516,
+          2.314678,
+          0.871516
+        ]
+      },
+      "size": [
+        1.743032,
+        2.314678,
+        1.743032
+      ],
+      "center": [
+        0.0,
+        1.157339,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.871516,
+          0.015196,
+          -0.871516
+        ],
+        "max": [
+          0.871516,
+          2.329874,
+          0.871516
+        ]
+      },
+      "vertices": 1898,
+      "triangles": 1182,
+      "meshes": 1,
+      "bytes": 60992
+    },
+    {
+      "id": "skull",
+      "file": "skull.glb",
+      "url": "./models/dungeon/skull.glb",
+      "category": "decorations",
+      "sourceFile": "Skull.obj",
+      "bounds": {
+        "min": [
+          -0.300284,
+          -0.0,
+          -0.219164
+        ],
+        "max": [
+          0.300284,
+          0.461048,
+          0.219164
+        ]
+      },
+      "size": [
+        0.600569,
+        0.461048,
+        0.438329
+      ],
+      "center": [
+        0.0,
+        0.230524,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.284041,
+          -0.031791,
+          -0.219165
+        ],
+        "max": [
+          0.316528,
+          0.429257,
+          0.219164
+        ]
+      },
+      "vertices": 2784,
+      "triangles": 1392,
+      "meshes": 1,
+      "bytes": 84896
+    },
+    {
+      "id": "spikes",
+      "file": "spikes.glb",
+      "url": "./models/dungeon/spikes.glb",
+      "category": "traps",
+      "sourceFile": "Spikes.obj",
+      "bounds": {
+        "min": [
+          -0.882267,
+          0.0,
+          -0.882267
+        ],
+        "max": [
+          0.882267,
+          1.175451,
+          0.882267
+        ]
+      },
+      "size": [
+        1.764534,
+        1.175451,
+        1.764534
+      ],
+      "center": [
+        0.0,
+        0.587726,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.882267,
+          -0.005569,
+          -0.882267
+        ],
+        "max": [
+          0.882267,
+          1.169882,
+          0.882267
+        ]
+      },
+      "vertices": 1152,
+      "triangles": 504,
+      "meshes": 1,
+      "bytes": 35024
+    },
+    {
+      "id": "stairs-modular",
+      "file": "stairs-modular.glb",
+      "url": "./models/dungeon/stairs-modular.glb",
+      "category": "stairs",
+      "sourceFile": "Stairs_Modular.obj",
+      "bounds": {
+        "min": [
+          -1.006568,
+          -0.0,
+          -1.025804
+        ],
+        "max": [
+          1.006568,
+          2.019315,
+          1.025804
+        ]
+      },
+      "size": [
+        2.013136,
+        2.019315,
+        2.051608
+      ],
+      "center": [
+        0.0,
+        1.009657,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -1.008183,
+          -1.012161,
+          -1.022156
+        ],
+        "max": [
+          1.004953,
+          1.007154,
+          1.029452
+        ]
+      },
+      "vertices": 2610,
+      "triangles": 1420,
+      "meshes": 1,
+      "bytes": 80988
+    },
+    {
+      "id": "stairs-sidecover",
+      "file": "stairs-sidecover.glb",
+      "url": "./models/dungeon/stairs-sidecover.glb",
+      "category": "stairs",
+      "sourceFile": "Stairs_SideCover.obj",
+      "bounds": {
+        "min": [
+          -0.221355,
+          0.0,
+          -1.029518
+        ],
+        "max": [
+          0.221355,
+          2.030973,
+          1.029518
+        ]
+      },
+      "size": [
+        0.44271,
+        2.030973,
+        2.059036
+      ],
+      "center": [
+        -0.0,
+        1.015486,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          0.815515,
+          -1.012913,
+          -1.008794
+        ],
+        "max": [
+          1.258225,
+          1.01806,
+          1.050242
+        ]
+      },
+      "vertices": 1632,
+      "triangles": 892,
+      "meshes": 1,
+      "bytes": 51168
+    },
+    {
+      "id": "stairs-sidecoverwall",
+      "file": "stairs-sidecoverwall.glb",
+      "url": "./models/dungeon/stairs-sidecoverwall.glb",
+      "category": "walls",
+      "sourceFile": "Stairs_SideCoverWall.obj",
+      "bounds": {
+        "min": [
+          -0.221355,
+          0.0,
+          -1.014382
+        ],
+        "max": [
+          0.221355,
+          2.032677,
+          1.014381
+        ]
+      },
+      "size": [
+        0.44271,
+        2.032677,
+        2.028763
+      ],
+      "center": [
+        -0.0,
+        1.016338,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          0.815515,
+          -1.012913,
+          -3.008794
+        ],
+        "max": [
+          1.258225,
+          1.019764,
+          -0.980031
+        ]
+      },
+      "vertices": 2306,
+      "triangles": 1252,
+      "meshes": 1,
+      "bytes": 71660
+    },
+    {
+      "id": "statue-horse",
+      "file": "statue-horse.glb",
+      "url": "./models/dungeon/statue-horse.glb",
+      "category": "decorations",
+      "sourceFile": "Statue_Horse.obj",
+      "bounds": {
+        "min": [
+          -0.871516,
+          0.0,
+          -1.689177
+        ],
+        "max": [
+          0.871516,
+          5.85481,
+          1.689176
+        ]
+      },
+      "size": [
+        1.743032,
+        5.85481,
+        3.378353
+      ],
+      "center": [
+        0.0,
+        2.927405,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.878715,
+          0.015196,
+          4.162934
+        ],
+        "max": [
+          0.864317,
+          5.870006,
+          7.541287
+        ]
+      },
+      "vertices": 3292,
+      "triangles": 1850,
+      "meshes": 2,
+      "bytes": 103568
+    },
+    {
+      "id": "sword-wallmount",
+      "file": "sword-wallmount.glb",
+      "url": "./models/dungeon/sword-wallmount.glb",
+      "category": "walls",
+      "sourceFile": "Sword_WallMount.obj",
+      "bounds": {
+        "min": [
+          -0.532909,
+          0.0,
+          -0.105862
+        ],
+        "max": [
+          0.532909,
+          0.847142,
+          0.105862
+        ]
+      },
+      "size": [
+        1.065817,
+        0.847142,
+        0.211725
+      ],
+      "center": [
+        -0.0,
+        0.423571,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.457801,
+          -0.40133,
+          -0.000945
+        ],
+        "max": [
+          0.608016,
+          0.445812,
+          0.21078
+        ]
+      },
+      "vertices": 3807,
+      "triangles": 2382,
+      "meshes": 6,
+      "bytes": 126720
+    },
+    {
+      "id": "table-big",
+      "file": "table-big.glb",
+      "url": "./models/dungeon/table-big.glb",
+      "category": "furniture",
+      "sourceFile": "Table_Big.obj",
+      "bounds": {
+        "min": [
+          -0.792233,
+          0.0,
+          -1.651666
+        ],
+        "max": [
+          0.792233,
+          0.854024,
+          1.651666
+        ]
+      },
+      "size": [
+        1.584466,
+        0.854024,
+        3.303332
+      ],
+      "center": [
+        -0.0,
+        0.427012,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.794398,
+          -0.005145,
+          -1.699477
+        ],
+        "max": [
+          0.790068,
+          0.848879,
+          1.603855
+        ]
+      },
+      "vertices": 1619,
+      "triangles": 916,
+      "meshes": 3,
+      "bytes": 53208
+    },
+    {
+      "id": "table-small",
+      "file": "table-small.glb",
+      "url": "./models/dungeon/table-small.glb",
+      "category": "furniture",
+      "sourceFile": "Table_Small.obj",
+      "bounds": {
+        "min": [
+          -0.652464,
+          0.0,
+          -0.989598
+        ],
+        "max": [
+          0.652463,
+          0.854024,
+          0.989598
+        ]
+      },
+      "size": [
+        1.304927,
+        0.854024,
+        1.979196
+      ],
+      "center": [
+        -0.0,
+        0.427012,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.666889,
+          -0.005145,
+          -1.101164
+        ],
+        "max": [
+          0.638038,
+          0.848879,
+          0.878032
+        ]
+      },
+      "vertices": 1415,
+      "triangles": 804,
+      "meshes": 3,
+      "bytes": 46932
+    },
+    {
+      "id": "torch",
+      "file": "torch.glb",
+      "url": "./models/dungeon/torch.glb",
+      "category": "lights",
+      "sourceFile": "Torch.obj",
+      "bounds": {
+        "min": [
+          -0.139137,
+          -0.0,
+          -0.218824
+        ],
+        "max": [
+          0.139137,
+          1.150648,
+          0.218824
+        ]
+      },
+      "size": [
+        0.278274,
+        1.150648,
+        0.437647
+      ],
+      "center": [
+        0.0,
+        0.575324,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.139137,
+          -0.270785,
+          -0.293543
+        ],
+        "max": [
+          0.139137,
+          0.879863,
+          0.144104
+        ]
+      },
+      "vertices": 740,
+      "triangles": 386,
+      "meshes": 2,
+      "bytes": 24736
+    },
+    {
+      "id": "trap-empty",
+      "file": "trap-empty.glb",
+      "url": "./models/dungeon/trap-empty.glb",
+      "category": "traps",
+      "sourceFile": "Trap_empty.obj",
+      "bounds": {
+        "min": [
+          -0.994613,
+          0.0,
+          -0.994613
+        ],
+        "max": [
+          0.994613,
+          0.124814,
+          0.994613
+        ]
+      },
+      "size": [
+        1.989226,
+        0.124814,
+        1.989226
+      ],
+      "center": [
+        0.0,
+        0.062407,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.994613,
+          -0.002956,
+          -0.994613
+        ],
+        "max": [
+          0.994613,
+          0.121858,
+          0.994613
+        ]
+      },
+      "vertices": 1970,
+      "triangles": 1456,
+      "meshes": 1,
+      "bytes": 66008
+    },
+    {
+      "id": "trap-spikes",
+      "file": "trap-spikes.glb",
+      "url": "./models/dungeon/trap-spikes.glb",
+      "category": "traps",
+      "sourceFile": "Trap_spikes.obj",
+      "bounds": {
+        "min": [
+          -0.994613,
+          0.0,
+          -0.994613
+        ],
+        "max": [
+          0.994613,
+          1.172838,
+          0.994613
+        ]
+      },
+      "size": [
+        1.989226,
+        1.172838,
+        1.989226
+      ],
+      "center": [
+        0.0,
+        0.586419,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.994613,
+          -0.002956,
+          -0.994613
+        ],
+        "max": [
+          0.994613,
+          1.169882,
+          0.994613
+        ]
+      },
+      "vertices": 3086,
+      "triangles": 2032,
+      "meshes": 2,
+      "bytes": 100772
+    },
+    {
+      "id": "trapdoor",
+      "file": "trapdoor.glb",
+      "url": "./models/dungeon/trapdoor.glb",
+      "category": "entrances",
+      "sourceFile": "Trapdoor.obj",
+      "bounds": {
+        "min": [
+          -0.870636,
+          -0.0,
+          -0.850005
+        ],
+        "max": [
+          0.870636,
+          0.21515,
+          0.850004
+        ]
+      },
+      "size": [
+        1.741272,
+        0.21515,
+        1.700009
+      ],
+      "center": [
+        0.0,
+        0.107575,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.868683,
+          -0.04884,
+          -0.850062
+        ],
+        "max": [
+          0.872589,
+          0.16631,
+          0.849947
+        ]
+      },
+      "vertices": 1000,
+      "triangles": 504,
+      "meshes": 4,
+      "bytes": 34580
+    },
+    {
+      "id": "trapdoor-open",
+      "file": "trapdoor-open.glb",
+      "url": "./models/dungeon/trapdoor-open.glb",
+      "category": "entrances",
+      "sourceFile": "Trapdoor_open.obj",
+      "bounds": {
+        "min": [
+          -0.870636,
+          0.0,
+          -1.331756
+        ],
+        "max": [
+          0.870636,
+          0.203791,
+          1.331756
+        ]
+      },
+      "size": [
+        1.741272,
+        0.203791,
+        2.663512
+      ],
+      "center": [
+        0.0,
+        0.101896,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.868683,
+          -0.131211,
+          -1.813565
+        ],
+        "max": [
+          0.872589,
+          0.07258,
+          0.849947
+        ]
+      },
+      "vertices": 1088,
+      "triangles": 564,
+      "meshes": 4,
+      "bytes": 37492
+    },
+    {
+      "id": "vase",
+      "file": "vase.glb",
+      "url": "./models/dungeon/vase.glb",
+      "category": "decorations",
+      "sourceFile": "Vase.obj",
+      "bounds": {
+        "min": [
+          -0.155488,
+          -0.0,
+          -0.155488
+        ],
+        "max": [
+          0.155488,
+          0.361047,
+          0.155488
+        ]
+      },
+      "size": [
+        0.310976,
+        0.361047,
+        0.310976
+      ],
+      "center": [
+        0.0,
+        0.180524,
+        -0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.155488,
+          -0.002033,
+          -1.244274
+        ],
+        "max": [
+          0.155488,
+          0.359014,
+          -0.933298
+        ]
+      },
+      "vertices": 432,
+      "triangles": 220,
+      "meshes": 1,
+      "bytes": 14320
+    },
+    {
+      "id": "wallcover-modular",
+      "file": "wallcover-modular.glb",
+      "url": "./models/dungeon/wallcover-modular.glb",
+      "category": "walls",
+      "sourceFile": "WallCover_Modular.obj",
+      "bounds": {
+        "min": [
+          -1.00508,
+          0.0,
+          -0.254594
+        ],
+        "max": [
+          1.00508,
+          0.431649,
+          0.254594
+        ]
+      },
+      "size": [
+        2.01016,
+        0.431649,
+        0.509188
+      ],
+      "center": [
+        -0.0,
+        0.215824,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -1.004349,
+          -1.009776,
+          -0.254594
+        ],
+        "max": [
+          1.005811,
+          -0.578127,
+          0.254594
+        ]
+      },
+      "vertices": 496,
+      "triangles": 280,
+      "meshes": 1,
+      "bytes": 16584
+    },
+    {
+      "id": "wall-modular",
+      "file": "wall-modular.glb",
+      "url": "./models/dungeon/wall-modular.glb",
+      "category": "walls",
+      "sourceFile": "Wall_Modular.obj",
+      "bounds": {
+        "min": [
+          -1.000369,
+          -0.0,
+          -0.219036
+        ],
+        "max": [
+          1.000369,
+          2.005394,
+          0.219036
+        ]
+      },
+      "size": [
+        2.000738,
+        2.005394,
+        0.438072
+      ],
+      "center": [
+        -0.0,
+        1.002697,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": {
+        "min": [
+          -0.999808,
+          -1.002084,
+          -0.219036
+        ],
+        "max": [
+          1.00093,
+          1.00331,
+          0.219036
+        ]
+      },
+      "vertices": 3178,
+      "triangles": 1672,
+      "meshes": 3,
+      "bytes": 99748
+    },
+    {
+      "id": "woodfire",
+      "file": "woodfire.glb",
+      "url": "./models/dungeon/woodfire.glb",
+      "category": "lights",
+      "sourceFile": "Woodfire.obj",
+      "bounds": {
+        "min": [
+          -0.387799,
+          0.0,
+          -0.41331
+        ],
+        "max": [
+          0.3878,
+          0.828126,
+          0.413311
+        ]
+      },
+      "size": [
+        0.775599,
+        0.828126,
+        0.826621
+      ],
+      "center": [
+        0.0,
+        0.414063,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": {
+        "min": [
+          -0.383806,
+          -0.053152,
+          -0.41478
+        ],
+        "max": [
+          0.391793,
+          0.774974,
+          0.411841
+        ]
+      },
+      "vertices": 492,
+      "triangles": 224,
+      "meshes": 3,
+      "bytes": 18064
+    }
+  ]
+}

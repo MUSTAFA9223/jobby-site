@@ -7,7 +7,7 @@ let id=sessionStorage.getItem(KEY);
 if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let roomMap="classic";
-$("mapChoice").value=["jobby-race-v1","warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"jobby-race-v1";
+$("mapChoice").value=["castle-dungeon-v1","jobby-race-v1","warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"castle-dungeon-v1";
 let selected="JOBBY";
 const voice=createRoomVoice({mount:$("lobbyVoice"),
  send:m=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(m));},
@@ -38,7 +38,7 @@ function render(){
     const sub=document.createElement("small");sub.textContent=(p.id===host?"HOST · ":"")+p.avatar+(p.voice?(p.muted?" · MIC MUTED":" · IN VOICE"):"");
     who.append(label,sub);box.append(face,who);$("people").append(box);
   }
-  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1"].includes(roomMap));
+  const iamHost=publicId===host,waiting=state==="lobby"||(state==="finished"&&["warehouse-v1","jobby-race-v1","castle-dungeon-v1"].includes(roomMap));
   $("start").classList.toggle("hidden",!waiting);
   $("start").disabled=!iamHost||roster.length<2||ws?.readyState!==WebSocket.OPEN;
   $("start").textContent=iamHost?(roster.length<2?"WAITING FOR FRIENDS…":(roomMap==="jobby-race-v1"?"▶ START RACE":"▶ START CO-OP ESCAPE")):"WAITING FOR HOST…";
@@ -46,7 +46,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href=(roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=14";
+  voice.close();location.href=(roomMap==="castle-dungeon-v1"?"./castle.html?room=":roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=15";
 }
 async function connect(){
   try{await linkRoomSession(id);}catch(e){showStatus(e.message,true);return;}
@@ -66,7 +66,7 @@ async function connect(){
     if(m.type==="welcome"){
       roomMap=m.map||"classic";$("lobbyStatus").dataset.map=roomMap;maxPlayers=m.maxPlayers||12;publicId=m.selfId;host=m.hostId;state=m.status;roster=m.players||[];voice.roster(roster,publicId);render();
       if(state==="playing")beginGame();
-      if(state==="finished")status("Round finished. The host can start another race.");
+      if(state==="finished")status("Round finished. The host can start another round.");
     }
     if(m.type==="roster"){host=m.hostId;roster=m.players||[];voice.roster(roster,publicId);render()}
     if(m.type==="voice_state"){voice.state(m);roster=roster.map(p=>p.id===m.id?{...p,voice:m.joined,muted:m.muted}:p);render();}

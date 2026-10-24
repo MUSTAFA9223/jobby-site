@@ -20,7 +20,7 @@ const urlOf=avatar=>avatar==="JOBBY"?JOBBY_MODEL:"./models/"+encodeURIComponent(
 function dispose(root){
   root.traverse(obj=>{if(!obj.isMesh)return;obj.geometry?.dispose();for(const m of Array.isArray(obj.material)?obj.material:[obj.material]){if(!m)continue;m.map?.dispose();m.dispose()}});
 }
-export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcome,onStart,onKeys,onComplete,onError,onTasks=()=>{},onGuard=()=>{},onCaught=()=>{},onHide=()=>{},onWarehouse=()=>{},onWarehouseNote=()=>{},onWarehousePanel=()=>{},onWarehouseCaught=()=>{},onWarehouseRelease=()=>{},onWarehouseFailed=()=>{},onRace=()=>{},onRaceEvent=()=>{}}){
+export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcome,onStart,onKeys,onComplete,onError,onTasks=()=>{},onGuard=()=>{},onCaught=()=>{},onHide=()=>{},onWarehouse=()=>{},onWarehouseNote=()=>{},onWarehousePanel=()=>{},onWarehouseCaught=()=>{},onWarehouseRelease=()=>{},onWarehouseFailed=()=>{},onRace=()=>{},onRaceEvent=()=>{},onCastle=()=>{},onCastleNote=()=>{},onCastlePanel=()=>{},onCastleCaught=()=>{},onCastleRelease=()=>{},onCastleFailed=()=>{}}){
   const remotes=new Map();
   const models=createAssetCache(url=>loader.loadAsync(url),gltf=>dispose(gltf.scene));
   let publicId=null;
@@ -90,7 +90,7 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
         publicId=m.selfId;
         voice.roster(m.players,publicId);
         syncRoster(m.players||[]);onKeys(m.keys||[]);onTasks(m.tasks||[]);if(m.guard)onGuard(m.guard);
-        if(m.warehouse)onWarehouse(m.warehouse);if(m.race)onRace(m.race);
+        if(m.castle)onCastle(m.castle);if(m.warehouse)onWarehouse(m.warehouse);if(m.race)onRace(m.race);
         onWelcome(m);
         if(m.status==="playing")onStart();
         if(m.status==="finished")onComplete(m);
@@ -98,6 +98,11 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       else if(m.type==="voice_state"){voice.state(m);}
       else if(m.type==="race_state")onRace(m.state);
       else if(m.type.startsWith("race_"))onRaceEvent(m);
+      else if(m.type==="castle_state")onCastle(m.state);
+      else if(m.type==="castle_note")onCastleNote(m.note);
+      else if(m.type==="castle_panel")onCastlePanel(m);
+      else if(m.type==="castle_failed")onCastleFailed();
+      else if(m.type==="castle_caught"||m.type==="castle_release"){const r=remotes.get(m.id);if(r){r.x=m.x;r.z=m.z;r.y=0;r.group.position.set(m.x,0,m.z);r.group.visible=true;}if(m.type==="castle_caught")onCastleCaught(m);else onCastleRelease(m);}
       else if(m.type==="warehouse_state")onWarehouse(m.state);
       else if(m.type==="warehouse_note")onWarehouseNote(m.note);
       else if(m.type==="warehouse_panel")onWarehousePanel(m);
@@ -109,7 +114,7 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       else if(m.type==="caught"){const r=remotes.get(m.id);if(r){r.x=m.x;r.z=m.z;r.y=0;r.group.position.set(m.x,0,m.z);r.group.visible=true;}onCaught(m);}
       else if(m.type==="pose"){
         const r=remotes.get(m.id);if(r)Object.assign(r,{x:m.x,z:m.z,y:m.y,h:m.h,anim:m.anim});if(r)r.group.visible=!m.hidden;
-      }else if(m.type==="start"){onKeys([]);onTasks([]);if(m.warehouse)onWarehouse(m.warehouse);if(m.race)onRace(m.race);onStart()}
+      }else if(m.type==="start"){onKeys([]);onTasks([]);if(m.castle)onCastle(m.castle);if(m.warehouse)onWarehouse(m.warehouse);if(m.race)onRace(m.race);onStart()}
       else if(m.type==="key"){onKeys(m.keys||[])}
       else if(m.type==="gate_open"){onKeys([0,1,2])}
       else if(m.type==="complete")onComplete(m)
@@ -131,6 +136,7 @@ export function connectCoop({code,id,avatar,name,scene,getLocalPosition,onWelcom
       lastPose=performance.now();
       ws.send(JSON.stringify({type:"pose",x:p.x,z:p.z,y:p.y,h:p.h,anim:p.anim}));
     },
+    castleAction(action){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"castle_action",action}));},
     warehouseAction(action){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"warehouse_action",action}));},
     action(type,index,hidden){if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type,index,hidden}));},
     selfId(){return publicId;},

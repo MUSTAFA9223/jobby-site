@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090d20">
-<meta name="description" content="JOBBY WORLD - Funny obstacle races with pushing, falling, traps and twelve-player private rooms.">
-<title>JOBBY WORLD | Alpha 0.14</title>
+<meta name="description" content="JOBBY WORLD - Castle escape, a real labyrinth, three linked puzzles and twelve-player private rooms.">
+<title>JOBBY WORLD | Alpha 0.15</title>
 <style>
 :root{color-scheme:dark;--bg:#090e22;--panel:#151a36;--text:#fff;--muted:#aab4d4;--stroke:#343957;--mint:#6df6cf;--gold:#ffd978;--pink:#f29cd9;--purple:#ab92ff}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Tahoma,sans-serif}
@@ -79,21 +79,21 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 </head>
 <body>
 <div class="page">
-<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.14</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
+<header class="topbar"><div class="logo">JOBBY <em>WORLD</em></div><div class="top-right"><span class="version">ALPHA 0.15</span><span class="coin">🪙 <b id="wallet">0</b></span></div></header>
 <div class="player-bar"><div><b id="playerLabel">Your player</b><small id="saveStatus" role="status">Connecting to player save…</small></div><button class="secondary" id="managePlayer">PLAYER</button></div>
 <main>
 <section id="home" class="view">
 <div class="hero">
-<div><div class="eyebrow">🏁 JUMP. PUSH. LAUGH. REPEAT.</div><h1>Race into <span class="gradient">the chaos.</span></h1><p class="soft">Moving islands, spinning sweepers and trapdoors. Race your friends across the sky — every fall is a comeback.</p><div class="actionStack"><button id="playNow" class="primary">▶ RACE NOW</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
+<div><div class="eyebrow">🏰 EXPLORE. SOLVE. ESCAPE TOGETHER.</div><h1>Uncover <span class="gradient">the castle.</span></h1><p class="soft">Find the hidden runes, recover the Sun Crystal and return the royal seal. Escape a watchful guardian with your friends.</p><div class="actionStack"><button id="playNow" class="primary">▶ ENTER THE CASTLE</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
 <div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
-<a class="coursePreview" href="./race-guide.html"><img src="./assets/race-overview.webp" alt="Four zones of the JOBBY Chaos Course"><span>EXPLORE THE COURSE <b>↗</b></span></a><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
+<a class="coursePreview" href="./castle-guide.html"><img src="./assets/castle-overview.webp" alt="Overview rendered from the castle and labyrinth models"><span>EXPLORE THE CASTLE <b>↗</b></span></a><div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
-<button id="soloMode" class="mode"><span class="emoji">🏁</span><strong>CHAOS COURSE</strong><p>Solo practice · Four obstacle zones · Three checkpoints · Unlimited comebacks</p></button>
-<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>RACE WITH FRIENDS</strong><p>2–12 racers · Push and tumble · Live standings · Optional voice</p></button>
+<button id="soloMode" class="mode"><span class="emoji">🏰</span><strong>CASTLE & LABYRINTH</strong><p>Solo escape · Three linked puzzles · Guardian chase · Eight minutes</p></button>
+<button id="multiMode" class="mode" type="button"><span class="emoji">👥</span><strong>ESCAPE WITH FRIENDS</strong><p>2–12 players · Work together · Saved points · Optional voice</p></button>
 </div>
-<div class="home-foot"><a href="./race-guide.html" style="color:var(--mint)">RACE COURSE & CONTROLS</a> · <a href="./warehouse.html?autostart=1" style="color:var(--mint)">WAREHOUSE ESCAPE</a> · <a href="./warehouse-plan.html" style="color:var(--mint)">WAREHOUSE MAP & RULES</a> · <a href="./house.html?autostart=1" style="color:var(--mint)">PLAY THE BIG HOUSE</a> · <a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
+<div class="home-foot"><a href="./castle-guide.html" style="color:var(--mint)">CASTLE MAP & RULES</a> · <a href="./asset-library.html" style="color:var(--mint)">124 ENVIRONMENT MODELS</a> · <a href="./race.html?autostart=1" style="color:var(--mint)">CHAOS COURSE</a> · <a href="./race-guide.html" style="color:var(--mint)">RACE COURSE & CONTROLS</a> · <a href="./warehouse.html?autostart=1" style="color:var(--mint)">WAREHOUSE ESCAPE</a> · <a href="./warehouse-plan.html" style="color:var(--mint)">WAREHOUSE MAP & RULES</a> · <a href="./house.html?autostart=1" style="color:var(--mint)">PLAY THE BIG HOUSE</a> · <a href="./house-plan.html" style="color:var(--mint)">VIEW THE BIG HOUSE MAP</a> · <a href="./play.html?autostart=1" style="color:var(--mint)">PLAY CLASSIC ESCAPE</a> · <a href="./rooms.html?map=classic" style="color:var(--mint)">CLASSIC CO-OP</a></div>
 <div class="home-foot">🏆 Earn points by playing and unlock more characters. Your points and characters save to your player profile. Keep your recovery code to use another phone.</div>
 </section>
 <section id="characters" class="view hidden">
@@ -102,10 +102,10 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div class="cardActions"><button class="primary" id="playSelected">PLAY SELECTED HERO</button><button class="secondary" data-view="home">BACK</button></div>
 </section>
 <section id="leaderboard" class="view hidden">
-<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Real players, ranked by total points earned from races, solo escapes and warehouse co-op. One place for each player.</p>
+<div class="eyebrow">LEADERBOARD</div><h1>🏆 LEADERBOARD</h1><p class="soft" style="margin-top:8px">Real players, ranked by total points earned from races, solo escapes and castle and warehouse co-op. One place for each player.</p>
 <div class="stats"><div class="stat"><b id="leaderWins">0</b><span>WINS</span></div><div class="stat"><b id="leaderBest">—</b><span>BEST ROUND TIME</span></div><div class="stat"><b id="leaderPoints">0</b><span>POINT BALANCE</span></div></div>
 <div id="scoreboard" class="scoreboard"></div>
-<div class="home-foot">🌍 Your old progress is kept in your balance. Global rankings count new round points, including private races and warehouse co-op, so imported points never overwrite the leaderboard. These are experimental game scores with no real rewards.</div>
+<div class="home-foot">🌍 Your old progress is kept in your balance. Global rankings count new round points, including private races and castle and warehouse co-op, so imported points never overwrite the leaderboard. These are experimental game scores with no real rewards.</div>
 </section>
 </main>
 </div>
@@ -122,5 +122,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=13"></script>
+<script type="module" src="./hub.js?v=15-13"></script>
 </body></html>

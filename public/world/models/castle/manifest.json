@@ -1,0 +1,2676 @@
+{
+  "pack": "castle",
+  "title": "Kenney Castle Kit 2.0",
+  "author": "Kenney",
+  "source": "https://kenney.nl/assets/castle-kit",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "orientation": "Y-up; original GLB coordinates retained. Gates and doors lie in the YZ plane (thin X).",
+  "modelCount": 76,
+  "totalModelBytes": 2080872,
+  "archive": "kenney_castle-kit.zip",
+  "archiveBytes": 2232589,
+  "archiveSha256": "921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df",
+  "models": [
+    {
+      "id": "bridge-draw",
+      "file": "bridge-draw.glb",
+      "url": "./models/castle/bridge-draw.glb",
+      "category": "bridges",
+      "sourceFile": "Models/GLB format/bridge-draw.glb",
+      "bounds": {
+        "min": [
+          -1.002073,
+          -0.0,
+          -0.415538
+        ],
+        "max": [
+          0.0,
+          0.1,
+          0.415538
+        ]
+      },
+      "size": [
+        1.002073,
+        0.1,
+        0.831075
+      ],
+      "center": [
+        -0.501036,
+        0.05,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 68,
+      "triangles": 40,
+      "meshes": 1,
+      "bytes": 5140
+    },
+    {
+      "id": "bridge-straight-pillar",
+      "file": "bridge-straight-pillar.glb",
+      "url": "./models/castle/bridge-straight-pillar.glb",
+      "category": "bridges",
+      "sourceFile": "Models/GLB format/bridge-straight-pillar.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.176,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.176,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.588,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 252,
+      "triangles": 156,
+      "meshes": 1,
+      "bytes": 14344
+    },
+    {
+      "id": "bridge-straight",
+      "file": "bridge-straight.glb",
+      "url": "./models/castle/bridge-straight.glb",
+      "category": "bridges",
+      "sourceFile": "Models/GLB format/bridge-straight.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.176,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.176,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.588,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 290,
+      "triangles": 192,
+      "meshes": 1,
+      "bytes": 16832
+    },
+    {
+      "id": "door",
+      "file": "door.glb",
+      "url": "./models/castle/door.glb",
+      "category": "entrances",
+      "sourceFile": "Models/GLB format/door.glb",
+      "bounds": {
+        "min": [
+          -0.075,
+          0.0,
+          -0.179687
+        ],
+        "max": [
+          0.075,
+          0.60534,
+          0.179687
+        ]
+      },
+      "size": [
+        0.15,
+        0.60534,
+        0.359374
+      ],
+      "center": [
+        0.0,
+        0.30267,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 294,
+      "triangles": 188,
+      "meshes": 1,
+      "bytes": 16968
+    },
+    {
+      "id": "flag-banner-long",
+      "file": "flag-banner-long.glb",
+      "url": "./models/castle/flag-banner-long.glb",
+      "category": "decorations",
+      "sourceFile": "Models/GLB format/flag-banner-long.glb",
+      "bounds": {
+        "min": [
+          0.0,
+          0.0,
+          -0.315
+        ],
+        "max": [
+          0.04,
+          2.17,
+          0.315
+        ]
+      },
+      "size": [
+        0.04,
+        2.17,
+        0.63
+      ],
+      "center": [
+        0.02,
+        1.085,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 98,
+      "triangles": 68,
+      "meshes": 1,
+      "bytes": 6660
+    },
+    {
+      "id": "flag-banner-short",
+      "file": "flag-banner-short.glb",
+      "url": "./models/castle/flag-banner-short.glb",
+      "category": "decorations",
+      "sourceFile": "Models/GLB format/flag-banner-short.glb",
+      "bounds": {
+        "min": [
+          0.0,
+          0.0,
+          -0.315
+        ],
+        "max": [
+          0.04,
+          0.78,
+          0.315
+        ]
+      },
+      "size": [
+        0.04,
+        0.78,
+        0.63
+      ],
+      "center": [
+        0.02,
+        0.39,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 98,
+      "triangles": 68,
+      "meshes": 1,
+      "bytes": 6664
+    },
+    {
+      "id": "flag-pennant",
+      "file": "flag-pennant.glb",
+      "url": "./models/castle/flag-pennant.glb",
+      "category": "decorations",
+      "sourceFile": "Models/GLB format/flag-pennant.glb",
+      "bounds": {
+        "min": [
+          -0.053188,
+          -0.0,
+          -0.5207
+        ],
+        "max": [
+          0.053188,
+          0.865614,
+          0.053188
+        ]
+      },
+      "size": [
+        0.106376,
+        0.865614,
+        0.573888
+      ],
+      "center": [
+        -0.0,
+        0.432807,
+        -0.233756
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 238,
+      "triangles": 118,
+      "meshes": 1,
+      "bytes": 13652
+    },
+    {
+      "id": "flag-wide",
+      "file": "flag-wide.glb",
+      "url": "./models/castle/flag-wide.glb",
+      "category": "decorations",
+      "sourceFile": "Models/GLB format/flag-wide.glb",
+      "bounds": {
+        "min": [
+          -0.053188,
+          0.0,
+          -0.273438
+        ],
+        "max": [
+          0.053188,
+          0.865614,
+          0.273438
+        ]
+      },
+      "size": [
+        0.106376,
+        0.865614,
+        0.546876
+      ],
+      "center": [
+        -0.0,
+        0.432807,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 460,
+      "triangles": 256,
+      "meshes": 1,
+      "bytes": 25460
+    },
+    {
+      "id": "flag",
+      "file": "flag.glb",
+      "url": "./models/castle/flag.glb",
+      "category": "decorations",
+      "sourceFile": "Models/GLB format/flag.glb",
+      "bounds": {
+        "min": [
+          -0.053188,
+          -0.0,
+          -0.3791
+        ],
+        "max": [
+          0.053188,
+          0.865614,
+          0.053188
+        ]
+      },
+      "size": [
+        0.106376,
+        0.865614,
+        0.432288
+      ],
+      "center": [
+        -0.0,
+        0.432807,
+        -0.162956
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 260,
+      "triangles": 144,
+      "meshes": 1,
+      "bytes": 15192
+    },
+    {
+      "id": "gate",
+      "file": "gate.glb",
+      "url": "./models/castle/gate.glb",
+      "category": "entrances",
+      "sourceFile": "Models/GLB format/gate.glb",
+      "bounds": {
+        "min": [
+          -0.0758,
+          0.0,
+          -0.331075
+        ],
+        "max": [
+          0.0758,
+          0.910339,
+          0.331075
+        ]
+      },
+      "size": [
+        0.1516,
+        0.910339,
+        0.662151
+      ],
+      "center": [
+        0.0,
+        0.455169,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 244,
+      "triangles": 146,
+      "meshes": 1,
+      "bytes": 13880
+    },
+    {
+      "id": "ground-hills",
+      "file": "ground-hills.glb",
+      "url": "./models/castle/ground-hills.glb",
+      "category": "floors",
+      "sourceFile": "Models/GLB format/ground-hills.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.2883,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.2883,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.14415,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 220,
+      "triangles": 116,
+      "meshes": 1,
+      "bytes": 12732
+    },
+    {
+      "id": "ground",
+      "file": "ground.glb",
+      "url": "./models/castle/ground.glb",
+      "category": "floors",
+      "sourceFile": "Models/GLB format/ground.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.0,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.0,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 4,
+      "triangles": 2,
+      "meshes": 1,
+      "bytes": 1788
+    },
+    {
+      "id": "metal-gate",
+      "file": "metal-gate.glb",
+      "url": "./models/castle/metal-gate.glb",
+      "category": "entrances",
+      "sourceFile": "Models/GLB format/metal-gate.glb",
+      "bounds": {
+        "min": [
+          -0.03572,
+          0.0,
+          -0.347629
+        ],
+        "max": [
+          0.03572,
+          0.730069,
+          0.347629
+        ]
+      },
+      "size": [
+        0.071441,
+        0.730069,
+        0.695258
+      ],
+      "center": [
+        0.0,
+        0.365035,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 424,
+      "triangles": 190,
+      "meshes": 1,
+      "bytes": 23240
+    },
+    {
+      "id": "rocks-large",
+      "file": "rocks-large.glb",
+      "url": "./models/castle/rocks-large.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/rocks-large.glb",
+      "bounds": {
+        "min": [
+          -0.600407,
+          0.0,
+          -0.674075
+        ],
+        "max": [
+          0.600407,
+          0.5,
+          0.674075
+        ]
+      },
+      "size": [
+        1.200814,
+        0.5,
+        1.34815
+      ],
+      "center": [
+        0.0,
+        0.25,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 280,
+      "triangles": 150,
+      "meshes": 1,
+      "bytes": 16204
+    },
+    {
+      "id": "rocks-small",
+      "file": "rocks-small.glb",
+      "url": "./models/castle/rocks-small.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/rocks-small.glb",
+      "bounds": {
+        "min": [
+          -0.515021,
+          0.0,
+          -0.552654
+        ],
+        "max": [
+          0.515021,
+          0.5,
+          0.552654
+        ]
+      },
+      "size": [
+        1.030042,
+        0.5,
+        1.105309
+      ],
+      "center": [
+        0.0,
+        0.25,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 260,
+      "triangles": 140,
+      "meshes": 1,
+      "bytes": 15192
+    },
+    {
+      "id": "siege-ballista-demolished",
+      "file": "siege-ballista-demolished.glb",
+      "url": "./models/castle/siege-ballista-demolished.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-ballista-demolished.glb",
+      "bounds": {
+        "min": [
+          -0.907531,
+          -0.0,
+          -0.789231
+        ],
+        "max": [
+          0.846858,
+          0.509664,
+          0.764946
+        ]
+      },
+      "size": [
+        1.75439,
+        0.509664,
+        1.554178
+      ],
+      "center": [
+        -0.030336,
+        0.254832,
+        -0.012143
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 1020,
+      "triangles": 618,
+      "meshes": 1,
+      "bytes": 54576
+    },
+    {
+      "id": "siege-ballista",
+      "file": "siege-ballista.glb",
+      "url": "./models/castle/siege-ballista.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-ballista.glb",
+      "bounds": {
+        "min": [
+          -0.639861,
+          0.0,
+          -0.599249
+        ],
+        "max": [
+          0.990485,
+          0.910314,
+          0.599249
+        ]
+      },
+      "size": [
+        1.630346,
+        0.910314,
+        1.198499
+      ],
+      "center": [
+        0.175312,
+        0.455157,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 1158,
+      "triangles": 676,
+      "meshes": 4,
+      "bytes": 64608
+    },
+    {
+      "id": "siege-catapult-demolished",
+      "file": "siege-catapult-demolished.glb",
+      "url": "./models/castle/siege-catapult-demolished.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-catapult-demolished.glb",
+      "bounds": {
+        "min": [
+          -0.642848,
+          -0.0,
+          -0.867092
+        ],
+        "max": [
+          1.035407,
+          0.32129,
+          0.801552
+        ]
+      },
+      "size": [
+        1.678254,
+        0.32129,
+        1.668645
+      ],
+      "center": [
+        0.196279,
+        0.160645,
+        -0.03277
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 1340,
+      "triangles": 842,
+      "meshes": 1,
+      "bytes": 71252
+    },
+    {
+      "id": "siege-catapult",
+      "file": "siege-catapult.glb",
+      "url": "./models/castle/siege-catapult.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-catapult.glb",
+      "bounds": {
+        "min": [
+          -1.00097,
+          -0.148986,
+          -0.604927
+        ],
+        "max": [
+          0.733824,
+          1.180656,
+          0.604927
+        ]
+      },
+      "size": [
+        1.734794,
+        1.329642,
+        1.209853
+      ],
+      "center": [
+        -0.133573,
+        0.515835,
+        0.0
+      ],
+      "baseY": -0.148986,
+      "sourceBounds": null,
+      "vertices": 1534,
+      "triangles": 928,
+      "meshes": 6,
+      "bytes": 86164
+    },
+    {
+      "id": "siege-ram-demolished",
+      "file": "siege-ram-demolished.glb",
+      "url": "./models/castle/siege-ram-demolished.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-ram-demolished.glb",
+      "bounds": {
+        "min": [
+          -1.041438,
+          0.0,
+          -0.795709
+        ],
+        "max": [
+          1.037071,
+          0.723084,
+          0.85135
+        ]
+      },
+      "size": [
+        2.07851,
+        0.723084,
+        1.647059
+      ],
+      "center": [
+        -0.002184,
+        0.361542,
+        0.02782
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 1282,
+      "triangles": 776,
+      "meshes": 1,
+      "bytes": 68036
+    },
+    {
+      "id": "siege-ram",
+      "file": "siege-ram.glb",
+      "url": "./models/castle/siege-ram.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-ram.glb",
+      "bounds": {
+        "min": [
+          -1.063188,
+          0.0,
+          -0.500095
+        ],
+        "max": [
+          1.02416,
+          1.184289,
+          0.500095
+        ]
+      },
+      "size": [
+        2.087348,
+        1.184289,
+        1.000189
+      ],
+      "center": [
+        -0.019514,
+        0.592144,
+        -0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 1838,
+      "triangles": 1112,
+      "meshes": 8,
+      "bytes": 103620
+    },
+    {
+      "id": "siege-tower-demolished",
+      "file": "siege-tower-demolished.glb",
+      "url": "./models/castle/siege-tower-demolished.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/siege-tower-demolished.glb",
+      "bounds": {
+        "min": [
+          -1.089797,
+          0.0,
+          -0.965335
+        ],
+        "max": [
+          1.083285,
+          2.09664,
+          0.880706
+        ]
+      },
+      "size": [
+        2.173082,
+        2.09664,
+        1.846041
+      ],
+      "center": [
+        -0.003256,
+        1.04832,
+        -0.042315
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 2282,
+      "triangles": 1390,
+      "meshes": 1,
+      "bytes": 119700
+    },
+    {
+      "id": "siege-tower",
+      "file": "siege-tower.glb",
+      "url": "./models/castle/siege-tower.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/siege-tower.glb",
+      "bounds": {
+        "min": [
+          -0.9828,
+          0.0,
+          -0.604927
+        ],
+        "max": [
+          0.9828,
+          2.679896,
+          0.604927
+        ]
+      },
+      "size": [
+        1.9656,
+        2.679896,
+        1.209853
+      ],
+      "center": [
+        0.0,
+        1.339948,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 2684,
+      "triangles": 1598,
+      "meshes": 5,
+      "bytes": 144200
+    },
+    {
+      "id": "siege-trebuchet-demolished",
+      "file": "siege-trebuchet-demolished.glb",
+      "url": "./models/castle/siege-trebuchet-demolished.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-trebuchet-demolished.glb",
+      "bounds": {
+        "min": [
+          -0.872571,
+          0.0,
+          -1.048314
+        ],
+        "max": [
+          1.062019,
+          0.309664,
+          1.048314
+        ]
+      },
+      "size": [
+        1.93459,
+        0.309664,
+        2.096628
+      ],
+      "center": [
+        0.094724,
+        0.154832,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 1236,
+      "triangles": 804,
+      "meshes": 1,
+      "bytes": 66012
+    },
+    {
+      "id": "siege-trebuchet",
+      "file": "siege-trebuchet.glb",
+      "url": "./models/castle/siege-trebuchet.glb",
+      "category": "contraptions",
+      "sourceFile": "Models/GLB format/siege-trebuchet.glb",
+      "bounds": {
+        "min": [
+          -1.117421,
+          0.0,
+          -0.628992
+        ],
+        "max": [
+          0.733824,
+          1.958634,
+          0.628992
+        ]
+      },
+      "size": [
+        1.851245,
+        1.958634,
+        1.257984
+      ],
+      "center": [
+        -0.191798,
+        0.979317,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 2496,
+      "triangles": 1518,
+      "meshes": 10,
+      "bytes": 139848
+    },
+    {
+      "id": "stairs-stone-square",
+      "file": "stairs-stone-square.glb",
+      "url": "./models/castle/stairs-stone-square.glb",
+      "category": "stairs",
+      "sourceFile": "Models/GLB format/stairs-stone-square.glb",
+      "bounds": {
+        "min": [
+          -0.11625,
+          0.0,
+          -0.4095
+        ],
+        "max": [
+          0.11625,
+          0.675,
+          0.4095
+        ]
+      },
+      "size": [
+        0.2325,
+        0.675,
+        0.819
+      ],
+      "center": [
+        0.0,
+        0.3375,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 156,
+      "triangles": 100,
+      "meshes": 1,
+      "bytes": 9556
+    },
+    {
+      "id": "stairs-stone",
+      "file": "stairs-stone.glb",
+      "url": "./models/castle/stairs-stone.glb",
+      "category": "stairs",
+      "sourceFile": "Models/GLB format/stairs-stone.glb",
+      "bounds": {
+        "min": [
+          -0.11625,
+          0.0,
+          -0.4095
+        ],
+        "max": [
+          0.11625,
+          0.675,
+          0.4095
+        ]
+      },
+      "size": [
+        0.2325,
+        0.675,
+        0.819
+      ],
+      "center": [
+        0.0,
+        0.3375,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 162,
+      "triangles": 104,
+      "meshes": 1,
+      "bytes": 9836
+    },
+    {
+      "id": "tower-base",
+      "file": "tower-base.glb",
+      "url": "./models/castle/tower-base.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-base.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 792,
+      "triangles": 332,
+      "meshes": 1,
+      "bytes": 41724
+    },
+    {
+      "id": "tower-hexagon-base",
+      "file": "tower-hexagon-base.glb",
+      "url": "./models/castle/tower-hexagon-base.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-base.glb",
+      "bounds": {
+        "min": [
+          -0.45,
+          0.0,
+          -0.389711
+        ],
+        "max": [
+          0.45,
+          1.31,
+          0.389711
+        ]
+      },
+      "size": [
+        0.9,
+        1.31,
+        0.779423
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 132,
+      "triangles": 68,
+      "meshes": 1,
+      "bytes": 8336
+    },
+    {
+      "id": "tower-hexagon-mid",
+      "file": "tower-hexagon-mid.glb",
+      "url": "./models/castle/tower-hexagon-mid.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-mid.glb",
+      "bounds": {
+        "min": [
+          -0.476219,
+          0.0,
+          -0.412418
+        ],
+        "max": [
+          0.476219,
+          0.46,
+          0.412418
+        ]
+      },
+      "size": [
+        0.952437,
+        0.46,
+        0.824835
+      ],
+      "center": [
+        0.0,
+        0.23,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 612,
+      "triangles": 404,
+      "meshes": 1,
+      "bytes": 33568
+    },
+    {
+      "id": "tower-hexagon-roof-secondary",
+      "file": "tower-hexagon-roof-secondary.glb",
+      "url": "./models/castle/tower-hexagon-roof-secondary.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-roof-secondary.glb",
+      "bounds": {
+        "min": [
+          -0.48816,
+          0.0,
+          -0.422759
+        ],
+        "max": [
+          0.48816,
+          0.75368,
+          0.422759
+        ]
+      },
+      "size": [
+        0.97632,
+        0.75368,
+        0.845518
+      ],
+      "center": [
+        0.0,
+        0.37684,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 216,
+      "triangles": 114,
+      "meshes": 1,
+      "bytes": 12540
+    },
+    {
+      "id": "tower-hexagon-roof",
+      "file": "tower-hexagon-roof.glb",
+      "url": "./models/castle/tower-hexagon-roof.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-roof.glb",
+      "bounds": {
+        "min": [
+          -0.48816,
+          0.0,
+          -0.422759
+        ],
+        "max": [
+          0.48816,
+          0.83,
+          0.422759
+        ]
+      },
+      "size": [
+        0.97632,
+        0.83,
+        0.845518
+      ],
+      "center": [
+        0.0,
+        0.415,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 132,
+      "triangles": 68,
+      "meshes": 1,
+      "bytes": 8400
+    },
+    {
+      "id": "tower-hexagon-top-wood",
+      "file": "tower-hexagon-top-wood.glb",
+      "url": "./models/castle/tower-hexagon-top-wood.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-top-wood.glb",
+      "bounds": {
+        "min": [
+          -0.432,
+          0.0,
+          -0.374123
+        ],
+        "max": [
+          0.432,
+          0.46,
+          0.374123
+        ]
+      },
+      "size": [
+        0.864,
+        0.46,
+        0.748246
+      ],
+      "center": [
+        0.0,
+        0.23,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 240,
+      "triangles": 164,
+      "meshes": 1,
+      "bytes": 13852
+    },
+    {
+      "id": "tower-hexagon-top",
+      "file": "tower-hexagon-top.glb",
+      "url": "./models/castle/tower-hexagon-top.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-hexagon-top.glb",
+      "bounds": {
+        "min": [
+          -0.432,
+          0.0,
+          -0.374123
+        ],
+        "max": [
+          0.432,
+          0.13,
+          0.374123
+        ]
+      },
+      "size": [
+        0.864,
+        0.13,
+        0.748246
+      ],
+      "center": [
+        0.0,
+        0.065,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 240,
+      "triangles": 168,
+      "meshes": 1,
+      "bytes": 13848
+    },
+    {
+      "id": "tower-slant-roof",
+      "file": "tower-slant-roof.glb",
+      "url": "./models/castle/tower-slant-roof.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-slant-roof.glb",
+      "bounds": {
+        "min": [
+          -0.585,
+          0.0,
+          -0.568574
+        ],
+        "max": [
+          0.585,
+          2.139951,
+          0.568574
+        ]
+      },
+      "size": [
+        1.17,
+        2.139951,
+        1.137148
+      ],
+      "center": [
+        0.0,
+        1.069975,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 882,
+      "triangles": 534,
+      "meshes": 1,
+      "bytes": 47488
+    },
+    {
+      "id": "tower-square-arch",
+      "file": "tower-square-arch.glb",
+      "url": "./models/castle/tower-square-arch.glb",
+      "category": "entrances",
+      "sourceFile": "Models/GLB format/tower-square-arch.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.01,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.01,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 544,
+      "triangles": 308,
+      "meshes": 1,
+      "bytes": 29724
+    },
+    {
+      "id": "tower-square-base-border",
+      "file": "tower-square-base-border.glb",
+      "url": "./models/castle/tower-square-base-border.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-base-border.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.45,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.45,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.225,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 40,
+      "triangles": 20,
+      "meshes": 1,
+      "bytes": 3684
+    },
+    {
+      "id": "tower-square-base-color",
+      "file": "tower-square-base-color.glb",
+      "url": "./models/castle/tower-square-base-color.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-base-color.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.01,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.01,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 104,
+      "triangles": 68,
+      "meshes": 1,
+      "bytes": 6908
+    },
+    {
+      "id": "tower-square-base",
+      "file": "tower-square-base.glb",
+      "url": "./models/castle/tower-square-base.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-base.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.01,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.01,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 56,
+      "triangles": 28,
+      "meshes": 1,
+      "bytes": 4456
+    },
+    {
+      "id": "tower-square-mid-color",
+      "file": "tower-square-mid-color.glb",
+      "url": "./models/castle/tower-square-mid-color.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-mid-color.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          0.2016,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        0.2016,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.1008,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 72,
+      "triangles": 52,
+      "meshes": 1,
+      "bytes": 5380
+    },
+    {
+      "id": "tower-square-mid-door",
+      "file": "tower-square-mid-door.glb",
+      "url": "./models/castle/tower-square-mid-door.glb",
+      "category": "entrances",
+      "sourceFile": "Models/GLB format/tower-square-mid-door.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.01,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.01,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 524,
+      "triangles": 344,
+      "meshes": 1,
+      "bytes": 28996
+    },
+    {
+      "id": "tower-square-mid-open-simple",
+      "file": "tower-square-mid-open-simple.glb",
+      "url": "./models/castle/tower-square-mid-open-simple.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-mid-open-simple.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          0.878154,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        0.878154,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.439077,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 352,
+      "triangles": 176,
+      "meshes": 1,
+      "bytes": 19752
+    },
+    {
+      "id": "tower-square-mid-open",
+      "file": "tower-square-mid-open.glb",
+      "url": "./models/castle/tower-square-mid-open.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-mid-open.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.01,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.01,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 424,
+      "triangles": 240,
+      "meshes": 1,
+      "bytes": 23568
+    },
+    {
+      "id": "tower-square-mid-windows",
+      "file": "tower-square-mid-windows.glb",
+      "url": "./models/castle/tower-square-mid-windows.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-mid-windows.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.01,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.01,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 560,
+      "triangles": 364,
+      "meshes": 1,
+      "bytes": 30852
+    },
+    {
+      "id": "tower-square-mid",
+      "file": "tower-square-mid.glb",
+      "url": "./models/castle/tower-square-mid.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-mid.glb",
+      "bounds": {
+        "min": [
+          -0.465,
+          0.0,
+          -0.465
+        ],
+        "max": [
+          0.465,
+          1.01,
+          0.465
+        ]
+      },
+      "size": [
+        0.93,
+        1.01,
+        0.93
+      ],
+      "center": [
+        0.0,
+        0.505,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 120,
+      "triangles": 76,
+      "meshes": 1,
+      "bytes": 7744
+    },
+    {
+      "id": "tower-square-roof",
+      "file": "tower-square-roof.glb",
+      "url": "./models/castle/tower-square-roof.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-roof.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          2.01,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        2.01,
+        1.0
+      ],
+      "center": [
+        0.0,
+        1.005,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 248,
+      "triangles": 144,
+      "meshes": 1,
+      "bytes": 14036
+    },
+    {
+      "id": "tower-square-top-color",
+      "file": "tower-square-top-color.glb",
+      "url": "./models/castle/tower-square-top-color.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top-color.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.38,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.38,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.19,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 248,
+      "triangles": 156,
+      "meshes": 1,
+      "bytes": 14088
+    },
+    {
+      "id": "tower-square-top-roof-high-windows",
+      "file": "tower-square-top-roof-high-windows.glb",
+      "url": "./models/castle/tower-square-top-roof-high-windows.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top-roof-high-windows.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.08,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.08,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.54,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 406,
+      "triangles": 258,
+      "meshes": 1,
+      "bytes": 22788
+    },
+    {
+      "id": "tower-square-top-roof-high",
+      "file": "tower-square-top-roof-high.glb",
+      "url": "./models/castle/tower-square-top-roof-high.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top-roof-high.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.35,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.35,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.675,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 192,
+      "triangles": 116,
+      "meshes": 1,
+      "bytes": 11288
+    },
+    {
+      "id": "tower-square-top-roof-rounded",
+      "file": "tower-square-top-roof-rounded.glb",
+      "url": "./models/castle/tower-square-top-roof-rounded.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top-roof-rounded.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.95,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.95,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.475,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 192,
+      "triangles": 116,
+      "meshes": 1,
+      "bytes": 11296
+    },
+    {
+      "id": "tower-square-top-roof",
+      "file": "tower-square-top-roof.glb",
+      "url": "./models/castle/tower-square-top-roof.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top-roof.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.0,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.5,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 192,
+      "triangles": 116,
+      "meshes": 1,
+      "bytes": 11256
+    },
+    {
+      "id": "tower-square-top",
+      "file": "tower-square-top.glb",
+      "url": "./models/castle/tower-square-top.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square-top.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.3,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.3,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.15,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 232,
+      "triangles": 148,
+      "meshes": 1,
+      "bytes": 13276
+    },
+    {
+      "id": "tower-square",
+      "file": "tower-square.glb",
+      "url": "./models/castle/tower-square.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-square.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 288,
+      "triangles": 176,
+      "meshes": 1,
+      "bytes": 16564
+    },
+    {
+      "id": "tower-top",
+      "file": "tower-top.glb",
+      "url": "./models/castle/tower-top.glb",
+      "category": "towers",
+      "sourceFile": "Models/GLB format/tower-top.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.13,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        0.13,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.065,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 496,
+      "triangles": 320,
+      "meshes": 1,
+      "bytes": 27408
+    },
+    {
+      "id": "tree-large",
+      "file": "tree-large.glb",
+      "url": "./models/castle/tree-large.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/tree-large.glb",
+      "bounds": {
+        "min": [
+          -0.444333,
+          0.0,
+          -0.444891
+        ],
+        "max": [
+          0.444333,
+          1.8492,
+          0.444891
+        ]
+      },
+      "size": [
+        0.888665,
+        1.8492,
+        0.889782
+      ],
+      "center": [
+        0.0,
+        0.9246,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 377,
+      "triangles": 229,
+      "meshes": 1,
+      "bytes": 21248
+    },
+    {
+      "id": "tree-log",
+      "file": "tree-log.glb",
+      "url": "./models/castle/tree-log.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/tree-log.glb",
+      "bounds": {
+        "min": [
+          -0.122082,
+          -0.105655,
+          -0.5
+        ],
+        "max": [
+          0.127405,
+          0.171482,
+          0.5
+        ]
+      },
+      "size": [
+        0.249487,
+        0.277137,
+        1.0
+      ],
+      "center": [
+        0.002662,
+        0.032913,
+        0.0
+      ],
+      "baseY": -0.105655,
+      "sourceBounds": null,
+      "vertices": 124,
+      "triangles": 64,
+      "meshes": 1,
+      "bytes": 7952
+    },
+    {
+      "id": "tree-small",
+      "file": "tree-small.glb",
+      "url": "./models/castle/tree-small.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/tree-small.glb",
+      "bounds": {
+        "min": [
+          -0.369027,
+          0.0,
+          -0.36
+        ],
+        "max": [
+          0.369027,
+          1.3492,
+          0.36
+        ]
+      },
+      "size": [
+        0.738055,
+        1.3492,
+        0.72
+      ],
+      "center": [
+        0.0,
+        0.6746,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 272,
+      "triangles": 164,
+      "meshes": 1,
+      "bytes": 15816
+    },
+    {
+      "id": "tree-trunk",
+      "file": "tree-trunk.glb",
+      "url": "./models/castle/tree-trunk.glb",
+      "category": "nature",
+      "sourceFile": "Models/GLB format/tree-trunk.glb",
+      "bounds": {
+        "min": [
+          -0.198,
+          0.0,
+          -0.171473
+        ],
+        "max": [
+          0.198,
+          0.375116,
+          0.171473
+        ]
+      },
+      "size": [
+        0.396,
+        0.375116,
+        0.342946
+      ],
+      "center": [
+        0.0,
+        0.187558,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 78,
+      "triangles": 38,
+      "meshes": 1,
+      "bytes": 5684
+    },
+    {
+      "id": "wall-corner-half-tower",
+      "file": "wall-corner-half-tower.glb",
+      "url": "./models/castle/wall-corner-half-tower.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-corner-half-tower.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          1.44,
+          1.0
+        ]
+      },
+      "size": [
+        1.5,
+        1.44,
+        1.5
+      ],
+      "center": [
+        0.25,
+        0.72,
+        0.25
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 1551,
+      "triangles": 632,
+      "meshes": 1,
+      "bytes": 80020
+    },
+    {
+      "id": "wall-corner-half",
+      "file": "wall-corner-half.glb",
+      "url": "./models/castle/wall-corner-half.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-corner-half.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 226,
+      "triangles": 144,
+      "meshes": 1,
+      "bytes": 12976
+    },
+    {
+      "id": "wall-corner-slant",
+      "file": "wall-corner-slant.glb",
+      "url": "./models/castle/wall-corner-slant.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-corner-slant.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 281,
+      "triangles": 140,
+      "meshes": 1,
+      "bytes": 16028
+    },
+    {
+      "id": "wall-corner",
+      "file": "wall-corner.glb",
+      "url": "./models/castle/wall-corner.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-corner.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 262,
+      "triangles": 168,
+      "meshes": 1,
+      "bytes": 15264
+    },
+    {
+      "id": "wall-doorway",
+      "file": "wall-doorway.glb",
+      "url": "./models/castle/wall-doorway.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-doorway.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.0,
+          -0.5
+        ],
+        "max": [
+          0.0,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        0.5,
+        1.31,
+        1.0
+      ],
+      "center": [
+        -0.25,
+        0.655,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 684,
+      "triangles": 500,
+      "meshes": 1,
+      "bytes": 37560
+    },
+    {
+      "id": "wall-half-modular",
+      "file": "wall-half-modular.glb",
+      "url": "./models/castle/wall-half-modular.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-half-modular.glb",
+      "bounds": {
+        "min": [
+          -0.002291,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.602291,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        0.604582,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.3,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 126,
+      "triangles": 80,
+      "meshes": 1,
+      "bytes": 8016
+    },
+    {
+      "id": "wall-half",
+      "file": "wall-half.glb",
+      "url": "./models/castle/wall-half.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-half.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 210,
+      "triangles": 126,
+      "meshes": 1,
+      "bytes": 12132
+    },
+    {
+      "id": "wall-narrow-corner",
+      "file": "wall-narrow-corner.glb",
+      "url": "./models/castle/wall-narrow-corner.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-corner.glb",
+      "bounds": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          1.31,
+          0.25
+        ]
+      },
+      "size": [
+        0.5,
+        1.31,
+        0.5
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 154,
+      "triangles": 96,
+      "meshes": 1,
+      "bytes": 9384
+    },
+    {
+      "id": "wall-narrow-gate",
+      "file": "wall-narrow-gate.glb",
+      "url": "./models/castle/wall-narrow-gate.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-gate.glb",
+      "bounds": {
+        "min": [
+          -0.13,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        0.63,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.185,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 296,
+      "triangles": 192,
+      "meshes": 1,
+      "bytes": 17092
+    },
+    {
+      "id": "wall-narrow-stairs-rail",
+      "file": "wall-narrow-stairs-rail.glb",
+      "url": "./models/castle/wall-narrow-stairs-rail.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-stairs-rail.glb",
+      "bounds": {
+        "min": [
+          -0.4825,
+          -0.0,
+          -0.5
+        ],
+        "max": [
+          0.5125,
+          1.448292,
+          0.534254
+        ]
+      },
+      "size": [
+        0.995,
+        1.448292,
+        1.034254
+      ],
+      "center": [
+        0.015,
+        0.724146,
+        0.017127
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 761,
+      "triangles": 430,
+      "meshes": 1,
+      "bytes": 40896
+    },
+    {
+      "id": "wall-narrow-stairs",
+      "file": "wall-narrow-stairs.glb",
+      "url": "./models/castle/wall-narrow-stairs.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-stairs.glb",
+      "bounds": {
+        "min": [
+          -0.4825,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.4825,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        0.965,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 493,
+      "triangles": 262,
+      "meshes": 1,
+      "bytes": 26972
+    },
+    {
+      "id": "wall-narrow-wood-fence",
+      "file": "wall-narrow-wood-fence.glb",
+      "url": "./models/castle/wall-narrow-wood-fence.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-wood-fence.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.0,
+          -0.5
+        ],
+        "max": [
+          0.55,
+          1.45,
+          0.5
+        ]
+      },
+      "size": [
+        1.05,
+        1.45,
+        1.0
+      ],
+      "center": [
+        0.025,
+        0.725,
+        0.0
+      ],
+      "baseY": -0.0,
+      "sourceBounds": null,
+      "vertices": 610,
+      "triangles": 326,
+      "meshes": 1,
+      "bytes": 32988
+    },
+    {
+      "id": "wall-narrow-wood",
+      "file": "wall-narrow-wood.glb",
+      "url": "./models/castle/wall-narrow-wood.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow-wood.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 490,
+      "triangles": 266,
+      "meshes": 1,
+      "bytes": 26812
+    },
+    {
+      "id": "wall-narrow",
+      "file": "wall-narrow.glb",
+      "url": "./models/castle/wall-narrow.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-narrow.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.0,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        0.5,
+        1.31,
+        1.0
+      ],
+      "center": [
+        -0.25,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 210,
+      "triangles": 126,
+      "meshes": 1,
+      "bytes": 12160
+    },
+    {
+      "id": "wall-pillar",
+      "file": "wall-pillar.glb",
+      "url": "./models/castle/wall-pillar.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-pillar.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 320,
+      "triangles": 186,
+      "meshes": 1,
+      "bytes": 18156
+    },
+    {
+      "id": "wall-stud",
+      "file": "wall-stud.glb",
+      "url": "./models/castle/wall-stud.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-stud.glb",
+      "bounds": {
+        "min": [
+          -0.135,
+          0.0,
+          -0.083301
+        ],
+        "max": [
+          0.135,
+          1.11,
+          0.083301
+        ]
+      },
+      "size": [
+        0.27,
+        1.11,
+        0.166602
+      ],
+      "center": [
+        0.0,
+        0.555,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 30,
+      "triangles": 16,
+      "meshes": 1,
+      "bytes": 3212
+    },
+    {
+      "id": "wall-to-narrow",
+      "file": "wall-to-narrow.glb",
+      "url": "./models/castle/wall-to-narrow.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall-to-narrow.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 350,
+      "triangles": 214,
+      "meshes": 1,
+      "bytes": 19776
+    },
+    {
+      "id": "wall",
+      "file": "wall.glb",
+      "url": "./models/castle/wall.glb",
+      "category": "walls",
+      "sourceFile": "Models/GLB format/wall.glb",
+      "bounds": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.31,
+          0.5
+        ]
+      },
+      "size": [
+        1.0,
+        1.31,
+        1.0
+      ],
+      "center": [
+        0.0,
+        0.655,
+        0.0
+      ],
+      "baseY": 0.0,
+      "sourceBounds": null,
+      "vertices": 288,
+      "triangles": 178,
+      "meshes": 1,
+      "bytes": 16552
+    }
+  ]
+}

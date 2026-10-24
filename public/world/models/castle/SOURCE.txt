@@ -1,0 +1,8 @@
+Kenney Castle Kit 2.0
+Author: Kenney
+Source: https://kenney.nl/assets/castle-kit
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Complete original archive: asset-sources/kenney_castle-kit.zip
+Original archive SHA-256: 921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df
+Y-up; original GLB coordinates retained. Gates and doors lie in the YZ plane (thin X).

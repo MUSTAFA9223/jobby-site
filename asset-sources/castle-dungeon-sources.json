@@ -1,0 +1,34 @@
+{
+  "license": "CC0-1.0",
+  "downloadedOn": "2026-10-24",
+  "packs": {
+    "castle": {
+      "title": "Kenney Castle Kit 2.0",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/castle-kit",
+      "download": "https://kenney.nl/media/pages/assets/castle-kit/a395102d20-1711543616/kenney_castle-kit.zip",
+      "archive": "kenney_castle-kit.zip",
+      "expectedModels": 76,
+      "orientation": "Y-up; original GLB coordinates retained. Gates and doors lie in the YZ plane (thin X).",
+      "archiveBytes": 2232589,
+      "archiveSha256": "921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df",
+      "modelCount": 76,
+      "publicManifest": "public/world/models/castle/manifest.json"
+    },
+    "dungeon": {
+      "title": "Quaternius Modular Dungeons, Updated May 2019",
+      "author": "Quaternius",
+      "source": "https://quaternius.com/packs/modulardungeon.html",
+      "authorMirror": "https://opengameart.org/content/lowpoly-modular-dungeon-pack",
+      "download": "https://opengameart.org/sites/default/files/Updated%20Modular%20Dungeon%20-%20May%202019.zip",
+      "archive": "quaternius-modular-dungeons.zip",
+      "expectedModels": 48,
+      "orientation": "Y-up; converted OBJ models recentered horizontally and placed with bottom Y=0. Walls and arches lie in the XY plane (thin Z).",
+      "archiveBytes": 9286217,
+      "archiveSha256": "bb9959ffd2c80b28bcd4ea574eaf4c9dd62a70fda4d61dbc5d6f5193a3f94630",
+      "modelCount": 48,
+      "publicManifest": "public/world/models/dungeon/manifest.json"
+    }
+  },
+  "notes": "Original archives are complete and unchanged. Google Drive individual-file downloads hit a public download quota; Quaternius' own OpenGameArt upload provided the complete identical named release instead."
+}

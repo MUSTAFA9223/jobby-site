@@ -222,12 +222,12 @@ function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./race.html?autostart=1&v=1";
+ location.href="./castle.html?autostart=1&v=15";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
 $("exploreChars").onclick=()=>showView("characters");
-$("multiMode").onclick=()=>{location.href="./rooms.html?map=jobby-race-v1"};
+$("multiMode").onclick=()=>{location.href="./rooms.html?map=castle-dungeon-v1"};
 $("closePreview").onclick=closePreview;
 $("previewModal").addEventListener("click",e=>{if(e.target.id==="previewModal")closePreview()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape"){closePreview();if(!$("playerModal").classList.contains("hidden"))closePlayer()}});
