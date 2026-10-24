@@ -1,7 +1,7 @@
 import * as rules from './public/world/race-rules.js';
 export const MAP_ID=rules.MAP_ID;
 export function newState(){return {round:null,started:0,deadline:0,entries:{}};}
-export function view(room,now=Date.now()){const r=room.race;return {round:r.round,started:r.started,deadline:r.deadline,serverNow:now,status:room.status,challenge:room.challenge?{fee:room.challenge.fee,teams:room.challenge.teams,ready:room.challenge.ready,status:room.challenge.status,winner:room.challenge.winner,payouts:room.challenge.payouts,pot:room.challenge.pot,round:room.challenge.round}:null,entries:Object.values(r.entries).map(p=>({id:p.id,name:p.name,checkpoint:p.checkpoint,falls:p.falls,finishAt:p.finishAt||0,rank:p.rank||0,slot:p.slot,x:p.x,y:p.y,z:p.z,h:p.h||0}))};}
+export function view(room,now=Date.now()){const r=room.race;return {round:r.round,started:r.started,deadline:r.deadline,serverNow:now,status:room.status,challenge:room.challenge?{fee:room.challenge.fee,revision:room.challenge.revision,creatorId:room.challenge.creatorId,teams:room.challenge.teams,ready:room.challenge.ready,status:room.challenge.status,winner:room.challenge.winner,payouts:room.challenge.payouts,pot:room.challenge.pot,round:room.challenge.round}:null,entries:Object.values(r.entries).map(p=>({id:p.id,name:p.name,checkpoint:p.checkpoint,falls:p.falls,finishAt:p.finishAt||0,rank:p.rank||0,slot:p.slot,x:p.x,y:p.y,z:p.z,h:p.h||0}))};}
 export function join(room,info){
  let p=room.race.entries[info.id];
  if(!p){const slot=Object.keys(room.race.entries).length%12;p={...rules.spawn(slot),id:info.id,name:info.name,slot,checkpoint:0,falls:0,poseAt:Date.now(),safeUntil:Date.now()+1500};room.race.entries[info.id]=p;}

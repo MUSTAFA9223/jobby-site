@@ -117,10 +117,11 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div class="profile-actions"><button class="primary" id="savePlayerName">SAVE NAME</button><button class="secondary" id="createPlayer">NEW PLAYER</button></div>
 <p class="soft">New player starts a separate save with zero points. Your current player remains available below.</p>
 <label class="profile-field" for="savedPlayers">Players on this device</label><select id="savedPlayers" class="profile-input"></select><button class="linkBtn" id="switchPlayer">SWITCH PLAYER</button>
+<section id="ownerSetup"><hr class="profile-divider"><h3>GAME OWNER</h3><p id="ownerState" class="soft"></p><div id="ownerClaimFields"><label class="profile-field" for="ownerCode">Private one-time owner setup code</label><input id="ownerCode" type="password" class="profile-input" autocomplete="off" spellcheck="false"><button id="claimOwner" class="secondary" style="margin-top:10px">ENABLE OWNER CONTROLS</button></div></section>
 <hr class="profile-divider"><h3>KEEP YOUR RECOVERY CODE</h3><p class="soft">This private code opens your save on another phone. Keep it safe; anyone with the code can access your player. We cannot restore a lost code.</p>
 <button id="showRecovery" class="secondary" style="margin-top:10px">SHOW MY RECOVERY CODE</button><p id="ownRecovery" class="profile-code hidden"></p>
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=16-14"></script>
+<script type="module" src="./hub.js?v=16-15"></script>
 </body></html>

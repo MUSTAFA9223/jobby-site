@@ -1,4 +1,4 @@
-import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile} from "./player-profile.js?v=3";
+import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile,claimOwner} from "./player-profile.js?v=4";
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -73,16 +73,23 @@ async function renderScores(){
  }catch{if(request!==scoresRequest)return;root.classList.add("empty");root.textContent="Could not load online rankings. Your personal points and results are kept. Reconnect and tap Rankings to retry.";}
 }
 function playerStatus(){
- const info=playerInfo();$("playerLabel").textContent=info.name;$("saveStatus").textContent=info.status;
+ const info=playerInfo();
+ $("ownerSetup").classList.toggle("hidden",!!info.profile?.ownerConfigured&&!info.profile?.owner);
+ $("ownerClaimFields").classList.toggle("hidden",!!info.profile?.owner);
+ $("ownerState").textContent=info.profile?.owner?"OWNER ACCESS ENABLED · Only this saved player can create challenges.":"Enter your private one-time setup code to enable the game owner's controls on this player.";
+ $("playerLabel").textContent=info.name;$("saveStatus").textContent=info.status;
  updateStats();if(activeView==="characters")renderCards();
 }
-function closePlayer(){ $("playerModal").classList.add("hidden");$("ownRecovery").textContent="";$("ownRecovery").classList.add("hidden");$("recoveryInput").value="";$("managePlayer").focus(); }
+function closePlayer(){ $("playerModal").classList.add("hidden");$("ownRecovery").textContent="";$("ownRecovery").classList.add("hidden");$("recoveryInput").value="";$("ownerCode").value="";$("managePlayer").focus(); }
 $("managePlayer").onclick=()=>{
  const info=playerInfo();$("playerName").value=info.name;$("playerMessage").textContent="";
  const select=$("savedPlayers");select.replaceChildren();
  for(const slot of info.slots){const option=document.createElement("option");option.value=slot.id;option.textContent=slot.name+(slot.active?" (current)":"");option.selected=slot.active;select.append(option);}
  $("playerModal").classList.remove("hidden");$("playerName").focus();
 };
+$("claimOwner").onclick=e=>playerAction(e.currentTarget,async()=>{
+ try{await claimOwner($("ownerCode").value);$("playerMessage").textContent="Owner controls enabled.";}finally{$("ownerCode").value="";}
+});
 $("closePlayer").onclick=closePlayer;
 $("playerModal").addEventListener("click",e=>{if(e.target.id==="playerModal")closePlayer();});
 async function playerAction(button,action){
@@ -239,3 +246,5 @@ window.addEventListener("pageshow",()=>{updateStats();if(activeView==="leaderboa
 updateStats();
 playerStatus();
 showView(location.hash==="#leaderboard"?"leaderboard":location.hash==="#characters"?"characters":"home");
+
+if(location.hash==="#owner")$("managePlayer").click();

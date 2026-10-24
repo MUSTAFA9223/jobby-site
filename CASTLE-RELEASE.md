@@ -83,11 +83,13 @@ never enter either ranking.
 
 PRIVATE MULTIPLAYER now offers CO-OP ESCAPE or TEAM CHALLENGE. Challenges use
 the existing obstacle course and private room code, with equal teams of one to
-three players (six total). Every entrant explicitly confirms a 100-point entry.
+three players (six total). Only the game owner can create challenges and set the entry amount (whole points, 1–1,000,000). Every entrant explicitly confirms that exact amount.
 Only free, non-purchasable, non-redeemable game points are used. Teams lock at
 start; the first team with every member across all checkpoints and the finish
 wins. The complete pool is split equally among that team's frozen roster.
 Individual finishes do not earn the ordinary 80-point race award in this mode.
+
+Changing the entry amount in the lobby invalidates all confirmations and changes the terms revision. Stale approvals cannot authorize the new amount. The owner role is bound once to the authenticated saved profile through a private setup code; only its SHA-256 verifier is published. Other players join challenges by code and never inherit owner powers when the owner disconnects.
 
 Entry reservation and settlement are atomic in the player store, reject duplicate
 profiles and overlapping entries, and replay safely. Room input and retries are
@@ -100,3 +102,5 @@ Validation adds real 2v2 workerd WebSockets and SQLite tests for full-pool payou
 1v1/3v3 splits, insufficient funds, duplicates, retry, expiry refunds, existing-save
 migration, and isolated ranking queries. The preview browser has WebGL disabled;
 phone rendering and physical touch gameplay still require device verification.
+
+Owner activation: WORLD → PLAYER → GAME OWNER → ENABLE OWNER CONTROLS. The private one-time code is supplied to the project owner separately. Keep the existing player recovery code to retain owner access on another device. The setup code is not a player recovery code.

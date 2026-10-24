@@ -1,4 +1,4 @@
-import {renamePlayer,linkRoomSession,syncProfile,playerInfo} from "./player-profile.js?v=2";
+import {renamePlayer,linkRoomSession,syncProfile,playerInfo} from "./player-profile.js?v=4";
 import {createRoomVoice} from "./voice.js?v=3";
 const $=id=>document.getElementById(id);
 const re=/^[A-HJ-NP-Z2-9]{6}$/;
@@ -8,7 +8,12 @@ if(!id){id=crypto.randomUUID();sessionStorage.setItem(KEY,id)}
 let code="",ws=null,host="",publicId="",state="lobby",roster=[],maxPlayers=12;
 let roomMap="classic",challenge=null;
 $("roomType").value=new URLSearchParams(location.search).get("mode")==="challenge"?"challenge":"coop";
-function roomType(){const active=$("roomType").value==="challenge";$("challengeRules").classList.toggle("hidden",!active);$("mapChoice").classList.toggle("hidden",active);$("mapLabel").classList.toggle("hidden",active);}
+function roomType(){
+ const active=$("roomType").value==="challenge",owner=playerInfo().profile?.owner===true;
+ $("challengeRules").classList.toggle("hidden",!active);$("mapChoice").classList.toggle("hidden",active);$("mapLabel").classList.toggle("hidden",active);
+ $("challengeAmountSetup").classList.toggle("hidden",!active||!owner);$("ownerNotice").classList.toggle("hidden",!active||owner);$("create").classList.toggle("hidden",active&&!owner);
+}
+window.addEventListener("jobby-profile-change",()=>{roomType();if(code)render();});
 $("roomType").onchange=roomType;roomType();
 $("mapChoice").value=["castle-dungeon-v1","jobby-race-v1","warehouse-v1","big-house-v1","classic"].includes(new URLSearchParams(location.search).get("map"))?new URLSearchParams(location.search).get("map"):"castle-dungeon-v1";
 let selected="JOBBY";
@@ -50,12 +55,16 @@ function render(){
   if(challenge){
    const a=roster.filter(p=>challenge.teams[p.id]==="A").length,b=roster.filter(p=>challenge.teams[p.id]==="B").length,ready=roster.filter(p=>challenge.ready[p.id]).length;
    const open=challenge.status==="lobby";
-   $("challengeSummary").textContent="TEAM A "+a+" vs TEAM B "+b+" · "+ready+"/"+roster.length+" READY · POOL "+(challenge.pot||roster.length*100)+" POINTS";
+   $("challengeSummary").textContent="TEAM A "+a+" vs TEAM B "+b+" · "+ready+"/"+roster.length+" READY · POOL "+(challenge.pot||roster.length*challenge.fee)+" POINTS";
    for(const [id,team] of [["teamA","A"],["teamB","B"]]){$(id).disabled=!open;$(id).setAttribute("aria-pressed",String(challenge.teams[publicId]===team));}
-   $("confirmEntry").disabled=!open;$("confirmEntry").textContent=challenge.ready[publicId]?"READY ✓ · TAP TO CANCEL":"READY · CONFIRM 100 POINTS";
-   $("start").disabled=!iamHost||ws?.readyState!==WebSocket.OPEN||(open&&(!a||a!==b||ready!==roster.length));
+   const owner=iamHost&&playerInfo().profile?.owner===true;
+   $("ownerEntryControl").classList.toggle("hidden",!owner||!open);
+   if(document.activeElement!==$("lobbyEntry"))$("lobbyEntry").value=challenge.fee;
+   $("challengeSummary").textContent+=" · ENTRY "+challenge.fee+" EACH";
+   $("confirmEntry").disabled=!open;$("confirmEntry").textContent=challenge.ready[publicId]?"READY ✓ · TAP TO CANCEL":"READY · CONFIRM "+challenge.fee+" POINTS";
+   $("start").disabled=!owner||ws?.readyState!==WebSocket.OPEN||(open&&(!a||a!==b||ready!==roster.length));
    $("start").textContent=!iamHost?"WAITING FOR HOST…":open?"START TEAM CHALLENGE":"PREPARE NEXT CHALLENGE";
-   if(open)status(a!==b||!a?"Choose two equal teams, then every player confirms entry.":ready!==roster.length?"Waiting for every player to confirm 100 points.":"Both teams are ready. The host can start.");
+   if(open)status(a!==b||!a?"Choose two equal teams, then every player confirms entry.":ready!==roster.length?"Waiting for every player to confirm "+challenge.fee+" points.":"Both teams are ready. The host can start.");
    else if(["paid","refunded"].includes(challenge.status))status(challenge.status==="paid"?"TEAM "+challenge.winner+" WON · "+(challenge.payouts[0]?.points||0)+" POINTS PER WINNER":"NO WINNER · ALL ENTRY POINTS REFUNDED");
   }
 }
@@ -98,7 +107,7 @@ async function create(){
   $("create").disabled=true;showStatus("Creating your private room…");
   try{
     await linkRoomSession(id);
-    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value,mode:$("roomType").value})});
+    const res=await fetch("/api/world/rooms",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token:id,map:$("mapChoice").value,mode:$("roomType").value,fee:Number($("entryAmount").value)})});
     const data=await res.json();if(!res.ok)throw Error(data.error||"Could not create room.");
     code=data.code;history.replaceState(null,"","./rooms.html?code="+code);connect();
   }catch(e){showStatus(e.message||"Could not create room.",true)}
@@ -120,12 +129,13 @@ async function copy(value){
   try{await navigator.clipboard.writeText(value);status("Copied! Share it with your friends.")}
   catch{status("Copy manually: "+value)}
 }
+$("saveEntry").onclick=()=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify({type:"challenge_entry",fee:Number($("lobbyEntry").value)}));};
 $("teamA").onclick=()=>ws?.readyState===WebSocket.OPEN&&ws.send(JSON.stringify({type:"challenge_team",team:"A"}));
 $("teamB").onclick=()=>ws?.readyState===WebSocket.OPEN&&ws.send(JSON.stringify({type:"challenge_team",team:"B"}));
 $("confirmEntry").onclick=async()=>{
  if(ws?.readyState!==WebSocket.OPEN||!challenge)return;
  $("confirmEntry").disabled=true;let errorMessage="";
- try{await syncProfile();if(!challenge.ready[publicId]&&(playerInfo().profile?.state?.points||0)<100){errorMessage="You need 100 free game points. Play solo or co-op to earn more.";return;}ws.send(JSON.stringify({type:"challenge_ready",ready:!challenge.ready[publicId]}));}
+ try{await syncProfile();if(!challenge.ready[publicId]&&(playerInfo().profile?.state?.points||0)<challenge.fee){errorMessage="You need "+challenge.fee+" free game points. Play solo or co-op to earn more.";return;}ws.send(JSON.stringify({type:"challenge_ready",ready:!challenge.ready[publicId],fee:challenge.fee,revision:challenge.revision}));}
  finally{render();if(errorMessage)status(errorMessage);}
 };
 $("create").onclick=create;$("join").onclick=join;

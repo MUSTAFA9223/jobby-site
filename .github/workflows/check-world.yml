@@ -13,6 +13,7 @@ on:
       - 'warehouse-room.js'
       - 'race-room.js'
       - 'challenge-room.js'
+      - 'owner-setup.js'
       - 'wrangler.toml'
       - 'public/world/**'
       - 'tests/**'

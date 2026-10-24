@@ -1,3 +1,4 @@
+import {OWNER_CLAIM_HASH} from "./owner-setup.js";
 import {DurableObject} from "cloudflare:workers";
 
 const avatars={JOBBY:0,Casual_Male:0,Ninja_Male:0,Pug:0,Wizard:80,Pirate_Female:120};
@@ -51,10 +52,13 @@ export class WorldPlayers extends DurableObject{
     GROUP BY p.key,CASE WHEN json_extract(h.value,'$.coop')=1 THEN 'team' ELSE 'solo' END`);
    this.sql.exec("INSERT INTO schema_updates(id) VALUES('mode-scores-v1')");
   });
+  this.sql.exec("CREATE TABLE IF NOT EXISTS world_owner(id INTEGER PRIMARY KEY CHECK(id=1),player TEXT NOT NULL)");
   this.sql.exec("CREATE TABLE IF NOT EXISTS challenge_pots(id TEXT PRIMARY KEY,room TEXT,roster TEXT,fee INTEGER,status TEXT,winner TEXT,payouts TEXT,expires INTEGER)");
  }
  get(key){return this.sql.exec("SELECT * FROM players WHERE key=?",key).toArray()[0];}
- view(p){const state=JSON.parse(p.state),rankings=Object.fromEntries(this.sql.exec("SELECT mode,earned,wins,best FROM mode_scores WHERE player=?",p.key).toArray().map(s=>[s.mode,{earned:s.earned,wins:s.wins,best:s.best}]));return {id:p.id,name:p.name,state,earned:p.earned,wins:p.wins,best:p.best,rankings};}
+ view(p){const state=JSON.parse(p.state),rankings=Object.fromEntries(this.sql.exec("SELECT mode,earned,wins,best FROM mode_scores WHERE player=?",p.key).toArray().map(s=>[s.mode,{earned:s.earned,wins:s.wins,best:s.best}]));return {id:p.id,name:p.name,state,earned:p.earned,wins:p.wins,best:p.best,rankings,owner:this.isOwner(p.key),ownerConfigured:!!this.sql.exec("SELECT player FROM world_owner WHERE id=1").toArray().length};}
+ isOwner(key){return this.sql.exec("SELECT player FROM world_owner WHERE id=1").toArray()[0]?.player===key;}
+ ownerForSession(session){const p=this.sql.exec("SELECT player FROM sessions WHERE id=?",session).toArray()[0];return !!p&&this.isOwner(p.player);}
  score(key,mode,points,wins=0,seconds=null){
   this.sql.exec(`INSERT INTO mode_scores(player,mode,earned,wins,best) VALUES(?,?,?,?,?) ON CONFLICT(player,mode) DO UPDATE SET earned=earned+excluded.earned,wins=wins+excluded.wins,best=CASE WHEN excluded.best IS NULL THEN best WHEN best IS NULL THEN excluded.best ELSE MIN(best,excluded.best) END`,key,mode,points,wins,seconds);
  }
@@ -67,6 +71,8 @@ export class WorldPlayers extends DurableObject{
   await this.challengeAlarm();
  }
  async reserveChallenge(body){
+  const fee=body.fee??100;
+  if(!Number.isSafeInteger(fee)||fee<1||fee>1000000)return reply({error:'Entry must be a whole number from 1 to 1,000,000.'},400);
   if(!/^[a-f0-9-]{36}$/.test(body.round||'')||!Array.isArray(body.entries)||body.entries.length<2||body.entries.length>6||!['A','B'].every(team=>body.entries.filter(p=>p.team===team).length===body.entries.length/2))return reply({error:'Two equal teams of 1–3 players are required.'},400);
   const result=this.ctx.storage.transactionSync(()=>{
    const old=this.sql.exec('SELECT * FROM challenge_pots WHERE id=?',body.round).toArray()[0];
@@ -76,15 +82,15 @@ export class WorldPlayers extends DurableObject{
     const session=this.sql.exec('SELECT player FROM sessions WHERE id=?',e.id).toArray()[0],p=session&&this.get(session.player);
     if(!p)return reply({error:'Every player must connect their saved profile before starting.'},409);
     if(seen.has(p.key))return reply({error:'Each player must use a different saved profile.'},409);seen.add(p.key);
-    if(JSON.parse(p.state).points<100)return reply({error:p.name+' needs at least 100 free game points.'},409);
+    if(JSON.parse(p.state).points<fee)return reply({error:p.name+' needs at least '+fee+' free game points.'},409);
     // Prevent a second room from locking the same balance while a challenge runs.
     const active=this.sql.exec("SELECT roster FROM challenge_pots WHERE status='held'").toArray();
     if(active.some(row=>JSON.parse(row.roster).some(q=>q.key===p.key)))return reply({error:p.name+' already has an active challenge.'},409);
     entries.push({id:e.id,team:e.team,key:p.key});
    }
-   for(const e of entries){const p=this.get(e.key),state=JSON.parse(p.state);state.points-=100;this.sql.exec('UPDATE players SET state=? WHERE key=?',JSON.stringify(state),e.key);}
-   this.sql.exec("INSERT INTO challenge_pots(id,room,roster,fee,status,payouts,expires) VALUES(?,?,?,?,?,?,?)",body.round,body.room,JSON.stringify(entries),100,'held','[]',Date.now()+10*60*1000);
-   return reply({ok:true,pot:entries.length*100});
+   for(const e of entries){const p=this.get(e.key),state=JSON.parse(p.state);state.points-=fee;this.sql.exec('UPDATE players SET state=? WHERE key=?',JSON.stringify(state),e.key);}
+   this.sql.exec("INSERT INTO challenge_pots(id,room,roster,fee,status,payouts,expires) VALUES(?,?,?,?,?,?,?)",body.round,body.room,JSON.stringify(entries),fee,'held','[]',Date.now()+10*60*1000);
+   return reply({ok:true,pot:entries.length*fee});
   });
   await this.challengeAlarm();return result;
  }
@@ -117,6 +123,7 @@ export class WorldPlayers extends DurableObject{
    if(mode&&!['solo','team'].includes(mode))return reply({error:"Invalid ranking mode."},400);
    return reply({mode:mode||"all",players:mode?this.sql.exec("SELECT p.id,p.name,s.earned,s.wins,s.best FROM mode_scores s JOIN players p ON p.key=s.player WHERE s.mode=? AND s.earned>0 ORDER BY s.earned DESC,s.wins DESC,s.best ASC,p.id ASC LIMIT 50",mode).toArray():this.sql.exec("SELECT id,name,earned,wins,best FROM players WHERE earned>0 ORDER BY earned DESC,wins DESC,best ASC,id ASC LIMIT 50").toArray()});
   }
+  if(path==="/_challenge_owner"&&request.method==="POST"){const data=await request.json();return reply({owner:this.ownerForSession(data.session)});}
   if(path==="/_challenge_reserve"&&request.method==="POST")return this.reserveChallenge(await request.json());
   if(path==="/_challenge_settle"&&request.method==="POST")return this.settleChallenge(await request.json());
   if(path==="/_room_reward"&&request.method==="POST"){
@@ -143,6 +150,7 @@ export class WorldPlayers extends DurableObject{
   const text=await request.text();if(text.length>24000)return reply({error:"Request too large."},413);
   let data;try{data=JSON.parse(text)}catch{return reply({error:"Invalid JSON."},400);}
   if(!data||typeof data!=="object"||Array.isArray(data))return reply({error:"Invalid request."},400);
+  const claimMatches=path==="/api/world/profile/owner-claim"&&typeof data.code==="string"&&data.code.length<=128&&(await digest("JOBBY:OWNER-CLAIM:"+data.code.trim()))===OWNER_CLAIM_HASH;
   return this.ctx.storage.transactionSync(()=>{
    let p=this.get(key);
    if(path==="/api/world/profile/create"){
@@ -156,6 +164,12 @@ export class WorldPlayers extends DurableObject{
     return reply(this.view(p));
    }
    if(!p)return reply({error:"Player not found."},404);
+   if(path==="/api/world/profile/owner-claim"){
+    const owner=this.sql.exec("SELECT player FROM world_owner WHERE id=1").toArray()[0];
+    if(owner)return owner.player===key?reply(this.view(p)):reply({error:"Owner access is already assigned to another player."},403);
+    if(!claimMatches)return reply({error:"Invalid owner setup code."},403);
+    this.sql.exec("INSERT INTO world_owner(id,player) VALUES(1,?)",key);return reply(this.view(p));
+   }
    if(path==="/api/world/profile/link"){
     if(!/^[a-f0-9]{32}$/.test(data.session||""))return reply({error:"Invalid session."},400);
     this.sql.exec("INSERT OR REPLACE INTO sessions(id,player,created) VALUES(?,?,?)",data.session,key,Date.now());

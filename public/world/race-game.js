@@ -152,7 +152,7 @@ function showChallengeResult(){
  $('controls').classList.add('hidden');$('endoverlay').classList.remove('hidden');
  const ownTeam=c.teams[coop?.selfId()],prize=c.payouts?.find(p=>p.id===coop?.selfId())?.points||0;
  $('endTitle').textContent=c.status==='paid'?(c.winner===ownTeam?'YOUR TEAM WINS!':'TEAM '+c.winner+' WINS'):c.status==='refunded'?'ENTRY POINTS REFUNDED':c.status==='settling'?'SAVING TEAM RESULT…':'WAITING FOR YOUR TEAM';
- $('endDetail').textContent=c.status==='paid'?(prize?'+'+prize+' points · The entire pool was split equally between the winning team.':'Your 100-point entry went to the winning team.'):c.status==='refunded'?'No team completed the challenge. Your 100 entry points were returned.':'The first team with every player across the finish wins. Pool: '+c.pot+' points.';
+ $('endDetail').textContent=c.status==='paid'?(prize?'+'+prize+' points · The entire pool was split equally between the winning team.':'Your '+c.fee+'-point entry went to the winning team.'):c.status==='refunded'?'No team completed the challenge. Your '+c.fee+' entry points were returned.':'The first team with every player across the finish wins. Pool: '+c.pot+' points.';
  $('againButton').textContent='BACK TO PRIVATE ROOM';$('againButton').onclick=()=>location.href='./rooms.html?code='+roomCode;
  void syncProfile();
 }

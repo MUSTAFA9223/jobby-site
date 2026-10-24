@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
+const fixtureCode='fixture-owner-code-not-used-in-production',fixtureHash=createHash('sha256').update('JOBBY:OWNER-CLAIM:'+fixtureCode).digest('hex');
 const source=readFileSync(new URL('../player-store.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace(/export /g,'');
-const WorldPlayers=new Function('DurableObject',source+'\nreturn WorldPlayers;')(class{constructor(ctx){this.ctx=ctx;}});
+const WorldPlayers=new Function('DurableObject','OWNER_CLAIM_HASH',source+'\nreturn WorldPlayers;')(class{constructor(ctx){this.ctx=ctx;}},fixtureHash);
 function store(){
  const db=new DatabaseSync(':memory:');let alarm=null;
  const sql={exec(query,...params){const stmt=db.prepare(query),rows=stmt.columns().length?stmt.all(...params):(stmt.run(...params),[]);return {toArray:()=>rows};}};
@@ -59,4 +60,22 @@ test('1v1 and 3v3 distribute every contributed point equally',async t=>{
   const round=randomUUID();await s.players.reserveChallenge({round,room:'ABC234',entries});const result=await body(await s.players.settleChallenge({round,winner:'B',seconds:40}));
   assert.equal(result.payouts.length,size);assert.ok(result.payouts.every(p=>p.points===200));assert.equal(entries.reduce((sum,e)=>sum+s.balance(e.id),0),size*200);
  }
+});
+
+test('Owner claim binds once to an authenticated profile and cannot be stolen or renamed into',async t=>{
+ const s=store();t.after(s.close);s.create('owner',300);s.create('guest',300);
+ const claim=async(key,code)=>s.players.fetch(new Request('https://players.internal/api/world/profile/owner-claim',{method:'POST',headers:{'x-player-key':key},body:JSON.stringify({code})}));
+ assert.equal((await claim('guest','wrong')).status,403);assert.equal(s.players.view(s.players.get('guest')).owner,false);
+ let response=await claim('owner',fixtureCode);assert.equal(response.status,200);assert.equal((await response.json()).owner,true);assert.equal(s.players.ownerForSession('owner'),true);assert.equal(s.players.ownerForSession('guest'),false);
+ assert.equal((await claim('guest',fixtureCode)).status,403,'used code cannot transfer control');assert.equal((await claim('owner',fixtureCode)).status,200,'owner retry is safe');
+ s.sql.exec('UPDATE players SET name=? WHERE key=?','owner','guest');assert.equal(s.players.view(s.players.get('guest')).owner,false,'matching name grants no access');
+});
+test('Custom entries 50, 70, 150, 200 and 1000 retain full-pool payout and reject invalid amounts',async t=>{
+ for(const fee of [50,70,150,200,1000]){
+  const s=store();t.after(s.close);s.create('a',fee*3);s.create('b',fee*3);const entries=[{id:'a',team:'A'},{id:'b',team:'B'}],round=randomUUID();
+  const entry=await body(await s.players.reserveChallenge({round,room:'ABC234',fee,entries}));assert.equal(entry.pot,fee*2);assert.equal(s.balance('a'),fee*2);
+  await s.players.reserveChallenge({round,room:'ABC234',fee:fee+1,entries});assert.equal(s.balance('a'),fee*2,'replay cannot change reserved entry');
+  const result=await body(await s.players.settleChallenge({round,winner:'A',seconds:50}));assert.equal(result.payouts[0].points,fee*2);assert.equal(s.balance('a'),fee*4);assert.equal(s.balance('b'),fee*2);
+ }
+ const s=store();t.after(s.close);s.create('a',1000);s.create('b',1000);for(const fee of [0,-1,1.5,1000001,Infinity,NaN,'100'])assert.equal((await s.players.reserveChallenge({round:randomUUID(),room:'ABC234',fee,entries:[{id:'a',team:'A'},{id:'b',team:'B'}]})).status,400);
 });
