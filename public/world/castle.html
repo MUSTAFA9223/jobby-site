@@ -93,7 +93,7 @@
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">ESCAPE COMPLETE!</div><p class="subtitle">You solved all three castle puzzles and escaped. You earned <b style="color:#ffd76a">50 points</b> for escaping.</p><button class="mainBtn" id="againButton">↻ PLAY AGAIN</button><button class="mainBtn secondaryBtn" id="charactersButton">CHOOSE ANOTHER HERO</button></div></div>
   <script type="module">
-    import("./castle-game.js?v=2").catch(error=>{
+    import("./castle-game.js?v=3").catch(error=>{
       console.error(error);document.getElementById("loadStatus").textContent="3D could not start in this browser. Try Chrome with graphics enabled.";
       const a=document.createElement("a");a.href="./castle-guide.html";a.className="mainBtn secondaryBtn";a.textContent="VIEW CASTLE ESCAPE MAP";document.querySelector("#menu .panel").append(a);
     });

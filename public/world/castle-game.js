@@ -2,7 +2,7 @@ import {saveSelection,beginPlayerRun,recordPlayerTask,finishPlayerRun,syncProfil
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { connectCoop } from "./multiplayer.js?v=7";
-import { safeCameraPosition } from "./camera-occlusion.js?v=2";
+import {createWallCamera,moveWithSliding} from "./castle-motion.js?v=1";
 import * as house from "./castle-layout.js";
 import * as rules from "./castle-rules.js";
 import {buildCastle} from "./castle-scene.js";
@@ -43,6 +43,7 @@ let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
 const keysDown=new Set(),loader=new GLTFLoader();
 const scene=new THREE.Scene();scene.background=new THREE.Color("#a2bebc");scene.fog=new THREE.Fog("#a2bebc",90,190);
 const camera=new THREE.PerspectiveCamera(63,innerWidth/innerHeight,.1,190);
+const wallCamera=createWallCamera();
 const lowPowerMobile=(navigator.maxTouchPoints>0 || Math.min(innerWidth,innerHeight)<700);
 const renderer=new THREE.WebGLRenderer({antialias:!lowPowerMobile,powerPreference:"default"});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,lowPowerMobile?1.15:1.5));renderer.setSize(innerWidth,innerHeight);
@@ -331,8 +332,7 @@ function paintMinimap(time){
  for(const h of house.HIDES)dot(h.x,h.z,"#a6c5ff",2);
  dot(arena.guard.position.x,arena.guard.position.z,"#ff6178",4);dot(px,pz,"#fff",4);
 }
-// Walls remain fully opaque. Resolve both the goal and the interpolated camera
-// against padded wall bounds so orbit smoothing cannot pass through buildings.
+// Walls remain opaque; movement slides at contact and the camera lifts smoothly.
 window.addEventListener("keydown",e=>{keysDown.add(e.key.toLowerCase());if(e.code==="Space")wantJump=true;if(e.code==="KeyE"&&!e.repeat)interact()});
 window.addEventListener("keyup",e=>{keysDown.delete(e.key.toLowerCase());if(e.code==="KeyE")cancelTask();});
 function collision(x,z){return rules.isBlocked(round,x,z,clock(),.33);}
@@ -348,28 +348,33 @@ function frame(){
   if(length>1){dx/=length;dz/=length}
   const jailed=!!round.jailed[self().id],carrying=round.fuse.owner===self().id||round.crates.some(c=>c.owner===self().id);
   const fast=runHeld||keysDown.has("shift"),speed=jailed?0:carrying?(fast?4.8:3.7):fast?6.8:4.1;
+  let moving=false;
   if(length>.07&&!hidden){
-   const nx=px+dx*speed*delta,nz=pz+dz*speed*delta;
-   if(!collision(nx,pz))px=nx;
-   if(!collision(px,nz))pz=nz;
-   const target=Math.atan2(dx,dz),diff=((target-heading+Math.PI*3)%(Math.PI*2))-Math.PI;
-   heading+=diff*Math.min(1,delta*11);
+   const next=moveWithSliding(px,pz,dx*speed*delta,dz*speed*delta,collision);
+   const movedX=next.x-px,movedZ=next.z-pz;
+   moving=Math.hypot(movedX,movedZ)>delta*.1;
+   px=next.x;pz=next.z;
+   if(moving){
+    const target=Math.atan2(movedX,movedZ),diff=((target-heading+Math.PI*3)%(Math.PI*2))-Math.PI;
+    heading+=diff*(1-Math.exp(-11*delta));
+   }
   }
   if(wantJump&&grounded&&!hidden&&!jailed){vy=7.2;grounded=false}wantJump=false;
   if(!grounded){vy-=18*delta;py+=vy*delta;if(py<=0){py=0;vy=0;grounded=true}}
   playerGroup.position.set(px,py,pz);playerGroup.rotation.y=heading;
-  animate(!grounded?"Jump":length<.07?"Idle":fast?"Run":"Walk");
+  const animation=!grounded?"Jump":!moving?"Idle":fast?"Run":"Walk";
+  animate(animation);
   updateInteraction(performance.now());
   if(!isCoop){
    guardTime+=delta;
    if(guardTime>=.1){
-    if(fast&&length>.1&&clock()-lastNoise>1500){round.noise={x:px,z:pz,until:clock()+4000};lastNoise=clock();}
+    if(fast&&moving&&clock()-lastNoise>1500){round.noise={x:px,z:pz,until:clock()+4000};lastNoise=clock();}
     const hit=rules.stepGuard(round,guard,[self()],guardTime,clock());guardTime=0;guardTarget={...guard};if(hit.length)caught();
    }
   }
   arena.updateRound(round,clock(),self().id,self());void arena.stream(self(),performance.now());
 
-  if(isCoop)coop?.sendPose({x:px,z:pz,y:py,h:heading,anim:!grounded?"Jump":length<.07?"Idle":fast?"Run":"Walk"});
+  if(isCoop)coop?.sendPose({x:px,z:pz,y:py,h:heading,anim:animation});
  }
  if(mixer)mixer.update(delta);
  arena.guard.position.x=THREE.MathUtils.lerp(arena.guard.position.x,guardTarget.x,Math.min(1,delta*13));
@@ -380,9 +385,7 @@ function frame(){
  coop?.tick(delta);
  const lookAt=new THREE.Vector3(px,py+1.3,pz);
  const desired=new THREE.Vector3(px+Math.sin(yaw)*cameraDistance*Math.cos(tilt),py+1.3+cameraDistance*Math.sin(tilt),pz+Math.cos(yaw)*cameraDistance*Math.cos(tilt));
- const goal=safeCameraPosition(lookAt,desired,blocks);
- camera.position.lerp(new THREE.Vector3(goal.x,goal.y,goal.z),Math.min(1,delta*10));
- const safe=safeCameraPosition(lookAt,camera.position,blocks);
+ const safe=wallCamera(lookAt,desired,blocks,delta);
  camera.position.set(safe.x,safe.y,safe.z);
  camera.lookAt(lookAt);paintMinimap(time);
  collectible.forEach((k,i)=>{k.group.rotation.y+=delta;k.group.position.y=1.6+Math.sin(time*2+i*2)*.15});
