@@ -47,12 +47,12 @@ for(const pack of ["castle","dungeon"]){
  for(const model of manifest.models){const g=await load("./models/"+pack+"/"+model.file),scene=sceneWithLight(),object=geometryScene(g.scene),box=new THREE.Box3().setFromObject(object),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());object.position.sub(center);scene.add(object);const span=Math.max(.1,size.x,size.y,size.z),camera=new THREE.OrthographicCamera(-span*.88,span*.88,span*.72,-span*.72,.01,span*20);camera.position.set(span*2,span*1.4,span*2.5);camera.lookAt(0,0,0);await raster(scene,camera,300,245,new URL(model.id+".webp",dir));}
  console.log(pack+": rendered "+manifest.models.length+" actual-model previews");
 }
-const scene=sceneWithLight(),level=new THREE.Scene(),arena=buildCastle(level,{assetLoader:{loadAsync:load}});await arena.ready;arena.guard.position.set(18,0,5);
+const scene=sceneWithLight(),level=new THREE.Scene(),arena=buildCastle(level,{assetLoader:{loadAsync:load},loadAll:true});await arena.ready;arena.guard.position.set(18,0,5);
 level.updateMatrixWorld(true);
 level.traverse(n=>{if(!n.isMesh||!n.visible||n.parent?.visible===false)return;
- if(n.isInstancedMesh){const matrix=new THREE.Matrix4();for(let i=0;i<n.count;i++){n.getMatrixAt(i,matrix);const mesh=prepareMesh(n);mesh.applyMatrix4(n.matrixWorld.clone().multiply(matrix));if(new THREE.Box3().setFromObject(mesh).max.y<.1)mesh.renderOrder=n===level.children[0]?-10:-3;scene.add(mesh);}}
- else {const mesh=prepareMesh(n);mesh.applyMatrix4(n.matrixWorld);if(new THREE.Box3().setFromObject(mesh).max.y<.1)mesh.renderOrder=n===level.children[0]?-10:-3;scene.add(mesh);}
+ if(n.isInstancedMesh){const matrix=new THREE.Matrix4();for(let i=0;i<n.count;i++){n.getMatrixAt(i,matrix);const mesh=prepareMesh(n);mesh.applyMatrix4(n.matrixWorld.clone().multiply(matrix));mesh.renderOrder=n.renderOrder;if(!n.renderOrder&&new THREE.Box3().setFromObject(mesh).max.y<.1)mesh.renderOrder=n===level.children[0]?-10:-3;scene.add(mesh);}}
+ else {const mesh=prepareMesh(n);mesh.applyMatrix4(n.matrixWorld);mesh.renderOrder=n.renderOrder;if(!n.renderOrder&&new THREE.Box3().setFromObject(mesh).max.y<.1)mesh.renderOrder=n===level.children[0]?-10:-3;scene.add(mesh);}
 });
-const camera=new THREE.OrthographicCamera(-43,43,34,-34,.1,300);camera.position.set(47,75,65);camera.lookAt(0,0,0);
+const camera=new THREE.OrthographicCamera(-78,78,61.75,-61.75,.1,400);camera.position.set(86,135,110);camera.lookAt(0,0,0);
 await raster(scene,camera,1200,950,new URL("assets/castle-overview.webp",root));
 console.log("Actual castle geometry overview rendered.");

@@ -24,5 +24,5 @@ test("Real castle scene and mobile game complete all puzzles, carry cargo and sa
  function hold(point,ms){game.move(point);game.interact();now+=ms+100;game.updateInteraction(now);}
  hold(house.STATIONS.fuse,800);assert.equal(game.read().round.fuse.owner,"solo");hold(house.STATIONS.socket,1800);assert.equal(game.read().points,20);
  const r=game.read().round,crate=r.crates.find(c=>c.symbol===r.target);hold(crate,600);hold(house.STATIONS.conveyor,1800);assert.equal(game.read().points,30);
- game.move(house.EXITS[0]);game.frame();assert.equal(game.read().finished,true);assert.equal(game.read().points,80);assert.deepEqual(tasks,[0,1,2]);
+ game.move(house.EXITS[0]);game.frame();assert.equal(game.read().finished,false,"can keep exploring at an unlocked gate");game.doAction({type:"finish"});assert.equal(game.read().finished,true);assert.equal(game.read().points,80);assert.deepEqual(tasks,[0,1,2]);
 });

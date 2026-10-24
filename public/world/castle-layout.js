@@ -1,5 +1,7 @@
+import {ESTATE_BOUNDS,ESTATE_REGIONS,ENVIRONMENT_PLACEMENTS,ENVIRONMENT_KEYS} from "./castle-environment.js";
+export {ESTATE_BOUNDS,ESTATE_REGIONS,ENVIRONMENT_PLACEMENTS,ENVIRONMENT_KEYS};
 // One ground-floor layout shared by the client, navigation and Cloudflare.
-export const MAP_ID="castle-dungeon-v1",ROUND_MS=8*60*1000,TASK_MS=1800;
+export const MAP_ID="castle-dungeon-v1",ROUND_MS=12*60*1000,TASK_MS=1800;
 export const SPAWN={x:0,z:20},JAIL={x:18,z:12},RELEASE={x:15,z:13};
 export const ROOMS=[
  {name:"CASTLE COURTYARD",x:0,z:17.5,w:52,d:18,color:"#59716b"},
@@ -51,7 +53,22 @@ export const PROPS=[
  {kind:"column",asset:"Column",x:-3,z:-22,w:.8,d:.8,h:3},
  {kind:"column",asset:"Column2",x:3,z:-22,w:.8,d:.8,h:3}
 ];
-export const SOLIDS=[...WALLS,...PROPS];
+// Every authored asset has a ground footprint or a camera-only upper bound.
+export const WATER=[{x:35.8,z:15.25,w:6.4,d:6.5,h:.1,kind:"water"},{x:35.8,z:24.75,w:6.4,d:6.5,h:.1,kind:"water"}];
+export const ENVIRONMENT_SOLIDS=ENVIRONMENT_PLACEMENTS.filter(p=>p.solid).flatMap(p=>{
+ const solid=b=>({...p,...b,kind:"environment"});
+ if(p.id==="tower-square-arch"){
+  const legs=[];for(const a of [-1,1])for(const b of [-1,1])legs.push(solid({x:p.x+a*p.w*.36,z:p.z+b*p.d*.36,w:p.w*.28,d:p.d*.28}));
+  legs.push(solid({y:p.y+p.h*.72,h:p.h*.28}));return legs;
+ }
+ if(p.pack==="dungeon"&&p.id==="arch")return [-1,1].map(side=>solid({x:p.x+side*p.w*.39,w:p.w*.22})).concat(solid({y:p.y+p.h*.73,h:p.h*.27}));
+ return [solid({})];
+});
+export const SOLIDS=[...WALLS,...PROPS,...ENVIRONMENT_SOLIDS,...WATER];
+ROOMS.push(...ESTATE_REGIONS);
+// Spatial buckets keep room movement and sight checks independent of world size.
+const solidBuckets=new Map();
+for(const b of SOLIDS)for(let x=Math.floor((b.x-b.w/2-1)/8);x<=Math.floor((b.x+b.w/2+1)/8);x++)for(let z=Math.floor((b.z-b.d/2-1)/8);z<=Math.floor((b.z+b.d/2+1)/8);z++){const key=x+","+z;if(!solidBuckets.has(key))solidBuckets.set(key,[]);solidBuckets.get(key).push(b);}
 export const STATIONS={clue:{x:-22.75,z:-21.75,name:"RUNE TABLET"},panel:{x:0,z:-20,name:"RUNE LOCK"},lever:{x:-13,z:16,name:"VAULT LEVER"},fuse:{x:-19,z:16,name:"SUN CRYSTAL"},socket:{x:0,z:-11,name:"CRYSTAL PEDESTAL"},conveyor:{x:17,z:3,name:"SEAL ALTAR"},jail:JAIL};
 export const CRATE_SPAWNS=[{x:10,z:-20},{x:16,z:-12},{x:11,z:-3}];
 export const TASKS=[{...STATIONS.panel,name:"SOLVE THE RUNES",short:"RUNES",room:"Labyrinth → Rune Hall",color:"#ffdb85"},{...STATIONS.socket,name:"RESTORE THE SUN CRYSTAL",short:"CRYSTAL",room:"Sun Vault → Rune Hall",color:"#6de9f0"},{...STATIONS.conveyor,name:"RETURN THE ROYAL SEAL",short:"SEAL",room:"Royal Archive → Seal Chamber",color:"#c6a5ff"}];
@@ -59,20 +76,20 @@ export const EXITS=[{name:"EAST CASTLE GATE",x:25,z:20,task:2,color:"#8cffe2"}];
 export const HIDES=[{x:-24,z:21.8,name:"Behind courtyard barrels"},{x:23,z:-11,name:"Archive alcove"},{x:22,z:0,name:"Behind the altar"},{x:-10,z:5,name:"Labyrinth entrance"}];
 export const PATROL=[{x:0,z:12},{x:18,z:14},{x:18,z:5},{x:8,z:0},{x:0,z:-3},{x:0,z:-17},{x:0,z:4},{x:-18,z:9}];
 export function blocked(x,z,radius=.36){
- if(Math.abs(x)>26.5-radius||Math.abs(z)>26.5-radius)return true;
- return SOLIDS.some(b=>Math.abs(x-b.x)<b.w/2+radius&&Math.abs(z-b.z)<b.d/2+radius);
+ if(Math.abs(x)>ESTATE_BOUNDS-radius||Math.abs(z)>ESTATE_BOUNDS-radius)return true;
+ return (solidBuckets.get(Math.floor(x/8)+","+Math.floor(z/8))||[]).some(b=>(b.y||0)<.4&&Math.abs(x-b.x)<b.w/2+radius&&Math.abs(z-b.z)<b.d/2+radius);
 }
 export const near=(a,b,d=1.8)=>Math.hypot(a.x-b.x,a.z-b.z)<=d;
 export function hideAt(p,radius=1.35){return HIDES.findIndex(h=>near(p,h,radius));}
 export function exitAt(p,tasks){return tasks.length===3?EXITS.findIndex(e=>near(p,e,1.5)):-1;}
 export function visible(a,b){const n=Math.ceil(Math.hypot(a.x-b.x,a.z-b.z)*4);for(let i=1;i<n;i++)if(blocked(a.x+(b.x-a.x)*i/n,a.z+(b.z-a.z)*i/n,.08))return false;return true;}
-// Half-metre cells retain clearance around the narrower, model-sized maze walls.
-const nodes=new Map();for(let x=-52;x<=52;x++)for(let z=-52;z<=52;z++)if(!blocked(x/2,z/2,.45))nodes.set(x+","+z,{x:x/2,z:z/2});
+// A metre grid keeps both the original maze and the expanded estate connected.
+const nodes=new Map();for(let x=-51;x<=51;x++)for(let z=-51;z<=51;z++)if(!blocked(x,z,.45))nodes.set(x+","+z,{x,z});
 function nearest(p){let best=null,d=Infinity;for(const n of nodes.values()){const q=(n.x-p.x)**2+(n.z-p.z)**2;if(q<d){best=n;d=q;}}return best;}
 export function route(from,to){
- const start=nearest(from),end=nearest(to);if(!start||!end)return [];const key=p=>Math.round(p.x*2)+","+Math.round(p.z*2),queue=[start],visited=new Set([key(start)]),parents=new Map();
+ const start=nearest(from),end=nearest(to);if(!start||!end)return [];const key=p=>Math.round(p.x)+","+Math.round(p.z),queue=[start],visited=new Set([key(start)]),parents=new Map();
  for(let i=0;i<queue.length;i++){const p=queue[i],k=key(p);if(k===key(end)){const path=[end];let prev=parents.get(k);while(prev){path.push(prev);prev=parents.get(key(prev));}path.reverse();if(near(from,start,.04))path.shift();if(!blocked(to.x,to.z,.45)&&visible(end,to))path.push({...to});return path;}
-  for(const [dx,dz] of [[.5,0],[-.5,0],[0,.5],[0,-.5]]){const n=nodes.get(Math.round((p.x+dx)*2)+","+Math.round((p.z+dz)*2));if(!n||visited.has(key(n)))continue;visited.add(key(n));parents.set(key(n),p);queue.push(n);}}
+  for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const n=nodes.get(Math.round(p.x+dx)+","+Math.round(p.z+dz));if(!n||visited.has(key(n))||blocked((p.x+n.x)/2,(p.z+n.z)/2,.45))continue;visited.add(key(n));parents.set(key(n),p);queue.push(n);}}
  return [];
 }
 export function newGuard(){return {x:18,z:5,h:0,mode:"patrol",target:null,waypoint:0,path:[],repath:0};}

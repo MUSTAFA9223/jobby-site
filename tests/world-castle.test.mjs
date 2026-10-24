@@ -36,3 +36,17 @@ test("Portcullis and guardian respect solid geometry; noise attracts investigati
  const r=rules.newRound(1,1000,true),g=map.newGuard();assert.equal(rules.isBlocked(r,map.DOOR.x,map.DOOR.z,1000),true);r.gateUntil=9000;assert.equal(rules.isBlocked(r,map.DOOR.x,map.DOOR.z,2000),false);
  r.noise={x:0,z:8,until:20000};for(let i=0;i<25;i++){rules.stepGuard(r,g,[],.1,2000+i*100);assert.equal(map.blocked(g.x,g.z,.39),false);}assert.equal(g.mode,"investigate");
 });
+
+test("All 124 original types are authored in the same connected estate, with reachable regions and safe viewing approaches",()=>{
+ assert.equal(new Set(map.ENVIRONMENT_PLACEMENTS.map(p=>p.pack+"/"+p.id)).size,124);
+ assert.deepEqual(new Set(map.ENVIRONMENT_PLACEMENTS.map(p=>p.pack+"/"+p.id)),new Set(map.ENVIRONMENT_KEYS));
+ for(const region of map.ESTATE_REGIONS){assert.equal(map.blocked(region.entry.x,region.entry.z,.4),false,region.name);const path=map.route(map.SPAWN,region.entry);assert.ok(path.length>1,region.name+" is connected to the playable castle");assert.ok(map.near(path.at(-1),region.entry,.8));}
+ for(const p of map.ENVIRONMENT_PLACEMENTS){
+  assert.ok(Math.abs(p.x)+p.w/2<=map.ESTATE_BOUNDS+.01,p.pack+"/"+p.id+" x bounds");assert.ok(Math.abs(p.z)+p.d/2<=map.ESTATE_BOUNDS+.01,p.pack+"/"+p.id+" z bounds");
+  const approaches=[];
+  for(const gap of [1.2,2.2,3.5])for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){const q={x:p.x+dx*(p.w/2+gap),z:p.z+dz*(p.d/2+gap)};if(!map.blocked(q.x,q.z,.4))approaches.push(q);}
+  assert.ok(approaches.some(q=>map.route(map.SPAWN,q).length>1),"reachable approach for "+p.pack+"/"+p.id);
+ }
+ assert.equal(map.blocked(22,-43,.33),false,"the open tower arch has a passable opening");
+ assert.equal(map.blocked(35.8,20,.4),false,"the three-piece bridge can be crossed");assert.equal(map.blocked(35.8,15,.4),true,"the stream blocks walking beside the bridge");
+});

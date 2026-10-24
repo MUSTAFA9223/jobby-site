@@ -20,7 +20,9 @@ try{
  for(let i=0;i<12;i++)clients.push(await connect(i));
  let c=clients[0];send(c,{type:"start"});await wait(()=>clients.every(p=>latest(p,"start")?.castle));
  assert.equal(latest(c,"start").castle.tasks.length,0);assert.equal("code" in latest(c,"start").castle,false);
- await pose(clients[1],{x:-24,z:20});await pose(c,map.EXITS[0]);send(c,{type:"finish"});await pause(180);assert.equal(latest(c,"complete"),undefined);
+ await pose(clients[1],{x:47,z:20});assert.equal(latest(c,"pose").x,47,"outer estate movement is not clamped to the original castle");
+ await pose(clients[1],{x:35.8,z:15});assert.equal(latest(c,"pose").x,47,"stream collision is authoritative");
+ await pose(clients[1],{x:53,z:20});assert.equal(latest(c,"pose").x,47,"estate boundary is authoritative");await pose(c,map.EXITS[0]);send(c,{type:"finish"});await pause(180);assert.equal(latest(c,"complete"),undefined);
  await pose(c,map.STATIONS.clue);await act(c,{type:"clue"});const clue=latest(c,"castle_note").note;assert.match(clue,/^RUNES:/);
  const [sequence,targetText]=clue.slice(7).split(" · SEAL: "),sequenceIds=sequence.split(" → ").map(s=>SYMBOLS.indexOf(s)),target=SYMBOLS.indexOf(targetText);assert.ok(sequenceIds.every(i=>i>=0));
  await pose(c,map.STATIONS.panel);for(const symbol of sequenceIds)await act(c,{type:"symbol",symbol});await wait(()=>latest(c,"castle_state")?.state.tasks.includes(0));

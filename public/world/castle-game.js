@@ -41,8 +41,8 @@ if(isCoop){const a=sessionStorage.getItem("jobby-world-room-avatar");if(AVATARS.
 let avatar=null,mixer=null,clips={},currentClip="",currentRequested="";
 // JOBBY is again a playable prototype avatar, as requested by the owner.
 const keysDown=new Set(),loader=new GLTFLoader();
-const scene=new THREE.Scene();scene.background=new THREE.Color("#a2bebc");scene.fog=new THREE.Fog("#a2bebc",55,125);
-const camera=new THREE.PerspectiveCamera(63,innerWidth/innerHeight,.1,120);
+const scene=new THREE.Scene();scene.background=new THREE.Color("#a2bebc");scene.fog=new THREE.Fog("#a2bebc",90,190);
+const camera=new THREE.PerspectiveCamera(63,innerWidth/innerHeight,.1,190);
 const lowPowerMobile=(navigator.maxTouchPoints>0 || Math.min(innerWidth,innerHeight)<700);
 const renderer=new THREE.WebGLRenderer({antialias:!lowPowerMobile,powerPreference:"default"});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,lowPowerMobile?1.15:1.5));renderer.setSize(innerWidth,innerHeight);
@@ -53,7 +53,7 @@ scene.add(new THREE.HemisphereLight(0xe8f4ff,0x636552,2.5));
 const sunlight=new THREE.DirectionalLight(0xffe0b7,2.8);sunlight.position.set(-6,13,-8);
 sunlight.castShadow=true;sunlight.shadow.mapSize.set(lowPowerMobile?512:1024,lowPowerMobile?512:1024);
 sunlight.shadow.camera.left=-25;sunlight.shadow.camera.right=25;sunlight.shadow.camera.top=25;sunlight.shadow.camera.bottom=-25;sunlight.shadow.normalBias=.05;scene.add(sunlight);
-const arena=buildCastle(scene,{onProgress:m=>setStatus("Preparing castle: "+m.loaded+" / "+m.requested+" model types"+(m.failed.length?" · retry available":""))}),blocks=arena.blocks,collectible=arena.collectibles;
+const arena=buildCastle(scene,{onProgress:m=>setStatus("Preparing starting area: "+m.coreLoaded+" / "+m.coreRequested+(m.failed.length?" · retry available":""))}),blocks=arena.blocks,collectible=arena.collectibles;
 const playerGroup=new THREE.Group();scene.add(playerGroup);
 arena.guard.position.set(guard.x,0,guard.z);
 function setStatus(s){$("loadStatus").textContent=s}
@@ -157,7 +157,7 @@ function reset(){
 }
 function refreshTasks(){
  tasks=[...round.tasks];arena.updateTasks(tasks);
- $("quest").textContent=hidden?"HIDDEN · The guardian cannot see you":tasks.length===3?"GATE OPEN · Escape through the east castle gate":tasks.length===0?"1 · Explore the west labyrinth → solve the rune lock":tasks.length===1?"2 · Open the Sun Vault → restore its crystal":"3 · Find the matching royal seal → place it on the east altar";
+ $("quest").textContent=hidden?"HIDDEN · The guardian cannot see you":tasks.length===3?"GATE OPEN · Explore the estate, or tap ESCAPE at the east gate":tasks.length===0?"1 · Explore the west labyrinth → solve the rune lock":tasks.length===1?"2 · Open the Sun Vault → restore its crystal":"3 · Find the matching royal seal → place it on the east altar";
  $("taskList").replaceChildren();
  for(const [i,t] of house.TASKS.entries()){const row=document.createElement("p");row.textContent=(tasks.includes(i)?"✓ ":"○ ")+t.name+" · "+t.room;row.style.color=tasks.includes(i)?"#75ffcc":t.color;$("taskList").append(row);}
  wallet();
@@ -263,8 +263,8 @@ function complete(){
 }
 $("startButton").onclick=start;
 $("againButton").onclick=()=>{reset();beginPlayerRun(house.MAP_ID);roundStartedAt=performance.now();started=true;$("endoverlay").classList.add("hidden");$("controls").classList.remove("hidden")};
-$("charactersButton").onclick=()=>{location.href="./index.html?v=15#characters"};
-$("menuButton").onclick=()=>{location.href="./index.html?v=15"};
+$("charactersButton").onclick=()=>{location.href="./index.html?v=16#characters"};
+$("menuButton").onclick=()=>{location.href="./index.html?v=16"};
 const stick=$("stick"),knob=$("knob");
 function onStick(e){
  const rect=stick.getBoundingClientRect();
@@ -319,12 +319,12 @@ const mini=$("miniMap"),mapContext=mini.getContext("2d");
 let nextMapPaint=0;
 function paintMinimap(time){
  if(mini.classList.contains("hidden")||time<nextMapPaint)return;nextMapPaint=time+.18;
- const c=mapContext,s=180/56;c.fillStyle="#6d7c6e";c.fillRect(0,0,180,180);
- for(const r of house.ROOMS){c.fillStyle=r.color;c.fillRect((r.x-r.w/2+28)*s,(r.z-r.d/2+28)*s,r.w*s,r.d*s);}
- c.fillStyle="#453e54";for(const b of blocks)c.fillRect((b.x-b.w/2+28)*s,(b.z-b.d/2+28)*s,b.w*s,b.d*s);
- function dot(x,z,color,r){c.fillStyle=color;c.beginPath();c.arc((x+28)*s,(z+28)*s,r,0,Math.PI*2);c.fill();}
+ const extent=house.ESTATE_BOUNDS+2,c=mapContext,s=180/(extent*2);c.fillStyle="#6d7c6e";c.fillRect(0,0,180,180);
+ for(const r of house.ROOMS){c.fillStyle=r.color;c.fillRect((r.x-r.w/2+extent)*s,(r.z-r.d/2+extent)*s,r.w*s,r.d*s);}
+ c.fillStyle="#453e54";for(const b of blocks)c.fillRect((b.x-b.w/2+extent)*s,(b.z-b.d/2+extent)*s,b.w*s,b.d*s);
+ function dot(x,z,color,r){c.fillStyle=color;c.beginPath();c.arc((x+extent)*s,(z+extent)*s,r,0,Math.PI*2);c.fill();}
  for(const [i,t] of house.TASKS.entries())if(!tasks.includes(i))dot(t.x,t.z,t.color,3.5);
- for(const e of house.EXITS){c.fillStyle=tasks.includes(e.task)?"#66ffd1":"#c66f80";c.fillRect((e.x+28)*s-4,(e.z+28)*s-4,8,8);}
+ for(const e of house.EXITS){c.fillStyle=tasks.includes(e.task)?"#66ffd1":"#c66f80";c.fillRect((e.x+extent)*s-4,(e.z+extent)*s-4,8,8);}
  if(!tasks.includes(0))dot(house.STATIONS.clue.x,house.STATIONS.clue.z,"#ffd369",3);
  if(!tasks.includes(1))dot(house.STATIONS.lever.x,house.STATIONS.lever.z,"#75dbff",3);
  if(Object.keys(round.jailed).length)dot(house.JAIL.x,house.JAIL.z,"#ff92a7",4);
@@ -367,9 +367,8 @@ function frame(){
     const hit=rules.stepGuard(round,guard,[self()],guardTime,clock());guardTime=0;guardTarget={...guard};if(hit.length)caught();
    }
   }
-  arena.updateRound(round,clock(),self().id,self());
-  const escaped=house.exitAt({x:px,z:pz},tasks);
-  if(escaped>=0&&!hidden){if(isCoop)coop?.tryFinish();else doAction({type:"finish"});}
+  arena.updateRound(round,clock(),self().id,self());void arena.stream(self(),performance.now());
+
   if(isCoop)coop?.sendPose({x:px,z:pz,y:py,h:heading,anim:!grounded?"Jump":length<.07?"Idle":fast?"Run":"Walk"});
  }
  if(mixer)mixer.update(delta);

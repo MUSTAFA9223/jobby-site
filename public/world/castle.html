@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
   <meta name="theme-color" content="#100f2c">
   <meta name="description" content="JOBBY WORLD - Mobile 3D adventure with original characters, touch controls, a castle, a labyrinth, and three linked escape puzzles">
-  <title>JOBBY WORLD | Alpha 0.15</title>
+  <title>JOBBY WORLD | Alpha 0.16</title>
   <link rel="stylesheet" href="./voice.css?v=3">
   <style>
     #quest{max-width:calc(100vw - 24px);white-space:normal!important;min-width:0!important;width:max-content}
@@ -67,7 +67,7 @@
 </head>
 <body>
   <div id="hud">
-    <div class="hudgroup"><span class="brand">JOBBY <span>WORLD</span></span><span class="chip" id="roundClock" aria-label="Round time">8:00</span><span class="chip">🪙 <b id="walletHud">0</b></span></div>
+    <div class="hudgroup"><span class="brand">JOBBY <span>WORLD</span></span><span class="chip" id="roundClock" aria-label="Round time">12:00</span><span class="chip">🪙 <b id="walletHud">0</b></span></div>
     <div class="hudgroup"><span class="chip">🗝️ <b id="keysHud">0 / 3</b></span><button id="hintButton" aria-label="Get a puzzle hint">?</button><button class="smallbtn" id="tasksToggle" aria-label="Tasks">☷</button><button class="smallbtn" id="mapToggle" aria-label="Map">⌖</button><button class="smallbtn" id="menuButton" aria-label="Menu">☰</button></div>
   </div>
   <div class="glass" id="quest">Explore the labyrinth, recover the crystal and restore the royal seal</div>
@@ -78,22 +78,22 @@
   <canvas id="miniMap" class="hidden" width="180" height="180" aria-label="Area minimap"></canvas><div id="controls" class="hidden"><div id="stick"><div id="knob"></div></div><div id="cameraActions"><button id="cameraReset" class="cameraButton">🎯 RESET</button><button id="cameraZoom" class="cameraButton">🔍 ZOOM</button></div><div id="actions"><button id="run" class="act"><span class="emoji">⚡</span>RUN</button><button id="jump" class="act"><span class="emoji">⬆</span>JUMP</button></div><button id="interact" type="button">FIND A TASK / HIDE SPOT</button><div id="guardStatus">GUARDIAN ON PATROL</div><div id="hint">Drag to rotate 360° · Pinch with two fingers to zoom</div></div>
   <div id="menu">
     <div class="glass panel">
-      <div class="eyebrow">CASTLE & LABYRINTH · ALPHA 0.15</div>
+      <div class="eyebrow">CASTLE & LABYRINTH · ALPHA 0.16</div>
       <div class="headline">JOBBY <em>WORLD</em></div>
-      <div class="subtitle">Play as your favorite hero in a full 3D world.<br>An eight-minute castle adventure. Explore the labyrinth, solve the rune lock, recover the Sun Crystal, and return the royal seal. Hide from the guardian and rescue your friends.</div>
+      <div class="subtitle">Play as your favorite hero in a full 3D world.<br>A twelve-minute castle estate with all 124 original environment models. Explore the labyrinth, solve the rune lock, recover the Sun Crystal, and return the royal seal. Hide from the guardian and rescue your friends.</div>
       <div class="secTitle">CHOOSE YOUR HERO <span style="color:#a5a3d6;font-weight:400">— 4 free · 2 unlockable with points</span></div>
       <div class="avatars" id="avatars"></div>
       <div id="selectedInfo" style="font-size:11px;margin-top:8px;color:#d1c7ff;min-height:18px"></div>
       <button class="mainBtn" id="startButton">▶ ENTER CASTLE ESCAPE</button>
       <a class="mainBtn secondaryBtn" href="./rooms.html?map=castle-dungeon-v1" style="box-sizing:border-box;text-decoration:none">👥 PRIVATE CO-OP + VOICE</a>
-      <p id="assetNote">Built with Kenney Castle Kit + Quaternius Modular Dungeons · <a href="./castle-guide.html">MAP & PUZZLE GUIDE</a> · <a href="./asset-library.html">EXPLORE THE ASSET COLLECTION</a></p><div id="loadBar"><div id="barProgress"></div></div>
+      <p id="assetNote">All 124 models placed in one connected castle estate · <a href="./castle-guide.html">MAP & PUZZLE GUIDE</a> · <a href="./asset-library.html">EXPLORE THE ASSET COLLECTION</a></p><div id="loadBar"><div id="barProgress"></div></div>
       <div id="loadStatus" role="status" style="font-size:11px;color:#c3d6e4;padding-top:5px">Preparing castle assets · Your selected hero loads separately</div>
       <p class="notice">Solo points save to your player profile on Cloudflare. Manage your name and recovery code in WORLD → PLAYER. Private co-op supports 2–12 players with optional room voice. After entering the game, tap the microphone icon to enable your mic.</p>
     </div>
   </div>
   <div id="endoverlay" class="hidden"><div class="glass panel"><div class="star">🏆</div><div class="endTitle">ESCAPE COMPLETE!</div><p class="subtitle">You solved all three castle puzzles and escaped. You earned <b style="color:#ffd76a">50 points</b> for escaping.</p><button class="mainBtn" id="againButton">↻ PLAY AGAIN</button><button class="mainBtn secondaryBtn" id="charactersButton">CHOOSE ANOTHER HERO</button></div></div>
   <script type="module">
-    import("./castle-game.js?v=1").catch(error=>{
+    import("./castle-game.js?v=2").catch(error=>{
       console.error(error);document.getElementById("loadStatus").textContent="3D could not start in this browser. Try Chrome with graphics enabled.";
       const a=document.createElement("a");a.href="./castle-guide.html";a.className="mainBtn secondaryBtn";a.textContent="VIEW CASTLE ESCAPE MAP";document.querySelector("#menu .panel").append(a);
     });

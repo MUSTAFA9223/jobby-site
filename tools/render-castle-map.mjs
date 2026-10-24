@@ -1,0 +1,15 @@
+import * as map from "../public/world/castle-layout.js";
+import {writeFileSync} from "node:fs";
+const s=8.4,off=42,extent=54,X=x=>off+(x+extent)*s,Y=z=>off+(z+extent)*s;
+let svg='<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1010" viewBox="0 0 1400 1010"><rect width="1400" height="1010" fill="#10192b"/><g font-family="system-ui,sans-serif">';
+for(const r of map.ROOMS)svg+=`<rect x="${X(r.x-r.w/2)}" y="${Y(r.z-r.d/2)}" width="${r.w*s}" height="${r.d*s}" rx="3" fill="${r.color}"/>`;
+svg+=`<rect x="${X(32.6)}" y="${Y(12)}" width="${6.4*s}" height="${16*s}" fill="#397fa0"/>`;
+for(const p of map.ENVIRONMENT_PLACEMENTS)svg+=`<rect x="${X(p.x-p.w/2)}" y="${Y(p.z-p.d/2)}" width="${Math.max(1,p.w*s)}" height="${Math.max(1,p.d*s)}" fill="${p.pack==='castle'?'#d7b680':'#aea0c4'}" stroke="#202a3b" stroke-width=".5"/>`;
+for(const w of map.WALLS)svg+=`<rect x="${X(w.x-w.w/2)}" y="${Y(w.z-w.d/2)}" width="${w.w*s}" height="${w.d*s}" fill="#e2d0b0"/>`;
+for(const h of map.HIDES)svg+=`<circle cx="${X(h.x)}" cy="${Y(h.z)}" r="5" fill="#a3c7ff"/>`;
+for(const [p,label,color] of [[map.SPAWN,'S','#fff'],[map.STATIONS.clue,'R','#ffdc94'],[map.STATIONS.panel,'1','#ffdc94'],[map.STATIONS.fuse,'2','#7deff5'],[map.STATIONS.socket,'2','#7deff5'],[map.STATIONS.conveyor,'3','#c4a1ff'],[map.EXITS[0],'E','#88f7cc']])svg+=`<circle cx="${X(p.x)}" cy="${Y(p.z)}" r="10" fill="${color}"/><text x="${X(p.x)}" y="${Y(p.z)+4}" fill="#172034" text-anchor="middle" font-size="12" font-weight="900">${label}</text>`;
+for(const r of map.ESTATE_REGIONS)svg+=`<text x="${X(r.entry.x)}" y="${Y(r.entry.z)-10}" fill="#fff3d6" text-anchor="middle" font-size="11" font-weight="900" stroke="#243044" stroke-width="2" paint-order="stroke">${r.name}</text>`;
+svg+='<text x="1000" y="85" fill="#8df2d5" font-size="13" font-weight="900" letter-spacing="2">JOBBY WORLD · ALPHA 0.16</text><text x="1000" y="146" fill="#fff3d6" font-size="40" font-weight="900">ONE CASTLE</text><text x="1000" y="190" fill="#fff3d6" font-size="40" font-weight="900">ESTATE</text><text x="1000" y="250" fill="#ffdc94" font-size="22" font-weight="800">124 / 124 MODELS</text><text x="1000" y="281" fill="#c2cede" font-size="17">76 castle + 48 dungeon</text>';
+for(const [i,t] of ['01  Find the runes','02  Recover the crystal','03  Return the royal seal','04  Tap ESCAPE when ready'].entries())svg+=`<text x="1000" y="${370+i*52}" fill="#c2cede" font-size="18">${t}</text>`;
+svg+='<text x="1000" y="675" fill="#a3c7ff" font-size="17">S Start · E Exit · R Runes</text><text x="1000" y="710" fill="#c2cede" font-size="17">12 minutes · Solo / 2–12</text><text x="1000" y="745" fill="#c2cede" font-size="17">Explore before finishing</text><text x="42" y="988" fill="#8fa5bc" font-size="13">ACTUAL SHARED WORLD LAYOUT · EVERY MODEL IS PLACED IN THIS MAP · NEARBY AREAS LOAD AS YOU EXPLORE</text></g></svg>';
+writeFileSync(new URL("../public/world/assets/castle-map.svg",import.meta.url),svg);

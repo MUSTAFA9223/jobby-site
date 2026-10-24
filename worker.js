@@ -47,7 +47,7 @@ export default {
       });
     }
     if(path==="/api/world/leaderboard"||path.startsWith("/api/world/profile"))return playerApi(request,env);
-    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.15",playerSaves:!!env.WORLD_PLAYERS,map:house.MAP_ID,voice:"room-audio",warehouse:warehouse.MAP_ID,race:race.MAP_ID,castle:castle.MAP_ID},env.WORLD_ROOM?200:503);
+    if(path==="/api/world/health")return json({ok:!!env.WORLD_ROOM,service:"JOBBY WORLD Co-op",version:"0.16",playerSaves:!!env.WORLD_PLAYERS,map:house.MAP_ID,voice:"room-audio",warehouse:warehouse.MAP_ID,race:race.MAP_ID,castle:castle.MAP_ID},env.WORLD_ROOM?200:503);
     if(!path.startsWith("/api/world/"))return env.ASSETS.fetch(request);
     if(!env.WORLD_ROOM)return json({error:"Room service is not configured."},503);
     if(request.method==="POST" && path==="/api/world/rooms"){

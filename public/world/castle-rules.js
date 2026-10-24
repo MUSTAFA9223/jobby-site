@@ -23,6 +23,7 @@ export function tickRound(r,now){
 export function isBlocked(r,x,z,now,radius=.33){return map.blocked(x,z,radius)||(now>=r.gateUntil&&Math.abs(x-map.DOOR.x)<map.DOOR.w/2+radius&&Math.abs(z-map.DOOR.z)<map.DOOR.d/2+radius);}
 export function availableAction(r,p,now){
  if(r.jailed[p.id])return {type:"jailed",label:"WAIT FOR RESCUE",ms:0};
+ if(!p.hidden&&map.exitAt(p,r.tasks)>=0)return {type:"finish",label:"ESCAPE THE CASTLE",ms:0};
  if(p.hidden)return {type:"unhide",label:"LEAVE HIDING",ms:0};
  for(const id of Object.keys(r.jailed))if(id!==p.id&&near(p,map.JAIL))return {type:"rescue",target:id,label:"RESCUE TEAMMATE",ms:2000};
  if(near(p,map.STATIONS.clue))return {type:"clue",label:"READ RUNE TABLET",ms:0};

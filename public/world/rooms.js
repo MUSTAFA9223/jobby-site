@@ -46,7 +46,7 @@ function render(){
 }
 function beginGame(){
   if(!code)return;
-  voice.close();location.href=(roomMap==="castle-dungeon-v1"?"./castle.html?room=":roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=15";
+  voice.close();location.href=(roomMap==="castle-dungeon-v1"?"./castle.html?room=":roomMap==="jobby-race-v1"?"./race.html?room=":roomMap==="warehouse-v1"?"./warehouse.html?room=":roomMap==="big-house-v1"?"./house.html?room=":"./play.html?room=")+encodeURIComponent(code)+"&v=16";
 }
 async function connect(){
   try{await linkRoomSession(id);}catch(e){showStatus(e.message,true);return;}

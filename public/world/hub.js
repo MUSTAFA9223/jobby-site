@@ -222,7 +222,7 @@ function play(){
  syncState();
  if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
  save();
- location.href="./castle.html?autostart=1&v=15";
+ location.href="./castle.html?autostart=1&v=16";
 }
 document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 $("playNow").onclick=play;$("soloMode").onclick=play;$("playSelected").onclick=play;
