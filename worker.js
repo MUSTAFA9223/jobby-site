@@ -35,6 +35,21 @@ function roomStub(env,code){
 export default {
   async fetch(request,env){
     const url=new URL(request.url),path=url.pathname;
+    // Private PORT NINE test: authorize the existing JOBBY WORLD owner session server-side.
+    if(path==="/world/port-nine-private-map.html")return new Response("Not found",{status:404,headers:{"cache-control":"no-store"}});
+    if(path==="/world/port-nine-owner-map" && request.method==="POST"){
+      if(request.headers.get("origin")!==url.origin)return new Response("Forbidden",{status:403});
+      let token;try{token=(await request.json()).token}catch{return new Response("Invalid request",{status:400})}
+      const id=await publicPlayerId(token);
+      if(!id||!env.WORLD_PLAYERS)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
+      const store=env.WORLD_PLAYERS.get(env.WORLD_PLAYERS.idFromName("players-v1"));
+      const check=await store.fetch("https://players.internal/_challenge_owner",{method:"POST",body:JSON.stringify({session:id})});
+      if(!check.ok||(await check.json()).owner!==true)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
+      const asset=new URL("/world/port-nine-private-map.html",url);
+      const page=await env.ASSETS.fetch(new Request(asset.toString()));
+      if(!page.ok)return new Response("Map unavailable",{status:502});
+      return new Response(page.body,{status:200,headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"}});
+    }
     // Keep 3D assets and the WebSocket API on the same public domain.
     if(path==="/world/models/JOBBY.glb"){
       if(request.method!=="GET" && request.method!=="HEAD")return json({error:"Method not allowed."},405);
