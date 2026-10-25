@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JOBBY · Owner Map Test</title><style>html,body{margin:0;height:100%;background:#0d1827;color:white;font:16px system-ui}#msg{padding:24px;text-align:center}iframe{border:0;width:100%;height:100%;display:none}</style></head><body><div id="msg">Checking JOBBY WORLD owner access…</div><iframe id="map" allow="fullscreen"></iframe><script>
+(async()=>{
+const msg=document.getElementById('msg'),frame=document.getElementById('map');
+try{
+const token=JSON.parse(localStorage.getItem('jobby-player-active-v1')||'null');
+if(!token){msg.textContent='Please open JOBBY WORLD and activate your player profile first.';return}
+const response=await fetch('/world/port-nine-owner-map',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token}),cache:'no-store'});
+if(!response.ok){msg.textContent=response.status===403?'Owner-only preview. Sign in to your JOBBY WORLD owner profile.':'Map unavailable ('+response.status+').';return}
+frame.srcdoc=await response.text();frame.style.display='block';msg.remove();
+}catch(e){msg.textContent='Unable to open private preview: '+e.message}
+})();
+</script></body></html>
