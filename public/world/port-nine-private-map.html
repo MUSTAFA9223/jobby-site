@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>JOBBY PORT NINE — Mobile Map Preview</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;overflow:hidden;background:#9fb9c8;font-family:system-ui;color:#fff;touch-action:none}canvas{display:block}#hud{position:absolute;top:12px;left:12px;background:#071827b8;padding:10px 14px;border-radius:12px;font-size:12px;pointer-events:none}#hud b{font-size:16px}#joy{position:absolute;bottom:28px;left:25px;width:132px;height:132px;border-radius:50%;border:2px solid #ffffff75;background:#ffffff20;touch-action:none}#stick{position:absolute;left:40px;top:40px;width:48px;height:48px;background:#ffffffa8;border-radius:50%;box-shadow:0 0 10px #0004}#jump{position:absolute;bottom:57px;right:25px;width:80px;height:80px;border-radius:50%;border:2px solid #fff9;background:#1b709ed9;color:white;font-weight:800;font-size:16px;touch-action:none}#reset{position:absolute;top:14px;right:14px;border:1px solid #fff9;border-radius:8px;padding:9px 13px;background:#10293ab8;color:white}#hint{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);font-size:11px;background:#10293aa9;padding:5px 9px;border-radius:8px;white-space:nowrap}@media(min-width:800px){#joy,#jump{opacity:.65}}
+</style></head><body><div id="hud"><b>JOBBY · PORT NINE</b><div>Mobile map prototype · cargo yard</div><div id="stats">Loading map...</div></div><button id="reset">RESPAWN</button><div id="joy"><div id="stick"></div></div><button id="jump">JUMP</button><div id="hint">Drag right side to look · Left joystick to move</div>
+<div id="bootstatus" role="status" style="position:fixed;z-index:1000;inset:0;background:#142b38;color:white;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font:16px system-ui;text-align:center;padding:24px"><b>JOBBY PORT NINE</b><span id="bootmessage">Starting lightweight mobile map...</span><button id="retryboot" style="display:none;padding:12px 20px;border:0;border-radius:10px;background:#2b92b4;color:white;font-weight:bold" onclick="location.reload()">RETRY</button></div>
+<script>
+window.addEventListener('error',e=>{const m=document.getElementById('bootmessage');if(m)m.textContent='Could not start map: '+(e.message||'unknown error');const b=document.getElementById('retryboot');if(b)b.style.display='block'});
+window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('bootmessage');if(m)m.textContent='Loading failed. Check connection and retry.';const b=document.getElementById('retryboot');if(b)b.style.display='block'});
+</script>
+<script type="module">
+const boot=document.getElementById('bootmessage');
+let THREE;
+for(const url of ['https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js','https://unpkg.com/three@0.170.0/build/three.module.js','https://esm.sh/three@0.170.0']) {
+  try { boot.textContent='Loading 3D engine...'; THREE=await Promise.race([import(url),new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),9000))]);break; }catch(err){console.warn('Engine source unavailable',url,err);}
+}
+if(!THREE){boot.textContent='3D engine could not load. Try a different connection or retry.';document.getElementById('retryboot').style.display='block';throw new Error('All 3D engine sources failed')}
+boot.textContent='Building cargo yard...';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x8ab3ca);scene.fog=new THREE.Fog(0x8ab3ca,105,235);
+const camera=new THREE.PerspectiveCamera(67,innerWidth/innerHeight,.1,450);
+const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance',alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.15));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xf5e5c7,0x576a72,2));const sun=new THREE.DirectionalLight(0xffd6a0,2);sun.position.set(-70,100,-65);scene.add(sun);
+const mats=[0xa8402e,0x8c3527,0x2f5f86,0x24486b,0x2e6b4a,0x7d6a2e,0xb06a24,0xc0562c,0x8d8a84,0xd6ccb6].map(color=>new THREE.MeshLambertMaterial({color}));
+const metal=new THREE.MeshLambertMaterial({color:0x697986}),concrete=new THREE.MeshLambertMaterial({color:0x929b9b}),dark=new THREE.MeshLambertMaterial({color:0x364651}),sea=new THREE.MeshLambertMaterial({color:0x26768d});
+const obstacles=[],tops=[];let objects=0;const sharedBox=new THREE.BoxGeometry(1,1,1);
+function box(x,y,z,w,h,d,mat,solid=true){const o=new THREE.Mesh(sharedBox,mat);o.position.set(x,y,z);o.scale.set(w,h,d);scene.add(o);objects++;if(solid){obstacles.push({x,y,z,w,h,d});tops.push({x,y:y+h/2,z,w,d});}return o}
+box(0,-.3,12,215,.6,145,concrete,false);box(0,-.35,-85,215,.5,46,sea,false);
+for(const x of [-106,105])box(x,3,10,1,6,150,dark);box(0,3,85,213,6,1,dark);box(0,2.2,-63,213,4.4,1,dark);
+// Original Port Nine nine-band container maze layout; lightweight reconstruction.
+const bands=[[-32,2],[-24.9,3],[-11.2,2],[-4.3,3],[5.4,2],[16.9,3],[26.4,2],[37.1,3],[46.6,2]];
+const reserved=[[-47,-26,-5.4,3.8],[16,63,16.2,24.9],[-16,-.5,-11.9,-5.8],[50,74.5,-5,3.8]];
+function reservedSpace(x,z){return reserved.some(([x0,x1,z0,z1])=>x+3.03>x0&&x-3.03<x1&&z+1.22>z0&&z-1.22<z1)}
+let seed=90311;function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
+let count=0;
+for(let b=0;b<bands.length;b++){const [z0,rows]=bands[b];for(let r=0;r<rows;r++){for(let i=0;i<17;i++){const x=-43+i*7.1,z=z0+r*2.7;if(reservedSpace(x,z)||rand()<.18||((b===3||b===5)&&i>8&&i<11))continue;const height=rand()<.38?2:rand()<.17?3:1;for(let level=0;level<height;level++){box(x,1.295+2.59*level,z,6.06,2.59,2.44,mats[Math.floor(rand()*mats.length)]);count++}}}}
+// Warehouse, dockside, gates and raised landmarks.
+// Source-map reserved areas remain accessible for hiding, pursuit and future team modes.
+box(-85,4,-1,31,8,58,dark);box(-85,8.25,-1,33,.6,60,metal);
+for(const z of [-24,24])for(const x of [-99,-71])box(x,4,z,1,8,1,metal);
+for(const x of [-66,65]){box(x,1,66,10,2,5,concrete);box(x,3,66,7,2,5,dark)}
+// Two simplified gantry cranes with legs, overhead beams and catwalks.
+function crane(cx,cz,h){for(const x of [cx-17,cx+17])for(const z of [cz-7,cz+7])box(x,h/2,z,1.4,h,1.4,metal);box(cx,h,cz,37,1.5,17,metal);box(cx,h+2,cz,44,1,2,metal);box(cx,h-2,cz,34,.45,2,metal)}
+crane(5,-48,24);crane(45,5,17);
+// Port gate, guard cabins, weighbridge, dock clutter and warehouse entrance.
+for(const x of [-16,16]){box(x,2,74,9,4,5,metal);box(x,4.2,74,10,.4,6,dark)}
+box(0,.13,76,15,.26,6,metal,false);
+for(const x of [-60,-49,72,83]){box(x,.75,-47,2,1.5,3,mats[6]);box(x,1.55,-47,2.2,.12,3.2,metal)}
+for(const z of [-18,5,29])box(-69,2,z,1,4,5,metal);
+// Moored ship, reachable as dockside scenery.
+box(14,1.3,-76,56,2.6,14,dark);box(14,3.2,-76,48,1.2,11,metal);box(-4,5,-76,12,3,9,concrete);
+// Scaffold and stepped access to higher containers.
+for(let i=0;i<5;i++){box(-48+i*2.2,.28+i*.55,-2,2.4,.5,4,metal)}
+for(let i=0;i<8;i++){box(17+i*5,.28+i*.62,20.7,5,.5,4,metal)}
+// Floodlight masts and additional rooftop connections.
+for(const [x,z] of [[-62,-34],[80,-29],[80,49],[-55,53]]){box(x,8,z,.45,16,.45,metal);box(x,16.2,z,4,.4,1,concrete)}
+for(let i=0;i<6;i++)box(-33+i*11,5.25,28,10,.25,1.8,metal);
+// PORT NINE environmental details: rooftop railings, container doors, vents,
+// dock bollards, mooring posts, cargo pallets and floodlight housings.
+const trim=new THREE.MeshLambertMaterial({color:0x404b52}),yellow=new THREE.MeshLambertMaterial({color:0xd9a33b}),glass=new THREE.MeshLambertMaterial({color:0x91b8c6});
+function decor(x,y,z,w,h,d,mat){return box(x,y,z,w,h,d,mat,false)}
+for(let i=0;i<18;i++){const x=-54+i*7.4;decor(x,.08,-61,.8,.16,1.6,yellow);decor(x,.32,-59,.32,.64,.32,trim)}
+for(const x of [-60,-49,72,83]){decor(x,2.2,-47,.5,1.2,.5,trim);decor(x,2.9,-47,1.5,.3,1.5,yellow)}
+for(const [x,z] of [[-62,-34],[80,-29],[80,49],[-55,53]]){decor(x,16.7,z,4,.7,1.4,yellow);decor(x,16.7,z-1,3,.4,.25,glass)}
+for(let i=0;i<16;i++){const x=-45+i*7;decor(x,.15,55,3,.3,.4,yellow)}
+// Guard rails mark elevated catwalks without creating extra collision walls.
+for(const z of [11.05,12.95,27.05,28.95])for(let i=0;i<12;i++){const x=-40+i*9;decor(x,5.9,z,.09,1.25,.09,metal);decor(x+4.5,6.5,z,9,.09,.09,metal)}
+// Loading ramp and rooftop connections to the hand-built reserved footprints.
+for(let i=0;i<8;i++){decor(20+i*5,1.5+i*.6,20.7,4.6,.14,3.5,yellow)}
+// Exterior warehouse vents and doors.
+for(const z of [-23,-8,7,22]){decor(-69.3,3,z,.2,5,4,trim);decor(-69.45,5.7,z,.24,.8,3.6,glass)}
+for(let i=0;i<7;i++){decor(-99+i*4.7,8.8,-1,2,.35,2,trim)}
+// Vessel deck details and railings.
+for(let i=0;i<12;i++){const x=-11+i*4.4;decor(x,4.1,-70.5,.12,1.8,.12,yellow);decor(x,4.1,-81.5,.12,1.8,.12,yellow)}
+decor(14,4.9,-70.5,53,.12,.12,metal);decor(14,4.9,-81.5,53,.12,.12,metal);
+for(const x of [-1,8,17,26]){decor(x,4.2,-76,5,.6,3,mats[2]);decor(x,4.6,-76,5,.12,3,metal)}
+// Warehouse skylights and lane markers.
+for(let i=0;i<6;i++)decor(-95+i*4,8.62,-1,1.4,.12,47,glass);
+for(let i=0;i<10;i++)decor(-47+i*11,.03,61,5,.06,.13,yellow);
+// Floor access walkway across the containers.
+for(let i=0;i<9;i++)box(-35+i*11,5.25,12,10,.25,1.8,metal);
+const player=new THREE.Vector3(0,1.8,68);let vy=0,grounded=true,yaw=0,pitch=.15;const radius=.52,height=1.8;
+function floorY(x,z,foot){let y=0;for(const t of tops){if(Math.abs(x-t.x)<t.w/2-radius*.3&&Math.abs(z-t.z)<t.d/2-radius*.3&&t.y<=foot+.25&&t.y>y)y=t.y}return y}
+function blocked(x,z,feet){for(const o of obstacles){if(Math.abs(x-o.x)<o.w/2+radius&&Math.abs(z-o.z)<o.d/2+radius&&feet<o.y+o.h/2-.1&&feet+height>o.y-o.h/2+.1)return true}return false}
+const keys=new Set();addEventListener('keydown',e=>{keys.add(e.code);if(e.code==='Space')jump()});addEventListener('keyup',e=>keys.delete(e.code));
+let ax=0,az=0;const joy=document.querySelector('#joy'),stick=document.querySelector('#stick');let joyId=null;
+function joyMove(e){const r=joy.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),l=Math.max(1,Math.hypot(dx,dy)),m=Math.min(1,l/47);ax=dx/l*m;az=-dy/l*m;stick.style.transform=`translate(${ax*42}px,${-az*42}px)`}
+joy.addEventListener('pointerdown',e=>{joyId=e.pointerId;joy.setPointerCapture(joyId);joyMove(e)});joy.addEventListener('pointermove',e=>{if(e.pointerId===joyId)joyMove(e)});function joyStop(e){if(e.pointerId!==joyId)return;joyId=null;ax=az=0;stick.style.transform=''}joy.addEventListener('pointerup',joyStop);joy.addEventListener('pointercancel',joyStop);
+function jump(){if(grounded){vy=9.8;grounded=false}}document.querySelector('#jump').addEventListener('pointerdown',e=>{e.preventDefault();jump()});
+document.querySelector('#reset').onclick=()=>{player.set(0,1.8,68);vy=0;grounded=true};
+let lookId=null,lastX=0,lastY=0;renderer.domElement.addEventListener('pointerdown',e=>{if(e.clientX<innerWidth*.36)return;lookId=e.pointerId;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(lookId)});renderer.domElement.addEventListener('pointermove',e=>{if(e.pointerId!==lookId)return;yaw-=(e.clientX-lastX)*.005;pitch=Math.max(-.55,Math.min(.75,pitch+(e.clientY-lastY)*.003));lastX=e.clientX;lastY=e.clientY});renderer.domElement.addEventListener('pointerup',e=>{if(e.pointerId===lookId)lookId=null});renderer.domElement.addEventListener('pointercancel',e=>{if(e.pointerId===lookId)lookId=null});addEventListener('blur',()=>{keys.clear();ax=az=0;joyId=lookId=null;stick.style.transform=''});
+const clock=new THREE.Clock();let frames=0,elapsed=0;
+function tick(){requestAnimationFrame(tick);const dt=Math.min(clock.getDelta(),.033);const forward=(keys.has('KeyW')?1:0)-(keys.has('KeyS')?1:0)+az,side=(keys.has('KeyD')?1:0)-(keys.has('KeyA')?1:0)+ax;const len=Math.max(1,Math.hypot(forward,side)),s=7.2*dt;const dx=(Math.sin(yaw)*forward+Math.cos(yaw)*side)/len*s,dz=(-Math.cos(yaw)*forward+Math.sin(yaw)*side)/len*s;const foot=player.y-height;
+const step=0.42;const tryX=player.x+dx,tryZ=player.z+dz;if(!blocked(tryX,player.z,foot))player.x=tryX;else if(grounded&&!blocked(tryX,player.z,foot+step)){player.x=tryX;player.y+=step}if(!blocked(player.x,tryZ,player.y-height))player.z=tryZ;else if(grounded&&!blocked(player.x,tryZ,player.y-height+step)){player.z=tryZ;player.y+=step}player.x=THREE.MathUtils.clamp(player.x,-102,102);player.z=THREE.MathUtils.clamp(player.z,-61,82);
+vy-=23*dt;let nextFoot=player.y-height+vy*dt;const floor=floorY(player.x,player.z,Math.max(player.y-height,nextFoot));if(nextFoot<=floor&&vy<=0){nextFoot=floor;vy=0;grounded=true}else grounded=false;player.y=nextFoot+height;
+if(player.y < -15){player.set(0,1.8,68);vy=0;grounded=true}camera.position.set(player.x,player.y+.2,player.z);camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=-pitch;renderer.render(scene,camera);
+frames++;elapsed+=dt;if(elapsed>1.5){document.querySelector('#stats').textContent=`${count} containers · ${objects} meshes · ${Math.round(frames/elapsed)} FPS`;frames=0;elapsed=0}}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});tick();document.getElementById('bootstatus').remove();
+</script></body></html>
