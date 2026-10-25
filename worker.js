@@ -40,11 +40,14 @@ export default {
     if(path==="/world/port-nine-owner-map" && request.method==="POST"){
       if(request.headers.get("origin")!==url.origin)return new Response("Forbidden",{status:403});
       let token;try{token=(await request.json()).token}catch{return new Response("Invalid request",{status:400})}
-      const id=await publicPlayerId(token);
-      if(!id||!env.WORLD_PLAYERS)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
-      const store=env.WORLD_PLAYERS.get(env.WORLD_PLAYERS.idFromName("players-v1"));
-      const check=await store.fetch("https://players.internal/_challenge_owner",{method:"POST",body:JSON.stringify({session:id})});
-      if(!check.ok||(await check.json()).owner!==true)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
+      // Player recovery tokens are not room session tokens. Validate through the
+      // existing authenticated profile API, then check its server-side owner flag.
+      if(typeof token!=="string"||!/^[a-f0-9]{64}$/.test(token))return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
+      const profileRequest=new Request(new URL("/api/world/profile",url),{method:"GET",headers:{"authorization":"Bearer "+token}});
+      const check=await playerApi(profileRequest,env);
+      if(!check.ok)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
+      const profile=await check.json();
+      if(profile.owner!==true)return new Response("Owner access required",{status:403,headers:{"cache-control":"no-store"}});
       const asset=new URL("/world/port-nine-private-map.html",url);
       const page=await env.ASSETS.fetch(new Request(asset.toString()));
       if(!page.ok)return new Response("Map unavailable",{status:502});
