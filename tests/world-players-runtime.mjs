@@ -1,6 +1,7 @@
 import {Miniflare,convertV4MiniflareOptions} from "miniflare";
 import assert from "node:assert/strict";
 import {randomBytes,randomUUID} from "node:crypto";
+import {AVATARS} from "../public/world/characters.js";
 const mf=new Miniflare(convertV4MiniflareOptions({modules:true,scriptPath:process.argv[2],compatibilityDate:"2026-10-01",durableObjects:{WORLD_ROOM:{className:"WorldRoom",useSQLite:true},WORLD_PLAYERS:{className:"WorldPlayers",useSQLite:true}}}));
 const a=randomBytes(32).toString("hex"),b=randomBytes(32).toString("hex");
 async function call(path,token,body,origin="https://game.test"){
@@ -17,6 +18,13 @@ try{
  assert.equal((await call("profile","0".repeat(64))).status,404);
  assert.equal((await call("profile/create",randomBytes(32).toString("hex"),{},"https://evil.test")).status,403);
  assert.equal((await call("profile/sync",b,{actions:[{type:"select",avatar:"__proto__"}]})).data.state.points,0);
+ const locked=AVATARS.filter(a=>a.locked),c=randomBytes(32).toString("hex");
+ let lockedProfile=await call("profile/create",c,{legacy:{points:1000000,selected:locked[0].id,unlocked:locked.map(a=>a.id)}});
+ assert.equal(lockedProfile.data.state.selected,"JOBBY","imported saves cannot equip locked arrivals");
+ assert.deepEqual(lockedProfile.data.state.unlocked,[],"forged ownership of new arrivals is discarded");
+ lockedProfile=await call("profile/sync",c,{actions:locked.map(a=>({type:"select",avatar:a.id}))});
+ assert.equal(lockedProfile.data.state.selected,"JOBBY","server rejects all 47 locked arrivals");
+ assert.equal(lockedProfile.data.state.points,1000000,"locked previews cannot spend a player's points");
  const run=randomUUID(),actions=[{type:"start",run,map:"classic",at:Date.now()},{type:"task",run,index:0},{type:"task",run,index:1},{type:"task",run,index:2},{type:"finish",run}];
  p=await call("profile/sync",a,{actions});assert.equal(p.data.state.points,410);assert.equal(p.data.wins,1);
  p=await call("profile/sync",a,{actions});assert.equal(p.data.state.points,410,"replayed round earns nothing twice");assert.equal(p.data.wins,1);
