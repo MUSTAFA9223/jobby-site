@@ -1,3 +1,4 @@
+import {AVATARS,canUseAvatar} from "./characters.js?v=1";
 import {saveSelection,playerInfo,renamePlayer,newPlayer,restorePlayer,switchPlayer,recoveryCode,leaderboard,syncProfile,claimOwner} from "./player-profile.js?v=4";
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
@@ -5,21 +6,14 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 const $=id=>document.getElementById(id);
 const JOBBY_MODEL="./models/JOBBY.glb";
-const AVATARS=[
- {id:"JOBBY",name:"JOBBY 3D (Prototype)",cost:0,size:1941348},
- {id:"Casual_Male",name:"Explorer",cost:0,size:1238384},
- {id:"Ninja_Male",name:"Ninja",cost:0,size:1058660},
- {id:"Pug",name:"Pug",cost:0,size:1045324},
- {id:"Wizard",name:"Wizard",cost:80,size:1260568},
- {id:"Pirate_Female",name:"Pirate",cost:120,size:1413296}
-];
+
 const urlOf=a=>a.id==="JOBBY"?JOBBY_MODEL:"./models/"+encodeURIComponent(a.id)+".glb";
 const STORAGE="jobby-world-v01",HISTORY="jobby-world-scores-v01";
 const fallback={points:0,unlocked:[],best:0,selected:"JOBBY"};
 let state={...fallback};
 try{state={...fallback,...JSON.parse(localStorage.getItem(STORAGE)||"{}")}}catch(e){}
 if(!Array.isArray(state.unlocked))state.unlocked=[];
-const owned=a=>a.cost===0||state.unlocked.includes(a.id);
+const owned=a=>canUseAvatar(a,state);
 if(!AVATARS.some(a=>a.id===state.selected&&owned(a)))state.selected="JOBBY";
 try{if(!localStorage.getItem("jobby-world-alpha06-default")){if(state.selected==="Casual_Male")state.selected="JOBBY";localStorage.setItem(STORAGE,JSON.stringify(state));localStorage.setItem("jobby-world-alpha06-default","1")}}catch(e){}
 const save=()=>{try{saveSelection(state)}catch(e){}};
@@ -33,6 +27,7 @@ function updateStats(){
  $("wallet").textContent=money(state.points);
  $("myPoints").textContent=money(state.points);
  $("myOwned").textContent=AVATARS.filter(owned).length+" / "+AVATARS.length;
+ $("charCounter").textContent=AVATARS.length+" CHARACTERS";
  const wins=playerInfo().profile?playerInfo().profile.wins+(state.legacyWins||0):latestScores().length;
  $("myWins").textContent=wins;
  $("leaderWins").textContent=playerInfo().profile?.rankings?.[rankingMode]?.wins||0;
@@ -113,10 +108,10 @@ function renderCards(){
  for(const a of AVATARS){
   const item=document.createElement("button");item.type="button";item.className="avatarCard"+(state.selected===a.id?" selected":"");item.dataset.id=a.id;
   const img=document.createElement("img");img.className="portrait";img.alt="Portrait of "+a.name;
-  img.src=cachedPortrait(a)||placeholder(a.name);
+  img.loading="lazy";img.decoding="async";img.src=a.portrait||cachedPortrait(a)||placeholder(a.name);
   img.addEventListener("error",()=>{img.src=placeholder(a.name)},{once:true});
   const name=document.createElement("span");name.className="name";name.textContent=a.name;
-  const meta=document.createElement("span");meta.className="meta";meta.textContent=a.id==="JOBBY"?"✓ FREE · 3D prototype":owned(a)?"✓ AVAILABLE":"🪙 "+money(a.cost)+" points";
+  const meta=document.createElement("span");meta.className="meta";meta.textContent=a.id==="JOBBY"?"✓ FREE · 3D prototype":owned(a)?"✓ AVAILABLE":a.locked?"🔒 LOCKED · PREVIEW ONLY":"🪙 "+money(a.cost)+" points";
   item.append(img,name,meta);
   if(!owned(a)){const lock=document.createElement("span");lock.className="lock";lock.textContent="🔒";item.append(lock)}
   if(state.selected===a.id){const chosen=document.createElement("span");chosen.className="isSelected";chosen.textContent="SELECTED";item.append(chosen)}
@@ -124,7 +119,7 @@ function renderCards(){
  }
 }
 async function generatePortraits(){
- if(portraitsBusy)return;
+ if(portraitsBusy||AVATARS.every(a=>a.portrait))return;
  portraitsBusy=true;
  // Generate real, still photographs from the 3D assets only in the gallery.
  // All previews are cached to prevent repeating the full 3D downloads on later visits.
@@ -136,7 +131,7 @@ async function generatePortraits(){
   const loader=new GLTFLoader();
   for(const a of AVATARS){
    if(activeView!=="characters")break;
-   if(cachedPortrait(a))continue;
+   if(a.portrait||cachedPortrait(a))continue;
    $("thumbNote").textContent="Creating portrait for "+a.name+" from its 3D model… (first visit only)";
    try{
     const gltf=await loader.loadAsync(urlOf(a));
@@ -184,21 +179,24 @@ function closePreview(){
  if(scene){scene.clear();scene=null}mixer=null;camera=null;
 }
 async function openPreview(a){
+ closePreview();
  const req=++previewRequest;
  $("previewModal").classList.remove("hidden");
  $("previewName").textContent=a.name;
  $("previewStage").replaceChildren();
  const spinner=document.createElement("span");spinner.id="previewLoading";spinner.className="soft";spinner.textContent="Loading 3D model ("+(a.size/1048576).toFixed(1)+" MB)…";$("previewStage").append(spinner);
- $("previewText").textContent="Drag to rotate · Pinch to zoom";
+ $("previewText").textContent=a.locked?"This character is locked. Preview only · Drag to rotate":"Drag to rotate · Pinch to zoom";
  const action=$("previewAction");
  function actionLabel(){
   action.disabled=false;
-  if(owned(a)){action.textContent=state.selected===a.id?"✓ SELECTED HERO":"SELECT THIS HERO"}
+  if(a.locked){action.textContent="🔒 LOCKED · PREVIEW ONLY";action.disabled=true}
+  else if(owned(a)){action.textContent=state.selected===a.id?"✓ SELECTED HERO":"SELECT THIS HERO"}
   else if(state.points<a.cost){action.textContent="🔒 Need "+money(a.cost-state.points)+" more points";action.disabled=true}
   else action.textContent="🔓 Unlock for "+money(a.cost)+" points";
  }
  actionLabel();
  action.onclick=()=>{
+  if(a.locked)return;
   if(!owned(a)){if(state.points<a.cost)return;state.points-=a.cost;state.unlocked.push(a.id)}
   state.selected=a.id;save();updateStats();renderCards();closePreview();
  };
@@ -227,7 +225,15 @@ async function openPreview(a){
    animationFrame=requestAnimationFrame(frame);
   };
   animationFrame=requestAnimationFrame(frame);
- }catch(e){console.error(e);$("previewStage").textContent="Could not load this 3D model. Check your internet connection and try again."}
+ }catch(e){
+  if(req!==previewRequest)return;
+  console.warn("3D preview unavailable",e);
+  if(currentModel){disposeModel(currentModel);currentModel=null}
+  viewer?.dispose();viewer=null;scene=null;camera=null;mixer=null;
+  const image=document.createElement("img");image.src=a.portrait;image.alt=a.name;
+  $("previewStage").replaceChildren(image);
+  $("previewText").textContent="Static preview · 3D could not start on this device. "+(a.locked?"This character remains locked.":"You can still select this hero.");
+ }
 }
 function play(){
  syncState();

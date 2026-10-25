@@ -50,7 +50,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 .avatarCard.selected{border:2px solid #74f9d9;background:#243a55}
 .portrait{width:100%;height:clamp(122px,25vw,192px);object-fit:contain;display:block;border-radius:14px;background:radial-gradient(circle at 50% 35%,#554c8f,#242541 68%);padding:5px}
 .avatarCard .name{display:block;font-size:12px;font-weight:950;margin:10px 1px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.avatarCard .meta{font-size:11px;color:var(--gold);font-weight:850}
+.avatarCard .meta{display:block;font-size:10px;color:var(--gold);font-weight:850}
 .avatarCard .lock{position:absolute;top:15px;left:15px;background:#12162cdf;border:1px solid #bdb5d280;padding:5px 7px;border-radius:9px;font-size:12px}
 .avatarCard .isSelected{position:absolute;top:15px;right:15px;background:#146b59ed;color:white;padding:5px 7px;border-radius:9px;font-size:11px}
 .cardActions{display:flex;gap:10px;margin-top:17px}.cardActions button{flex:1}
@@ -89,7 +89,7 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <div><div class="eyebrow">🏰 EXPLORE. SOLVE. ESCAPE TOGETHER.</div><h1>Uncover <span class="gradient">the castle.</span></h1><p class="soft">Explore the towers, woodland, old village and crypt in one connected estate. Solve the castle puzzles and escape the guardian together.</p><div class="actionStack"><button id="playNow" class="primary">▶ ENTER THE CASTLE</button><button id="exploreChars" class="secondary">CHARACTERS</button></div></div>
 <div class="hero-image"><img id="jobbyHero" alt="JOBBY" src="./assets/jobby-original.webp"><small>✨ JOBBY · FREE · 3D PREVIEW</small></div>
 </div>
-<div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 6</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
+<div class="stats"><div class="stat"><b id="myPoints">0</b><span>POINTS EARNED</span></div><div class="stat"><b id="myOwned">4 / 53</b><span>PLAYABLE CHARACTERS</span></div><div class="stat"><b id="myWins">0</b><span>ROUNDS COMPLETED</span></div></div>
 <div class="section-head"><h3>GAME MODES</h3><button class="linkBtn" data-view="characters">VIEW CHARACTERS →</button></div>
 <div class="modes">
 <button id="soloMode" class="mode"><span class="emoji">🏰</span><strong>CASTLE & LABYRINTH</strong><p>Play solo</p></button>
@@ -99,8 +99,8 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 </div>
 </section>
 <section id="characters" class="view hidden">
-<div class="titlebar"><div><div class="eyebrow">CHARACTER COLLECTION</div><h1>CHOOSE YOUR CHARACTER</h1><p class="soft">JOBBY is the first free hero. Tap any card to inspect its 3D model and select it.</p></div><span class="coin" id="charCounter">6 CHARACTERS</span></div>
-<div id="characterGrid" class="grid"></div><p id="thumbNote" class="notice">Character portraits are created from their playable 3D models. Tap any card to view and rotate the model.</p>
+<div class="titlebar"><div><div class="eyebrow">CHARACTER COLLECTION</div><h1>CHOOSE YOUR CHARACTER</h1><p class="soft">JOBBY is the first free hero. Browse all 53 heroes. New arrivals are locked; tap a card to preview its 3D model.</p></div><span class="coin" id="charCounter">53 CHARACTERS</span></div>
+<div id="characterGrid" class="grid"></div><p id="thumbNote" class="notice">47 new characters are locked and available for 3D preview only. Tap a card to inspect its model.</p>
 <div class="cardActions"><button class="primary" id="playSelected">PLAY SELECTED HERO</button><button class="secondary" data-view="home">BACK</button></div>
 </section>
 <section id="leaderboard" class="view hidden">
@@ -126,5 +126,5 @@ h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,7vw,45px);line-height:1.15;letter-sp
 <label class="profile-field" for="recoveryInput">Restore a player with their private code</label><input id="recoveryInput" type="password" class="profile-input" autocomplete="off" spellcheck="false" placeholder="64-character recovery code">
 <button id="restorePlayer" class="secondary" style="margin-top:10px">RESTORE PLAYER</button><p id="playerMessage" class="notice" role="status"></p>
 </div></div>
-<script type="module" src="./hub.js?v=17-1"></script>
+<script type="module" src="./hub.js?v=characters-53"></script>
 </body></html>
